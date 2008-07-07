@@ -1,3 +1,5 @@
+*.resharper
+*.user
 */bin/*
 */obj/*
 *.suo

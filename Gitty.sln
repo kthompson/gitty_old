@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual Studio 2005
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GittyTester", "GittyTester\GittyTester.csproj", "{3C787990-9AFD-4E60-94F2-B641B0C4A4A6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gitty", "Gitty\Gitty.csproj", "{B3276B5A-E976-4328-A57D-7F4AD5DD5F31}"

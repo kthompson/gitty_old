@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.IO;
 
 namespace Gitty
 {
@@ -8,14 +9,26 @@ namespace Gitty
     {
         public class Base
         {
+
+            public static Base Bare(string git_dir)
+            {
+                return Bare(git_dir, null);
+            }
             /// <summary>
             /// opens a bare git repo
             /// </summary>
             /// <param name="git_directory"></param>
             /// <returns></returns>
-            public static Base Bare(string gitDirectory, Options options)
+            public static Base Bare(string git_dir, Options opts)
             {
-                throw new NotImplementedException();
+                Options defaults = new Options { { "repository", new FileInfo(git_dir).FullName } };
+                Options git_options = defaults.Merge(opts);
+                return new Base(git_options);
+            }
+
+            public static Base Open(string working_directory)
+            {
+                return Open(working_directory, null);
             }
 
             /// <summary>
@@ -24,21 +37,47 @@ namespace Gitty
             /// </summary>
             /// <param name="working_directory"></param>
             /// <returns></returns>
-            public static Base Open(string working_directory, Options options)
+            public static Base Open(string working_directory, Options opts)
             {
-                throw new NotImplementedException();
+                Options defaults = new Options {{"working_directory" , File.ExpandPath(working_directory)}};
+                Options git_options = defaults.Merge(opts);
+                return new Base(git_options);
             }
 
 
 
-            public static Base Init(string working_directory, Options options)
+            public static Base Init(string working_directory, Options opts)
             {
-                throw new NotImplementedException();
+                Options defaults = new Options { { "working_directory", File.ExpandPath(working_directory) },
+                                                 { "repository", File.Join(working_directory, ".git")}
+                };
+                Options git_options = defaults.Merge(opts);
+
+                
+                if (git_options["working_directory"].IsNotNullOrEmpty())
+                {
+                    if (!Directory.Exists(git_options["working_directory"].As<string>()))
+                        Directory.CreateDirectory(git_options["working_directory"].As<string>());
+
+                    if(git_options["repository"].IsNullOrEmpty())
+                        git_options["repository"] = File.Join(working_directory, ".git");
+
+                }
+
+
+                Repository.Init(git_options["repository"].As<string>());
+
+                return new Base(git_options);
+            }
+
+            public static Base Clone(string repository, string name)
+            {
+                return Clone(repository, name, null);
             }
 
             public static Base Clone(string repository, string name, Options options)
             {
-                throw new NotImplementedException();
+                return new Base(new Lib(null, options["logger"]).Clone(repository, name, options));
             }
 
 
@@ -49,7 +88,20 @@ namespace Gitty
 
             private Base(Options options)
             {
-                throw new NotImplementedException();
+                string working_dir = options["working_directory"].As<string>();
+                if (working_dir.IsNotNullOrEmpty())
+                {
+                    if (options["repository"])
+                        options["repository"] = File.Join(working_dir, ".git");
+
+                    if (options["index"])
+                        options["index"] = File.Join(working_dir, ".git", "index");
+
+                    if (!options["logger"])
+                    {
+
+                    }
+                }
             }
 
             private WorkingDirectory _workingDirectory;

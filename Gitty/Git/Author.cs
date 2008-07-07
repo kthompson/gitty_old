@@ -7,6 +7,7 @@ namespace Gitty
 {
     public partial class Git
     {
+        [Synched]
         public class Author
         {
 

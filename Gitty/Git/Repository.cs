@@ -17,6 +17,11 @@ namespace Gitty
                 : base(path)
             {
             }
+
+            internal static void Init(string p)
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }

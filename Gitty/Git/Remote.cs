@@ -8,7 +8,11 @@ namespace Gitty
     {
         public class Remote : Path
         {
-  
+            public Remote()
+                : base("")
+            {
+
+            }
         }
     }
 }

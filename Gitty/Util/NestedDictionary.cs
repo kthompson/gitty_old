@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml.Serialization;
 
-namespace Gitty
+namespace Gitty.Util
 {
 
     /// <summary>

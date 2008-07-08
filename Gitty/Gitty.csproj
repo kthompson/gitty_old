@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30428</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{B3276B5A-E976-4328-A57D-7F4AD5DD5F31}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -51,16 +51,20 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="CompleteAttribute.cs" />
     <Compile Include="Git.cs" />
     <Compile Include="Lib\AnyObjectId.cs" />
+    <Compile Include="Lib\Constants.cs" />
     <Compile Include="Lib\CoreConfig.cs" />
     <Compile Include="Lib\GitException.cs" />
     <Compile Include="Lib\Index.cs" />
+    <Compile Include="Lib\ObjectId.cs" />
+    <Compile Include="Lib\ObjectLoader.cs" />
     <Compile Include="Lib\PackFile.cs" />
     <Compile Include="Lib\RefDatabase.cs" />
     <Compile Include="Lib\Repository.cs" />
     <Compile Include="Lib\RepositoryConfig.cs" />
-    <Compile Include="NestedDictionary.cs" />
+    <Compile Include="Util\NestedDictionary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

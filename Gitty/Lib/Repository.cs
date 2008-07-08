@@ -20,6 +20,7 @@ namespace Gitty.Lib
         private List<PackFile> _packs ;
         private Index _index;
 
+        [Complete]
         public Repository(DirectoryInfo gitDirectory)
         {
             this.Directory = gitDirectory;
@@ -46,6 +47,8 @@ namespace Gitty.Lib
 			    ScanForPacks();
         }
 
+
+        [Complete]
         public void Create()
         {
             if (this.Directory.Exists)
@@ -70,6 +73,7 @@ namespace Gitty.Lib
 
         }
 
+        [Complete]
         public FileInfo ToFile(AnyObjectId objectId)
         {
             string n = objectId.ToString();
@@ -85,6 +89,7 @@ namespace Gitty.Lib
             return new FileInfo(Path.Combine(Path.Combine(this._objectsDirs[0].FullName, d), f));
         }
 
+        [Complete]
         public bool HasObject(AnyObjectId objectId)
         {
             int k = this._packs.Count;

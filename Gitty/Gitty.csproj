@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30428</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{B3276B5A-E976-4328-A57D-7F4AD5DD5F31}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -51,29 +51,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Extensions.cs" />
-    <Compile Include="File.cs" />
     <Compile Include="Git.cs" />
-    <Compile Include="Git\Author.cs" />
-    <Compile Include="Git\Base.cs" />
-    <Compile Include="Git\Branch.cs" />
-    <Compile Include="Git\Branches.cs" />
-    <Compile Include="Git\Diff.cs" />
-    <Compile Include="Git\Index.cs" />
-    <Compile Include="Git\Lib.cs" />
-    <Compile Include="Git\Log.cs" />
-    <Compile Include="Git\Object.cs" />
-    <Compile Include="Git\Options.cs" />
-    <Compile Include="Git\Path.cs" />
-    <Compile Include="Git\Remote.cs" />
-    <Compile Include="Git\Repository.cs" />
-    <Compile Include="Git\Stash.cs" />
-    <Compile Include="Git\Stashes.cs" />
-    <Compile Include="Git\Status.cs" />
-    <Compile Include="Git\WorkingDirectory.cs" />
+    <Compile Include="Lib\AnyObjectId.cs" />
+    <Compile Include="Lib\CoreConfig.cs" />
+    <Compile Include="Lib\GitException.cs" />
+    <Compile Include="Lib\Index.cs" />
+    <Compile Include="Lib\PackFile.cs" />
+    <Compile Include="Lib\RefDatabase.cs" />
+    <Compile Include="Lib\Repository.cs" />
+    <Compile Include="Lib\RepositoryConfig.cs" />
     <Compile Include="NestedDictionary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SynchedAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

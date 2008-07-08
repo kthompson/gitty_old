@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.IO;
+using Gitty.Lib;
 
 namespace Gitty
 {
@@ -8,6 +10,9 @@ namespace Gitty
     {
         static void Main(string[] args)
         {
+            Repository repo = new Repository(new DirectoryInfo("."));
+            Console.WriteLine(repo.Directory.FullName);
+            Console.Read();
         }
     }
 }

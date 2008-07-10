@@ -7,6 +7,6 @@ namespace Gitty.Lib
 {
     internal class Constants
     {
-        public readonly int ObjectIdLength = 20;
+        public static readonly int ObjectIdLength = 20;
     }
 }

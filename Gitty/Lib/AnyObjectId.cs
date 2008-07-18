@@ -3,56 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Gitty.Util;
+using System.IO;
 
 namespace Gitty.Lib
 {
+    [Complete]
     public abstract class AnyObjectId 
         : IComparable<ObjectId>, IComparable
     {
-        static readonly int StringLength = Constants.ObjectIdLength * 2;
-        static byte[] fromhex;
-
-        static AnyObjectId()
-        {
-            fromhex = new byte['f' + 1];
-            for (int i = 0; i < fromhex.Length; i++)
-                fromhex[i] = byte.MaxValue;
-            for (char i = '0'; i <= '9'; i++)
-                fromhex[i] = (byte)(i - '0');
-            for (char i = 'a'; i <= 'f'; i++)
-                fromhex[i] = (byte)((i - 'a') + 10);
-        }
-
-        public static int HexUInt32(byte[] bs, int p)
-        {
-            int r = fromhex[bs[p]] << 4;
-
-            r |= fromhex[bs[p + 1]];
-            r <<= 4;
-
-            r |= fromhex[bs[p + 2]];
-            r <<= 4;
-
-            r |= fromhex[bs[p + 3]];
-            r <<= 4;
-
-            r |= fromhex[bs[p + 4]];
-            r <<= 4;
-
-            r |= fromhex[bs[p + 5]];
-            r <<= 4;
-
-            r |= fromhex[bs[p + 6]];
-            r <<= 4;
-
-            int last = fromhex[bs[p + 7]];
-            if (r < 0 || last < 0)
-                throw new IndexOutOfRangeException();
-
-            return (r << 4) | last;
-
-        }
-
+        public static readonly int StringLength = Constants.ObjectIdLength * 2;
+        
         public static bool operator ==(AnyObjectId a, AnyObjectId b)
         {
             return (a.W2 == b.W2) &&
@@ -67,6 +27,11 @@ namespace Gitty.Lib
             return !(a == b);
         }
 
+        public bool Equals(ObjectId obj)
+        {
+            return (obj != null) ? Equals((object)obj) : false;
+        }
+
         public override bool Equals(object obj)
         {
             AnyObjectId id = obj as AnyObjectId;
@@ -78,20 +43,20 @@ namespace Gitty.Lib
 
         public override int GetHashCode()
         {
-            return this.W2;
+            return (int)this.W2;
         }
 
 
-        public int W1 { get; set; }
-        public int W2 { get; set; }
-        public int W3 { get; set; }
-        public int W4 { get; set; }
-        public int W5 { get; set; }
+        public uint W1 { get; set; }
+        public uint W2 { get; set; }
+        public uint W3 { get; set; }
+        public uint W4 { get; set; }
+        public uint W5 { get; set; }
 
         public int GetFirstByte()
         {
             //same as W1 >>> 24 in java
-            return Numbers.UnsignedRightShift(W1, 24);
+            return  (byte)((W1 & 0xf000) >> 24);
         }
 
         #region IComparable<ObjectId> Members
@@ -135,5 +100,37 @@ namespace Gitty.Lib
         }
 
         #endregion
+
+
+        private char[] ToHexCharArray()
+        {
+            char[] dest = new char[StringLength];
+            ToHexCharArray(dest);
+            return dest;
+        }
+
+        private void ToHexCharArray(char[] dest)
+        {
+            Hex.FillHexCharArray(dest, 0, W1);
+            Hex.FillHexCharArray(dest, 8, W2);
+            Hex.FillHexCharArray(dest, 16, W3);
+            Hex.FillHexCharArray(dest, 24, W4);
+            Hex.FillHexCharArray(dest, 32, W5);
+        }
+
+        public override string ToString()
+        {
+            return new string(ToHexCharArray());
+        }
+
+        public ObjectId Copy() {
+            if (this.GetType() == typeof(ObjectId))
+                return (ObjectId)this;
+            return new ObjectId(this);            
+        }
+
+        public abstract ObjectId ToObjectId();
+
+
     }
 }

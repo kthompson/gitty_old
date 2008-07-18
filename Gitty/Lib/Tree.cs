@@ -5,17 +5,20 @@ using System.Text;
 
 namespace Gitty.Lib
 {
-    public class PackFile
+    public class Tree : TreeEntry, Treeish
     {
-        internal bool HasObject(AnyObjectId objectId)
+        #region Treeish Members
+
+        public ObjectId GetTreeId()
         {
             throw new NotImplementedException();
         }
 
-
-        public PackedObjectLoader Get(WindowCursor windowCursor, AnyObjectId id)
+        public Tree GetTree()
         {
             throw new NotImplementedException();
         }
+
+        #endregion
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using Gitty.Util;
 
 namespace Gitty.Lib
 {
@@ -73,23 +74,6 @@ namespace Gitty.Lib
 
         }
 
-        [Complete]
-        public FileInfo ToFile(AnyObjectId objectId)
-        {
-            string n = objectId.ToString();
-            string d = n.Substring(0, 2);
-            string f = n.Substring(2);
-            for (int i = 0; i < this._objectsDirs.Count; ++i )
-            {
-                FileInfo ret = new FileInfo(Path.Combine(Path.Combine(this._objectsDirs[i].FullName, d), f));
-                if (ret.Exists)
-                    return ret;
-            }
-
-            return new FileInfo(Path.Combine(Path.Combine(this._objectsDirs[0].FullName, d), f));
-        }
-
-        [Complete]
         public bool HasObject(AnyObjectId objectId)
         {
             int k = this._packs.Count;
@@ -141,6 +125,122 @@ namespace Gitty.Lib
         public DirectoryInfo Directory { get; private set; }
         public RepositoryConfig Config { get; private set; }
         #endregion
+
+        public FileInfo ToFile(AnyObjectId objectId)
+        {
+            string n = objectId.ToString();
+            string d = n.Substring(0, 2);
+            string f = n.Substring(2);
+            for (int i = 0; i < _objectsDirs.Count; ++i)
+            {
+                FileInfo ret = new FileInfo(PathUtil.Combine(_objectsDirs[i].FullName, d,f));
+                if (ret.Exists)
+                    return ret;
+            }
+            return new FileInfo(PathUtil.Combine(_objectsDirs[0].FullName, d, f));
+        }
+
+        public ObjectLoader OpenObject(AnyObjectId id)
+        {
+            return OpenObject(new WindowCursor(), id);
+        }
+
+        public ObjectLoader OpenObject(WindowCursor windowCursor, AnyObjectId id)
+        {
+            int k = _packs.Count;
+            if(k > 0)
+            {
+                do
+                {
+                    ObjectLoader ol = _packs[--k].Get(windowCursor, id);
+                    if (ol != null)
+                        return ol;
+
+                } while (k > 0);
+            }
+            try
+            {
+                return new UnpackedObjectLoader(this, id.ToObjectId());
+            }
+            catch (FileNotFoundException)
+            {
+                return null;
+            }
+        }
+
+        public ICollection<PackedObjectLoader> OpenObjectInAllPacks(AnyObjectId objectId, WindowCursor cursor)
+        {
+            ICollection<PackedObjectLoader> result = new LinkedList<PackedObjectLoader>();
+            OpenObjectInAllPacks(objectId, result, cursor);
+            return result;
+        }
+
+        private void OpenObjectInAllPacks(AnyObjectId objectId, ICollection<PackedObjectLoader> resultLoaders, WindowCursor cursor)
+        {
+            foreach (PackFile pack in _packs)
+            {
+                PackedObjectLoader loader = pack.Get(cursor, objectId);
+                if (loader != null)
+                    resultLoaders.Add(loader);
+            }
+        }
+
+        public ObjectLoader OpenBlob(ObjectId id)
+        {
+            return OpenObject(id);
+        }
+
+        public ObjectLoader OpenTree(ObjectId id)
+        {
+            return OpenObject(id);
+        }
+
+        public Commit MapCommit(string resolveString)
+        {
+            ObjectId id = Resolve(resolveString);
+            return id != null ? MapCommit(id) : null;
+        }
+
+        private Commit MapCommit(ObjectId id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public object MapCommit(ObjectId id, string refName)
+        {
+            ObjectLoader or = OpenObject(id);
+            byte[] raw = or.Bytes;
+            if (or.ObjectType == ObjectType.Tree)
+                return MakeTree(id, raw);
+            if (or.ObjectType == ObjectType.Commit)
+                return MakeCommit(id, raw);
+            if (or.ObjectType == ObjectType.Tag)
+                return MakeTag(id, refName, raw);
+            if (or.ObjectType == ObjectType.Blob)
+                return raw;
+            return null;
+
+        }
+
+        private object MakeTag(ObjectId id, string refName, byte[] raw)
+        {
+            throw new NotImplementedException();
+        }
+
+        private object MakeCommit(ObjectId id, byte[] raw)
+        {
+            throw new NotImplementedException();
+        }
+
+        private object MakeTree(ObjectId id, byte[] raw)
+        {
+            throw new NotImplementedException();
+        }
+
+        private ObjectId Resolve(string resolveString)
+        {
+            throw new NotImplementedException();
+        }
 
     }
 }

@@ -8,7 +8,7 @@ namespace Gitty.Util
     internal class Numbers
     {
 
-        public static int Compare(int a, int b)
+        public static int Compare(uint a, uint b)
         {
             if (a > b)
                 return -1;

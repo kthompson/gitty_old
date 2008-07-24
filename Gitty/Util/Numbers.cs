@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 
 namespace Gitty.Util
 {
@@ -40,6 +41,21 @@ namespace Gitty.Util
             {
                 return (n >> s) + (((long)2) << ~s);
             }
+        }
+
+        public static uint DecodeUInt(byte[] buffer, int offset)
+        {
+            uint r = buffer[offset];
+            r <<= 8;
+
+            r |= (byte)(buffer[offset + 1]);
+            r <<= 8;
+
+            r |= (byte)(buffer[offset + 2]);
+            r <<= 8;
+
+            r |= (byte)(buffer[offset + 3]);
+            return r;
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Gitty.Util;
+using System.IO;
 
 namespace Gitty.Lib
 {
@@ -88,6 +89,30 @@ namespace Gitty.Lib
         public override ObjectId ToObjectId()
         {
             return this; ;
+        }
+
+        public static ObjectId FromRaw(byte[] buffer)
+        {
+            return FromRaw(buffer, 0);
+        }
+
+        public static ObjectId FromRaw(byte[] buffer, int offset)
+        {
+            uint a = Numbers.DecodeUInt(buffer, offset);
+            uint b = Numbers.DecodeUInt(buffer, offset + 4);
+            uint c = Numbers.DecodeUInt(buffer, offset + 8);
+            uint d = Numbers.DecodeUInt(buffer, offset + 12);
+            uint e = Numbers.DecodeUInt(buffer, offset + 16);
+            return new ObjectId(a, b, c, d, e);
+        }
+        public static ObjectId FromRaw(uint[] intbuffer)
+        {
+            return FromRaw(intbuffer, 0);
+        }
+
+        public static ObjectId FromRaw(uint[] intbuffer, int offset)
+        {
+            return new ObjectId(intbuffer[offset], intbuffer[offset + 1], intbuffer[offset + 2], intbuffer[offset + 3], intbuffer[offset + 4]);
         }
     }
 }

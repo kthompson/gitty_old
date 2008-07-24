@@ -7,6 +7,7 @@ using System.Security.Cryptography;
 
 namespace Gitty.Lib
 {
+    [Complete]
     public abstract class ObjectLoader
     {
         private ObjectId _id;

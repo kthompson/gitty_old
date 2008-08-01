@@ -78,6 +78,7 @@
     <Compile Include="Util\NestedDictionary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\Numbers.cs" />
+    <Compile Include="Util\BufferedReader.cs" />
     <Compile Include="Util\PathUtil.cs" />
   </ItemGroup>
   <ItemGroup>

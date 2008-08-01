@@ -8,6 +8,7 @@ using Gitty.Util;
 
 namespace Gitty.Lib
 {
+    [Complete]
     public class RepositoryConfig
     {
         public sealed class Constants
@@ -59,209 +60,222 @@ namespace Gitty.Lib
 
 
 
-        private static String ReadName(StreamReader r)
+        private static String ReadName(BufferedReader r)
         {
             StringBuilder name = new StringBuilder();
-            long lastMark = -1;
+
             while (true)
             {
-#error THIS IS ALL BROKE because you cant rewind in a stream reader
-
-                int c = r.Peek();
-                if (c < 0)
+                using (r.GetMarker())
                 {
-                    throw new IOException("Unexpected end of config file.");
-                }
-                else if ('=' == c)
-                {
-                    break;
-                }
-                else if (' ' == c || '\t' == c)
-                {
-                    while (true)
+                    int c = r.Read();
+                    if (c < 0)
                     {
-                        lastMark = r.BaseStream.Position;
-                        c = r.Read();
-                        if (c < 0)
-                        {
-                            throw new IOException("Unexpected end of config file.");
-                        }
-                        else if ('=' == c)
-                        {
-                            break;
-                        }
-                        else if (';' == c || '#' == c || '\n' == c)
-                        {
-                            r.BaseStream.Seek(lastMark, SeekOrigin.Begin);
-                            break;
-                        }
-                        else if (' ' == c || '\t' == c)
-                        {
-                            // Skipped...
-                        }
-                        else
-                        {
-                            throw new IOException("Bad entry delimiter.");
-                        }
+                        throw new IOException("Unexpected end of config file.");
                     }
-                    break;
-                }
-                else if (Char.IsLetterOrDigit((char)c) || c == '-')
-                {
-                    // From the git-config man page:
-                    //     The variable names are case-insensitive and only
-                    //     alphanumeric characters and - are allowed.
-                    name.Append((char)r.Read());
-                }
-                else if ('\n' == c)
-                {
-                    name.Append((char)r.Read());
-                    break;
-                }
-                else
-                {
-                    throw new IOException("Bad config entry name: " + name + (char)c);
+                    else if ('=' == c)
+                    {
+                        break;
+                    }
+                    else if (' ' == c || '\t' == c)
+                    {
+                        while (true)
+                        {
+                            using (r.GetMarker())
+                            {
+                                c = r.Read();
+                                if (c < 0)
+                                {
+                                    throw new IOException("Unexpected end of config file.");
+                                }
+                                else if ('=' == c)
+                                {
+                                    break;
+                                }
+                                else if (';' == c || '#' == c || '\n' == c)
+                                {
+                                    r.Reset();
+                                    break;
+                                }
+                                else if (' ' == c || '\t' == c)
+                                {
+                                    // Skipped...
+                                }
+                                else
+                                {
+                                    throw new IOException("Bad entry delimiter.");
+                                }
+                            }
+                        }
+                        break;
+                    }
+                    else if (Char.IsLetterOrDigit((char)c) || c == '-')
+                    {
+                        // From the git-config man page:
+                        //     The variable names are case-insensitive and only
+                        //     alphanumeric characters and - are allowed.
+                        name.Append((char)c);
+                    }
+                    else if ('\n' == c)
+                    {
+                        r.Reset();
+                        name.Append((char)c);
+                        break;
+                    }
+                    else
+                    {
+                        throw new IOException("Bad config entry name: " + name + (char)c);
+                    }
                 }
             }
             return name.ToString();
         }
 
-        private string ReadValue(StreamReader r, bool quote, int eol)
+        private string ReadValue(BufferedReader r, bool quote, int eol)
         {
-#error THIS IS ALL BROKE because you can rewind in a StreamReader
             StringBuilder value = new StringBuilder();
             bool space = false;
-            long lastMark = -1;
+
             while (true)
             {
-                lastMark = r.BaseStream.Position;
-                int c = r.Read();
-                if (c < 0)
+                using (r.GetMarker())
                 {
-                    if (value.Length == 0)
-                        throw new IOException("Unexpected end of config file.");
-                    break;
-                }
-                if ('\n' == c)
-                {
-                    if (quote)
+                    int c = r.Read();
+                    if (c < 0)
                     {
-                        throw new IOException("Newline in quotes not allowed.");
-                    }
-                    r.BaseStream.Seek(lastMark, SeekOrigin.Begin);
-                    break;
-                }
-                if (eol == c)
-                {
-                    break;
-                }
-                if (!quote)
-                {
-                    if (Char.IsWhiteSpace((char)c))
-                    {
-                        space = true;
-                        continue;
-                    }
-                    if (';' == c || '#' == c)
-                    {
-                        r.BaseStream.Seek(lastMark, SeekOrigin.Begin);
+                        if (value.Length == 0)
+                            throw new IOException("Unexpected end of config file.");
                         break;
                     }
-                }
-                if (space)
-                {
-                    if (value.Length > 0)
+                    if ('\n' == c)
                     {
-                        value.Append(' ');
+                        if (quote)
+                        {
+                            throw new IOException("Newline in quotes not allowed.");
+                        }
+                        r.Reset();
+                        break;
                     }
-                    space = false;
-                }
-                if ('\\' == c)
-                {
-                    c = r.Read();
-                    switch (c)
+                    if (eol == c)
                     {
-                        case -1:
-                            throw new IOException("End of file in escape.");
-                        case '\n':
-                            continue;
-                        case 't':
-                            value.Append('\t');
-                            continue;
-                        case 'b':
-                            value.Append('\b');
-                            continue;
-                        case 'n':
-                            value.Append('\n');
-                            continue;
-                        case '\\':
-                            value.Append('\\');
-                            continue;
-                        case '"':
-                            value.Append('"');
-                            continue;
-                        default:
-                            throw new IOException("Bad escape: " + ((char)c));
+                        break;
                     }
+                    if (!quote)
+                    {
+                        if (Char.IsWhiteSpace((char)c))
+                        {
+                            space = true;
+                            continue;
+                        }
+                        if (';' == c || '#' == c)
+                        {
+                            r.Reset();
+                            break;
+                        }
+                    }
+                    if (space)
+                    {
+                        if (value.Length > 0)
+                        {
+                            value.Append(' ');
+                        }
+                        space = false;
+                    }
+                    if ('\\' == c)
+                    {
+                        c = r.Read();
+                        switch (c)
+                        {
+                            case -1:
+                                throw new IOException("End of file in escape.");
+                            case '\n':
+                                continue;
+                            case 't':
+                                r.Read();
+                                value.Append('\t');
+                                continue;
+                            case 'b':
+                                r.Read();
+                                value.Append('\b');
+                                continue;
+                            case 'n':
+                                r.Read();
+                                value.Append('\n');
+                                continue;
+                            case '\\':
+                                r.Read();
+                                value.Append('\\');
+                                continue;
+                            case '"':
+                                r.Read();
+                                value.Append('"');
+                                continue;
+                            default:
+                                throw new IOException("Bad escape: " + ((char)c));
+                        }
+                    }
+                    if ('"' == c)
+                    {
+                        quote = !quote;
+                        continue;
+                    }
+                    value.Append((char) c);
                 }
-                if ('"' == c)
-                {
-                    quote = !quote;
-                    continue;
-                }
-                value.Append((char)c);
             }
             return value.Length > 0 ? value.ToString() : null;
         }
 
-        private static string ReadBase(StreamReader r)
+        private static string ReadBase(BufferedReader r)
         {
-#warning THIS IS ALL BROKE because you can rewind in a StreamReader
-
             StringBuilder Base = new StringBuilder();
             while (true)
             {
-                int c = r.Peek();
-                if (c < 0)
+                using (r.GetMarker())
                 {
-                    throw new IOException("Unexpected end of config file.");
-                }
-                else if (']' == c)
-                {
-                    break;
-                }
-                else if (' ' == c || '\t' == c)
-                {
-                    r.Read();
-                    while (true)
+                    int c = r.Read();
+                    if (c < 0)
                     {
-                        c = r.Peek();
-                        if (c < 0)
-                        {
-                            throw new IOException("Unexpected end of config file.");
-                        }
-                        else if ('"' == c)
-                        {
-                            break;
-                        }
-                        else if (' ' == c || '\t' == c)
-                        {
-                            // Skipped...
-                        }
-                        else
-                        {
-                            throw new IOException("Bad base entry. : " + Base + "," + c);
-                        }
+                        throw new IOException("Unexpected end of config file.");
                     }
-                    break;
-                }
-                else if (Char.IsLetterOrDigit((char)c) || '.' == c || '-' == c)
-                {
-                    Base.Append((char)r.Read());
-                }
-                else
-                {
-                    throw new IOException("Bad base entry. : " + Base + ", " + c);
+                    else if (']' == c)
+                    {
+                        r.Reset();
+                        break;
+                    }
+                    else if (' ' == c || '\t' == c)
+                    {
+                        while (true)
+                        {
+                            r.Mark();
+                            c = r.Read();
+                            if (c < 0)
+                            {
+                                throw new IOException("Unexpected end of config file.");
+                            }
+                            else if ('"' == c)
+                            {
+                                r.Reset();
+                                break;
+                            }
+                            else if (' ' == c || '\t' == c)
+                            {
+                                // Skipped...
+                            }
+                            else
+                            {
+                                throw new IOException("Bad base entry. : " + Base + "," + c);
+                            }
+                        }
+                        break;
+                    }
+                    else if (Char.IsLetterOrDigit((char)c) || '.' == c || '-' == c)
+                    {
+                        Base.Append((char)c);
+                    }
+                    else
+                    {
+                        throw new IOException("Bad base entry. : " + Base + ", " + c);
+                    }
                 }
             }
             return Base.ToString();
@@ -345,15 +359,15 @@ namespace Gitty.Lib
         {
             Clear();
             _readFile = true;
-            long lastMark = -1;
-            using (StreamReader r = new StreamReader(ConfigFile.FullName))
+
+            using (BufferedReader r = new BufferedReader(ConfigFile.FullName))
             {
 
                 Entry last = null;
                 Entry e = new Entry();
                 while (true)
                 {
-                    lastMark = r.BaseStream.Position;
+                    r.Mark();
 
                     int input = r.Read();
                     char inc = (char)input;
@@ -366,9 +380,8 @@ namespace Gitty.Lib
                         // End of this entry.
                         Add(e);
                         if (e.Base != null)
-                        {
                             last = e;
-                        }
+
                         e = new Entry();
                     }
                     else if (e.Suffix != null)
@@ -412,7 +425,7 @@ namespace Gitty.Lib
                         e.Base = last.Base;
                         e.ExtendedBase = last.ExtendedBase;
 
-                        r.BaseStream.Seek(lastMark, SeekOrigin.Begin);
+                        r.Reset();
 
                         e.Name = ReadName(r);
                         if (e.Name.EndsWith("\n"))
@@ -422,6 +435,8 @@ namespace Gitty.Lib
                         }
                         else
                             e.Value = ReadValue(r, false, -1);
+
+                        continue;
                     }
                     else
                     {

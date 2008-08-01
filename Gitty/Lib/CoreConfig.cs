@@ -7,5 +7,9 @@ namespace Gitty.Lib
 {
     public class CoreConfig
     {
+        public CoreConfig(RepositoryConfig repoConfig)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

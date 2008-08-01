@@ -10,7 +10,7 @@ namespace Gitty
     {
         static void Main(string[] args)
         {
-            Repository repo = new Repository(new DirectoryInfo("."));
+            Repository repo = new Repository(new DirectoryInfo(@"..\..\..\.git"));
             Console.WriteLine(repo.Directory.FullName);
             Console.Read();
         }

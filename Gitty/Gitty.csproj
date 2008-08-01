@@ -73,6 +73,7 @@
     <Compile Include="Lib\Treeish.cs" />
     <Compile Include="Lib\UnpackedObjectLoader.cs" />
     <Compile Include="Lib\WindowCursor.cs" />
+    <Compile Include="Util\Collections.cs" />
     <Compile Include="Util\Hex.cs" />
     <Compile Include="Util\NestedDictionary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

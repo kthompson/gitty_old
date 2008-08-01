@@ -16,7 +16,6 @@ namespace Gitty.Lib
             {
                 if(_id == null){
                     SHA1CryptoServiceProvider sha = new SHA1CryptoServiceProvider();
-
                     
                     using (StreamWriter writer = new StreamWriter(new MemoryStream()))
                     {

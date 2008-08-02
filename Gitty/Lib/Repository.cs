@@ -93,8 +93,41 @@ namespace Gitty.Lib
 
         private void ScanForPacks()
         {
-            throw new NotImplementedException();
+            List<PackFile> p = new List<PackFile>();
+            for (int i = 0; i < _objectsDirs.Count; ++i)
+                ScanForPacks(new DirectoryInfo(Path.Combine(_objectsDirs[i].FullName, "pack")), p);
+
+            _packs = p;
+
         }
+
+        private void ScanForPacks(DirectoryInfo packDir, List<PackFile> packList) {
+           // Must match "pack-[0-9a-f]{40}.idx" to be an index.
+           IEnumerable<FileInfo> idxList = packDir.GetFiles().Where(file => file.Name.Length == 49 && file.Name.EndsWith(".idx") && file.Name.StartsWith("pack-"));
+    
+            if (idxList != null) {
+            foreach (FileInfo indexName in idxList) {
+                String n = indexName.FullName.Substring(0, indexName.FullName.Length - 4);
+                FileInfo idxFile = new FileInfo(n + ".idx");
+                FileInfo packFile = new FileInfo(n + ".pack");
+
+                if (!packFile.Exists) {
+                    // Sometimes C Git's http fetch transport leaves a
+                    // .idx file behind and does not download the .pack.
+                    // We have to skip over such useless indexes.
+                    //
+                    continue;
+                }
+
+                try {
+                    packList.Add(new PackFile(this, idxFile, packFile));
+                } catch (IOException) {
+                    // Whoops. That's not a pack!
+                    //
+                }
+            }
+        }
+    }
 
         private List<DirectoryInfo> ReadObjectsDirs(string objectsDir, ref List<DirectoryInfo> ret)
         {

@@ -859,9 +859,15 @@ namespace Gitty.Lib
                 ss = "." + subsection.ToLower();
             else
                 ss = "";
-
-            object o = _byName[section.ToLower() + ss + "." + name.ToLower()];
-            return o;
+            try
+            {
+                return _byName[section.ToLower() + ss + "." + name.ToLower()];
+            }
+            catch (KeyNotFoundException)
+            {
+                return null;
+            }
+            
         }
 
         private string GetRawString(string section, string subsection, string name)

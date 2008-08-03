@@ -5,6 +5,7 @@ using System.Text;
 
 namespace Gitty.Lib
 {
+    [Complete]
     public interface Treeish
     {
         ObjectId GetTreeId();

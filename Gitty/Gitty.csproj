@@ -57,6 +57,8 @@
     <Compile Include="Lib\AnyObjectId.cs" />
     <Compile Include="Lib\Commit.cs" />
     <Compile Include="Lib\CoreConfig.cs" />
+    <Compile Include="Lib\FileTreeEntry.cs" />
+    <Compile Include="Lib\ForceModified.cs" />
     <Compile Include="Lib\GitException.cs" />
     <Compile Include="Lib\Index.cs" />
     <Compile Include="Lib\MutableObjectId.cs" />
@@ -72,9 +74,11 @@
     <Compile Include="Lib\RefDatabase.cs" />
     <Compile Include="Lib\Repository.cs" />
     <Compile Include="Lib\RepositoryConfig.cs" />
+    <Compile Include="Lib\SymlinkTreeEntry.cs" />
     <Compile Include="Lib\Tree.cs" />
     <Compile Include="Lib\TreeEntry.cs" />
     <Compile Include="Lib\Treeish.cs" />
+    <Compile Include="Lib\TreeVisitor.cs" />
     <Compile Include="Lib\UnpackedObjectLoader.cs" />
     <Compile Include="Lib\WindowCursor.cs" />
     <Compile Include="Util\Collections.cs" />

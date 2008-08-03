@@ -15,5 +15,10 @@ namespace Gitty.Lib
         }
 
         #endregion
+
+        public void SetModified()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

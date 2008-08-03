@@ -66,6 +66,9 @@
     <Compile Include="Lib\PackedObjectLoader.cs" />
     <Compile Include="Lib\PackFile.cs" />
     <Compile Include="Lib\PackIndex.cs" />
+    <Compile Include="Lib\PackIndexV1.cs" />
+    <Compile Include="Lib\PackIndexV2.cs" />
+    <Compile Include="Lib\PackIndexWriter.cs" />
     <Compile Include="Lib\RefDatabase.cs" />
     <Compile Include="Lib\Repository.cs" />
     <Compile Include="Lib\RepositoryConfig.cs" />

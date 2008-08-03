@@ -43,5 +43,17 @@ namespace Gitty.Util
         }
 
 
+
+        public static void ReadFully(Stream fd, byte[] dst, int off, int len)
+        {
+            while (len > 0)
+            {
+                int r = fd.Read(dst, off, len);
+                if (r <= 0)
+                    throw new EndOfStreamException("Short read of block.");
+                off += r;
+                len -= r;
+            }
+        }
     }
 }

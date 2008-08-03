@@ -20,5 +20,7 @@ namespace Gitty.Lib
         {
             throw new NotImplementedException();
         }
+
+        public string Name { get; protected set; }
     }
 }

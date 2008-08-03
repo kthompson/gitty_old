@@ -82,6 +82,7 @@
     <Compile Include="Lib\TreeEntry.cs" />
     <Compile Include="Lib\Treeish.cs" />
     <Compile Include="Lib\TreeVisitor.cs" />
+    <Compile Include="Lib\TreeVisitorWithCurrentDirectory.cs" />
     <Compile Include="Lib\UnpackedObjectLoader.cs" />
     <Compile Include="Lib\WindowCursor.cs" />
     <Compile Include="Util\Collections.cs" />

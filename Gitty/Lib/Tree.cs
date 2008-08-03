@@ -20,5 +20,10 @@ namespace Gitty.Lib
         }
 
         #endregion
+
+        internal bool IsRoot()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

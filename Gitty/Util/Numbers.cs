@@ -3,59 +3,45 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using Gitty.Extensions;
 
 namespace Gitty.Util
 {
-    internal class Numbers
+    internal class NB
     {
-
-        public static int Compare(uint a, uint b)
+        public static long decodeUInt32(byte[] intbuf, int offset)
         {
-            if (a > b)
-                return -1;
-            else if (a < b)
-                return 1;
-            else 
-                return 0;
+            long low = (intbuf[offset + 1] & 0xff);
+            low <<= 8;
+
+            low |= (byte)(intbuf[offset + 2] & 0xff);
+            low <<= 8;
+
+            low |= (byte)(intbuf[offset + 3] & 0xff);
+
+            return ((long)(intbuf[offset] & 0xff) << 24) | low;
         }
 
-        public static int UnsignedRightShift(int n, int s) //n is an integer
+        public static int DecodeInt32(byte[] intbuf, int offset)
         {
-            if (n > 0)
-            {
-                return n >> s;
-            }
-            else
-            {
-                return (n >> s) + (2 << ~s);
-            }
-        }
+            int r = intbuf[offset] << 8;
 
-        public static long UnsignedRightShift(long n, int s)  //Overloaded function where n is a long
-        {
-            if (n > 0)
-            {
-                return n >> s;
-            }
-            else
-            {
-                return (n >> s) + (((long)2) << ~s);
-            }
-        }
-
-        public static uint DecodeUInt(byte[] buffer, int offset)
-        {
-            uint r = buffer[offset];
+            r |= intbuf[offset + 1] & 0xff;
             r <<= 8;
 
-            r |= (byte)(buffer[offset + 1]);
-            r <<= 8;
-
-            r |= (byte)(buffer[offset + 2]);
-            r <<= 8;
-
-            r |= (byte)(buffer[offset + 3]);
-            return r;
+            r |= intbuf[offset + 2] & 0xff;
+            return (r << 8) | (intbuf[offset + 3] & 0xff);
         }
+
+        internal static int CompareUInt32(int a, int b)
+        {
+            int cmp = a.UnsignedRightShift(1) - b.UnsignedRightShift(1);
+
+            if (cmp != 0)
+                return cmp;
+            return (a & 1) - (b & 1);
+        }
+
+
     }
 }

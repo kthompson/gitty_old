@@ -1,0 +1,3 @@
+[submodule "Gitty.Shell/"]
+	path = Gitty.Shell/
+	url = git@github.com:kthompson/gitty.shell.git

@@ -11,7 +11,12 @@ namespace Gitty.Lib
     public abstract class AnyObjectId 
         : IComparable<ObjectId>, IComparable
     {
-        public static readonly int StringLength = Constants.ObjectIdLength * 2;
+        internal class Constants
+        {
+            public static readonly int ObjectIdLength = 20;
+            public static readonly int StringLength = ObjectIdLength * 2;
+        }
+        
         
         public static bool operator ==(AnyObjectId a, AnyObjectId b)
         {
@@ -47,11 +52,11 @@ namespace Gitty.Lib
         }
 
 
-        public uint W1 { get; set; }
-        public uint W2 { get; set; }
-        public uint W3 { get; set; }
-        public uint W4 { get; set; }
-        public uint W5 { get; set; }
+        public int W1 { get; set; }
+        public int W2 { get; set; }
+        public int W3 { get; set; }
+        public int W4 { get; set; }
+        public int W5 { get; set; }
 
         public int GetFirstByte()
         {
@@ -68,23 +73,23 @@ namespace Gitty.Lib
             
             int cmp;
 
-            cmp = Numbers.Compare(W1, other.W1);
+            cmp = NB.CompareUInt32(W1, other.W1);
             if (cmp != 0)
                 return cmp;
 
-            cmp = Numbers.Compare(W2, other.W2);
+            cmp = NB.CompareUInt32(W2, other.W2);
             if (cmp != 0)
                 return cmp;
 
-            cmp = Numbers.Compare(W3, other.W3);
+            cmp = NB.CompareUInt32(W3, other.W3);
             if (cmp != 0)
                 return cmp;
 
-            cmp = Numbers.Compare(W4, other.W4);
+            cmp = NB.CompareUInt32(W4, other.W4);
             if (cmp != 0)
                 return cmp;
 
-            return Numbers.Compare(W5, other.W5);
+            return NB.CompareUInt32(W5, other.W5);
 
         }
 
@@ -104,7 +109,7 @@ namespace Gitty.Lib
 
         private char[] ToHexCharArray()
         {
-            char[] dest = new char[StringLength];
+            char[] dest = new char[Constants.StringLength];
             ToHexCharArray(dest);
             return dest;
         }

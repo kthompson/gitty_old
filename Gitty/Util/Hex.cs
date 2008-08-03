@@ -33,9 +33,9 @@ namespace Gitty.Util
             return __hexCharToValue[c];
         }
 
-        public static uint HexStringToUInt32(byte[] bs, int offset)
+        public static int HexStringToUInt32(byte[] bs, int offset)
         {
-            uint r = __hexCharToValue[bs[offset]];
+            int r = __hexCharToValue[bs[offset]];
             r <<= Nibble; // push one nibble
 
             r |= __hexCharToValue[bs[offset + 1]];
@@ -56,14 +56,14 @@ namespace Gitty.Util
             r |= __hexCharToValue[bs[offset + 6]];
             r <<= Nibble;
 
-            uint last = __hexCharToValue[bs[offset + 7]];
+            int last = __hexCharToValue[bs[offset + 7]];
             if (r < 0 || last < 0)
                 throw new IndexOutOfRangeException();
 
             return (r << Nibble) | last;
         }
 
-        public static void FillHexCharArray(char[] dest, int offset, uint value){
+        public static void FillHexCharArray(char[] dest, int offset, int value){
             int curOffset = offset + 7;
             while (curOffset >= offset && value != 0)
             {

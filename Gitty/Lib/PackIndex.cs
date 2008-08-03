@@ -5,8 +5,7 @@ using System.Text;
 
 namespace Gitty.Lib
 {
-    internal class Constants
+    public class PackIndex
     {
-        public static readonly int ObjectIdLength = 20;
     }
 }

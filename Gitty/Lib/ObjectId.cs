@@ -43,7 +43,7 @@ namespace Gitty.Lib
 
         public static ObjectId FromString(string s)
         {
-            if (s.Length != AnyObjectId.StringLength)
+            if (s.Length != Constants.StringLength)
                 throw new ArgumentException("Invalid id: " + s);
             return FromHexString(ASCIIEncoding.ASCII.GetBytes(s), 0);
         }
@@ -52,21 +52,21 @@ namespace Gitty.Lib
         {
             try
             {
-                uint a = Hex.HexStringToUInt32(bs, offset);
-                uint b = Hex.HexStringToUInt32(bs, offset + 8);
-                uint c = Hex.HexStringToUInt32(bs, offset + 16);
-                uint d = Hex.HexStringToUInt32(bs, offset + 24);
-                uint e = Hex.HexStringToUInt32(bs, offset + 32);
+                int a = Hex.HexStringToUInt32(bs, offset);
+                int b = Hex.HexStringToUInt32(bs, offset + 8);
+                int c = Hex.HexStringToUInt32(bs, offset + 16);
+                int d = Hex.HexStringToUInt32(bs, offset + 24);
+                int e = Hex.HexStringToUInt32(bs, offset + 32);
                 return new ObjectId(a, b, c, d, e);
             }
             catch (IndexOutOfRangeException)
             {
-                string s = new string(Encoding.ASCII.GetChars(bs, offset, AnyObjectId.StringLength));
+                string s = new string(Encoding.ASCII.GetChars(bs, offset, Constants.StringLength));
                 throw new ArgumentException("Invalid id: " + s, "bs");
             }
         }
 
-        protected ObjectId(uint new_1, uint new_2, uint new_3, uint new_4, uint new_5)
+        protected ObjectId(int new_1, int new_2, int new_3, int new_4, int new_5)
         {
             this.W1 = new_1;
             this.W2 = new_2;
@@ -98,19 +98,19 @@ namespace Gitty.Lib
 
         public static ObjectId FromRaw(byte[] buffer, int offset)
         {
-            uint a = Numbers.DecodeUInt(buffer, offset);
-            uint b = Numbers.DecodeUInt(buffer, offset + 4);
-            uint c = Numbers.DecodeUInt(buffer, offset + 8);
-            uint d = Numbers.DecodeUInt(buffer, offset + 12);
-            uint e = Numbers.DecodeUInt(buffer, offset + 16);
+            int a = NB.DecodeInt32(buffer, offset);
+            int b = NB.DecodeInt32(buffer, offset + 4);
+            int c = NB.DecodeInt32(buffer, offset + 8);
+            int d = NB.DecodeInt32(buffer, offset + 12);
+            int e = NB.DecodeInt32(buffer, offset + 16);
             return new ObjectId(a, b, c, d, e);
         }
-        public static ObjectId FromRaw(uint[] intbuffer)
+        public static ObjectId FromRaw(int[] intbuffer)
         {
             return FromRaw(intbuffer, 0);
         }
 
-        public static ObjectId FromRaw(uint[] intbuffer, int offset)
+        public static ObjectId FromRaw(int[] intbuffer, int offset)
         {
             return new ObjectId(intbuffer[offset], intbuffer[offset + 1], intbuffer[offset + 2], intbuffer[offset + 3], intbuffer[offset + 4]);
         }

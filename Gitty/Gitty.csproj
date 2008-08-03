@@ -52,10 +52,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CompleteAttribute.cs" />
+    <Compile Include="Extensions\IntExtensions.cs" />
     <Compile Include="Git.cs" />
     <Compile Include="Lib\AnyObjectId.cs" />
     <Compile Include="Lib\Commit.cs" />
-    <Compile Include="Lib\Constants.cs" />
     <Compile Include="Lib\CoreConfig.cs" />
     <Compile Include="Lib\GitException.cs" />
     <Compile Include="Lib\Index.cs" />
@@ -65,6 +65,7 @@
     <Compile Include="Lib\ObjectType.cs" />
     <Compile Include="Lib\PackedObjectLoader.cs" />
     <Compile Include="Lib\PackFile.cs" />
+    <Compile Include="Lib\PackIndex.cs" />
     <Compile Include="Lib\RefDatabase.cs" />
     <Compile Include="Lib\Repository.cs" />
     <Compile Include="Lib\RepositoryConfig.cs" />

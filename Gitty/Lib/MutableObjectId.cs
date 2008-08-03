@@ -6,6 +6,7 @@ using Gitty.Util;
 
 namespace Gitty.Lib
 {
+    [Complete]
     public class MutableObjectId : AnyObjectId
     {
 
@@ -24,12 +25,12 @@ namespace Gitty.Lib
             this.W5 = src.W5;
         }
 
-        public void fromRaw(byte[] bs)
+        public void FromRaw(byte[] bs)
         {
-            fromRaw(bs, 0);
+            FromRaw(bs, 0);
         }
 
-        public void fromRaw(byte[] bs, int p)
+        public void FromRaw(byte[] bs, int p)
         {
             W1 = NB.DecodeInt32(bs, p);
             W2 = NB.DecodeInt32(bs, p + 4);
@@ -38,12 +39,12 @@ namespace Gitty.Lib
             W5 = NB.DecodeInt32(bs, p + 16);
         }
 
-        public void fromRaw(int[] ints)
+        public void FromRaw(int[] ints)
         {
-            fromRaw(ints, 0);
+            FromRaw(ints, 0);
         }
 
-        public void fromRaw(int[] ints, int p)
+        public void FromRaw(int[] ints, int p)
         {
             W1 = ints[p];
             W2 = ints[p + 1];
@@ -52,19 +53,19 @@ namespace Gitty.Lib
             W5 = ints[p + 4];
         }
 
-        public void fromString(byte[] buf, int offset)
+        public void FromString(byte[] buf, int offset)
         {
-            fromHexString(buf, offset);
+            FromHexString(buf, offset);
         }
 
-        public void fromString(String str)
+        public void FromString(String str)
         {
             if (str.Length != Constants.StringLength)
                 throw new ArgumentException("Invalid id: " + str);
-            fromHexString(Encoding.ASCII.GetBytes(str), 0);
+            FromHexString(Encoding.ASCII.GetBytes(str), 0);
         }
 
-        private void fromHexString(byte[] bs, int p)
+        private void FromHexString(byte[] bs, int p)
         {
             try
             {
@@ -90,7 +91,7 @@ namespace Gitty.Lib
 
         public override ObjectId ToObjectId()
         {
-            throw new NotImplementedException();
+            return new ObjectId(this);
         }
     }
 }

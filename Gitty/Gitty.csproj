@@ -54,13 +54,16 @@
     <Compile Include="CompleteAttribute.cs" />
     <Compile Include="Extensions\IntExtensions.cs" />
     <Compile Include="Git.cs" />
+    <Compile Include="Lib\AbstractIndexTreeVisitor.cs" />
     <Compile Include="Lib\AnyObjectId.cs" />
     <Compile Include="Lib\Commit.cs" />
     <Compile Include="Lib\CoreConfig.cs" />
     <Compile Include="Lib\FileTreeEntry.cs" />
     <Compile Include="Lib\ForceModified.cs" />
     <Compile Include="Lib\GitException.cs" />
+    <Compile Include="Lib\GitIndex.cs" />
     <Compile Include="Lib\Index.cs" />
+    <Compile Include="Lib\IndexTreeVisitor.cs" />
     <Compile Include="Lib\MutableObjectId.cs" />
     <Compile Include="Lib\ObjectId.cs" />
     <Compile Include="Lib\ObjectLoader.cs" />

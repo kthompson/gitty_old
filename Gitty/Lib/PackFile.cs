@@ -23,5 +23,15 @@ namespace Gitty.Lib
         {
             throw new NotImplementedException();
         }
+
+        internal void CopyRawData(PackedObjectLoader packedObjectLoader, Stream o, byte[] buf)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal bool SupportsFastCopyRawData()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

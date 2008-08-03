@@ -45,12 +45,12 @@ namespace Gitty.Lib
                 return _id != null;
             }
         }
-        public abstract ObjectType ObjectType{get;}
-        public abstract long Size { get; }
-        public abstract byte[] Bytes{get;}
-        public abstract byte[] CachedBytes { get; }
-        public abstract int RawType { get; }
-        public abstract long RawSize { get; }
+        public abstract ObjectType ObjectType { get; protected set; }
+        public abstract long Size { get; protected set; }
+        public abstract byte[] Bytes { get; protected set; }
+        public abstract byte[] CachedBytes { get; protected set; }
+        public abstract int RawType { get; protected set; }
+        public abstract long RawSize { get; protected set; }
         
     }
 }

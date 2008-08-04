@@ -156,6 +156,13 @@ namespace Gitty.Lib
         }
 
         public DirectoryInfo Directory { get; private set; }
+        public DirectoryInfo WorkingDirectory
+        {
+            get
+            {
+                return this.Directory.Parent;
+            }
+        }
         public RepositoryConfig Config { get; private set; }
         #endregion
 
@@ -275,5 +282,15 @@ namespace Gitty.Lib
             throw new NotImplementedException();
         }
 
+
+        internal Tree MapTree(string p)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal GitIndex GetIndex()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

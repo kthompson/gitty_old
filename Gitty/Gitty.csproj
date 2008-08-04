@@ -63,7 +63,9 @@
     <Compile Include="Lib\GitException.cs" />
     <Compile Include="Lib\GitIndex.cs" />
     <Compile Include="Lib\Index.cs" />
+    <Compile Include="Lib\IndexDiff.cs" />
     <Compile Include="Lib\IndexTreeVisitor.cs" />
+    <Compile Include="Lib\IndexTreeWalker.cs" />
     <Compile Include="Lib\MutableObjectId.cs" />
     <Compile Include="Lib\ObjectId.cs" />
     <Compile Include="Lib\ObjectLoader.cs" />
@@ -74,6 +76,7 @@
     <Compile Include="Lib\PackIndexV1.cs" />
     <Compile Include="Lib\PackIndexV2.cs" />
     <Compile Include="Lib\PackIndexWriter.cs" />
+    <Compile Include="Lib\Ref.cs" />
     <Compile Include="Lib\RefDatabase.cs" />
     <Compile Include="Lib\Repository.cs" />
     <Compile Include="Lib\RepositoryConfig.cs" />

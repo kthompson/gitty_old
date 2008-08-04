@@ -9,25 +9,49 @@ namespace Gitty.Lib
     [Complete]
     public class AbstractIndexTreeVisitor : IndexTreeVisitor
     {
-        public virtual void FinishVisitTree(Tree tree, Tree auxTree, String curDir)
+
+        public delegate void FinishVisitTreeDelegate(Tree tree, Tree auxTree, String curDir);
+        public FinishVisitTreeDelegate FinishVisitTree { get; set; }
+
+        public delegate void FinishVisitTreeByIndexDelegate(Tree tree, int i, String curDir);
+        public FinishVisitTreeByIndexDelegate FinishVisitTreeByIndex { get; set; }
+        
+        public delegate void VisitEntryDelegate(TreeEntry treeEntry, GitIndex.Entry indexEntry, FileInfo file);
+        public VisitEntryDelegate VisitEntry { get; set; }
+
+        public delegate void VisitEntryAuxDelegate(TreeEntry treeEntry, TreeEntry auxEntry, GitIndex.Entry indexEntry, FileInfo file);
+        public VisitEntryAuxDelegate VisitEntryAux { get; set; }
+
+        #region IndexTreeVisitor Members
+
+        void IndexTreeVisitor.VisitEntry(TreeEntry treeEntry, GitIndex.Entry indexEntry, FileInfo file)
         {
-            // Empty
+            VisitEntryDelegate handler = this.VisitEntry;
+            if(handler!=null)
+                handler(treeEntry, indexEntry, file);            
         }
 
-        public virtual void FinishVisitTree(Tree tree, int i, String curDir)
+        void IndexTreeVisitor.VisitEntry(TreeEntry treeEntry, TreeEntry auxEntry, GitIndex.Entry indexEntry, FileInfo file)
         {
-            // Empty
+            VisitEntryAuxDelegate handler = this.VisitEntryAux;
+            if (handler != null)
+                handler(treeEntry,auxEntry, indexEntry, file);    
         }
 
-        public virtual void VisitEntry(TreeEntry treeEntry, GitIndex.Entry indexEntry, FileInfo file)
+        void IndexTreeVisitor.FinishVisitTree(Tree tree, Tree auxTree, string curDir)
         {
-            // Empty
+            FinishVisitTreeDelegate handler = this.FinishVisitTree;
+            if (handler != null)
+                handler(tree, auxTree, curDir);
         }
 
-        public virtual void VisitEntry(TreeEntry treeEntry, TreeEntry auxEntry,
-                GitIndex.Entry indexEntry, FileInfo file)
+        void IndexTreeVisitor.FinishVisitTree(Tree tree, int i, string curDir)
         {
-            // Empty
+            FinishVisitTreeByIndexDelegate handler = this.FinishVisitTreeByIndex;
+            if (handler != null)
+                handler(tree, i, curDir);
         }
+
+        #endregion
     }
 }

@@ -2,32 +2,26 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 
 namespace Gitty.Lib
 {
-    public abstract class TreeEntry : IComparable
+    public class IndexTreeWalker
     {
-        #region IComparable Members
 
-        public int CompareTo(object obj)
+        public IndexTreeWalker(GitIndex index, Tree tree, DirectoryInfo root, IndexTreeVisitor visitor)
         {
             throw new NotImplementedException();
         }
 
-        #endregion
-
-        public void SetModified()
+        public IndexTreeWalker(GitIndex index, Tree mainTree, Tree newTree, DirectoryInfo root, IndexTreeVisitor visitor)
         {
             throw new NotImplementedException();
         }
 
-        public string Name { get; protected set; }
-        public ObjectId Id { get; private set; }
-        public string GetFullName()
+        public void Walk()
         {
             throw new NotImplementedException();
         }
-
-
     }
 }

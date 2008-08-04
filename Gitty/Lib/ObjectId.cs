@@ -40,6 +40,10 @@ namespace Gitty.Lib
         {
             return i != null ? i.ToString() : ZeroIdString;
         }
+        public static ObjectId FromString(byte[] bs, int offset)
+        {
+            return FromHexString(bs, offset);
+        }
 
         public static ObjectId FromString(string s)
         {

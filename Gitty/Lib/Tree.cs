@@ -7,6 +7,11 @@ namespace Gitty.Lib
 {
     public class Tree : TreeEntry, Treeish
     {
+        public Tree(Repository repo, ObjectId myId, byte[] raw)
+        {
+            throw new NotImplementedException();
+        }
+
         #region Treeish Members
 
         public ObjectId GetTreeId()

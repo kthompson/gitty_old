@@ -52,6 +52,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CompleteAttribute.cs" />
+    <Compile Include="Exceptions\IncorrectObjectTypeException.cs" />
+    <Compile Include="Exceptions\RevisionSyntaxException.cs" />
     <Compile Include="Extensions\IntExtensions.cs" />
     <Compile Include="Git.cs" />
     <Compile Include="Lib\AbstractIndexTreeVisitor.cs" />
@@ -62,7 +64,6 @@
     <Compile Include="Lib\ForceModified.cs" />
     <Compile Include="Lib\GitException.cs" />
     <Compile Include="Lib\GitIndex.cs" />
-    <Compile Include="Lib\Index.cs" />
     <Compile Include="Lib\IndexDiff.cs" />
     <Compile Include="Lib\IndexTreeVisitor.cs" />
     <Compile Include="Lib\IndexTreeWalker.cs" />
@@ -70,17 +71,21 @@
     <Compile Include="Lib\ObjectId.cs" />
     <Compile Include="Lib\ObjectLoader.cs" />
     <Compile Include="Lib\ObjectType.cs" />
+    <Compile Include="Lib\ObjectWriter.cs" />
     <Compile Include="Lib\PackedObjectLoader.cs" />
     <Compile Include="Lib\PackFile.cs" />
     <Compile Include="Lib\PackIndex.cs" />
     <Compile Include="Lib\PackIndexV1.cs" />
     <Compile Include="Lib\PackIndexV2.cs" />
     <Compile Include="Lib\PackIndexWriter.cs" />
+    <Compile Include="Lib\PersonIdent.cs" />
     <Compile Include="Lib\Ref.cs" />
     <Compile Include="Lib\RefDatabase.cs" />
+    <Compile Include="Lib\RefUpdate.cs" />
     <Compile Include="Lib\Repository.cs" />
     <Compile Include="Lib\RepositoryConfig.cs" />
     <Compile Include="Lib\SymlinkTreeEntry.cs" />
+    <Compile Include="Lib\Tag.cs" />
     <Compile Include="Lib\Tree.cs" />
     <Compile Include="Lib\TreeEntry.cs" />
     <Compile Include="Lib\Treeish.cs" />

@@ -23,5 +23,15 @@ namespace Gitty.Lib
         {
             throw new NotImplementedException();
         }
+
+        internal RefUpdate NewUpdate(string refName)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal Ref ReadRef(string revstr)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

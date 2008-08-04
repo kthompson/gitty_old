@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using Gitty.Util;
+using Gitty.Exceptions;
 
 namespace Gitty.Lib
 {
@@ -19,7 +20,7 @@ namespace Gitty.Lib
 
         private RefDatabase _refs;
         private List<PackFile> _packs ;
-        private Index _index;
+        private GitIndex _index;
 
         [Complete]
         public Repository(DirectoryInfo gitDirectory)
@@ -192,10 +193,27 @@ namespace Gitty.Lib
             {
                 do
                 {
-                    ObjectLoader ol = _packs[--k].Get(windowCursor, id);
-                    if (ol != null)
-                        return ol;
-
+                    try
+                    {
+                        ObjectLoader ol = _packs[--k].Get(windowCursor, id);
+                        if (ol != null)
+                            return ol;
+                    }
+                    catch (IOException)
+                    {
+                        try
+                        {
+                            windowCursor.Release();
+                            GC.Collect();
+                            ObjectLoader ol = _packs[k].Get(windowCursor, id);
+                            if (ol != null)
+                                return ol;
+                        }
+                        catch (IOException)
+                        {
+                            
+                        }
+                    }
                 } while (k > 0);
             }
             try
@@ -243,10 +261,16 @@ namespace Gitty.Lib
 
         private Commit MapCommit(ObjectId id)
         {
-            throw new NotImplementedException();
+            ObjectLoader or = OpenObject(id);
+            if (or == null)
+                return null;
+            byte[] raw = or.Bytes;
+            if (ObjectType.Commit == or.ObjectType)
+                return new Commit(this, id, raw);
+            throw new IncorrectObjectTypeException(id, ObjectType.Commit);
         }
 
-        public object MapCommit(ObjectId id, string refName)
+        public object MapObject(ObjectId id, string refName)
         {
             ObjectLoader or = OpenObject(id);
             byte[] raw = or.Bytes;
@@ -262,35 +286,305 @@ namespace Gitty.Lib
 
         }
 
-        private object MakeTag(ObjectId id, string refName, byte[] raw)
-        {
-            throw new NotImplementedException();
-        }
-
+        
         private object MakeCommit(ObjectId id, byte[] raw)
         {
-            throw new NotImplementedException();
+            return new Commit(this, id, raw);
         }
 
-        private object MakeTree(ObjectId id, byte[] raw)
+     
+
+        
+
+        public Tree MapTree(string revstr)
         {
-            throw new NotImplementedException();
+            ObjectId id = Resolve(revstr);
+            return (id != null) ? MapTree(id) : null;
         }
 
-        private ObjectId Resolve(string resolveString)
+        public Tree MapTree(ObjectId id)
         {
-            throw new NotImplementedException();
+            ObjectLoader or = OpenObject(id);
+            if (or == null)
+                return null;
+            byte[] raw = or.Bytes;
+            if (ObjectType.Tree == or.ObjectType)
+            {
+                return new Tree(this, id, raw);
+            }
+            if (ObjectType.Commit == or.ObjectType)
+                return MapTree(ObjectId.FromString(raw, 5));
+            throw new IncorrectObjectTypeException(id, ObjectType.Tree);
+        }
+
+        private Tag MakeTag(ObjectId id, string refName, byte[] raw)
+        {
+            return new Tag(this, id, refName, raw);
+        }
+
+        private Tree MakeTree(ObjectId id, byte[] raw)
+        {
+            return new Tree(this, id, raw);
+        }
+
+        public Tag MapTag(String revstr)
+        {
+            ObjectId id = Resolve(revstr);
+            return id != null ? MapTag(revstr, id) : null;
+        }
+
+        public Tag MapTag(String refName, ObjectId id)
+        {
+            ObjectLoader or = OpenObject(id);
+            if (or == null)
+                return null;
+            byte[] raw = or.Bytes;
+            if (ObjectType.Tag == or.ObjectType)
+                return new Tag(this, id, refName, raw);
+            return new Tag(this, id, refName, null);
+        }
+
+        public RefUpdate UpdateRef(String refName)
+        {
+            return _refs.NewUpdate(refName);
         }
 
 
-        internal Tree MapTree(string p)
+        public ObjectId Resolve(string revstr)
         {
-            throw new NotImplementedException();
+            char[] rev = revstr.ToCharArray();
+            Object oref = null;
+            ObjectId refId = null;
+            for (int i = 0; i < rev.Length; ++i)
+            {
+                switch (rev[i])
+                {
+                    case '^':
+                        if (refId == null)
+                        {
+                            String refstr = new String(rev, 0, i);
+                            refId = ResolveSimple(refstr);
+                            if (refId == null)
+                                return null;
+                        }
+                        if (i + 1 < rev.Length)
+                        {
+                            switch (rev[i + 1])
+                            {
+                                case '0':
+                                case '1':
+                                case '2':
+                                case '3':
+                                case '4':
+                                case '5':
+                                case '6':
+                                case '7':
+                                case '8':
+                                case '9':
+                                    int j;
+                                    oref = MapObject(refId, null);
+                                    if (!(oref is Commit))
+                                        throw new IncorrectObjectTypeException(refId, ObjectType.Commit);
+                                    for (j = i + 1; j < rev.Length; ++j)
+                                    {
+                                        if (!Char.IsDigit(rev[j]))
+                                            break;
+                                    }
+                                    String parentnum = new String(rev, i + 1, j - i - 1);
+                                    int pnum = int.Parse(parentnum);
+                                    if (pnum != 0)
+                                        refId = ((Commit)oref).ParentIds[pnum - 1];
+                                    i = j - 1;
+                                    break;
+                                case '{':
+                                    int k;
+                                    String item = null;
+                                    for (k = i + 2; k < rev.Length; ++k)
+                                    {
+                                        if (rev[k] == '}')
+                                        {
+                                            item = new String(rev, i + 2, k - i - 2);
+                                            break;
+                                        }
+                                    }
+                                    i = k;
+                                    if (item != null)
+                                        if (item.Equals("tree"))
+                                        {
+                                            oref = MapObject(refId, null);
+                                            while (oref is Tag)
+                                            {
+                                                Tag t = (Tag)oref;
+                                                refId = t.Id;
+                                                oref = MapObject(refId, null);
+                                            }
+                                            if (oref is Treeish)
+                                                refId = ((Treeish)oref).GetTreeId();
+                                            else
+                                                throw new IncorrectObjectTypeException(refId, ObjectType.Tree);
+                                        }
+                                        else if (item.Equals("commit"))
+                                        {
+                                            oref = MapObject(refId, null);
+                                            while (oref is Tag)
+                                            {
+                                                Tag t = (Tag)oref;
+                                                refId = t.Id;
+                                                oref = MapObject(refId, null);
+                                            }
+                                            if (!(oref is Commit))
+                                                throw new IncorrectObjectTypeException(refId, ObjectType.Commit);
+                                        }
+                                        else if (item.Equals("blob"))
+                                        {
+                                            oref = MapObject(refId, null);
+                                            while (oref is Tag)
+                                            {
+                                                Tag t = (Tag)oref;
+                                                refId = t.Id;
+                                                oref = MapObject(refId, null);
+                                            }
+                                            if (!(oref is byte[]))
+                                                throw new IncorrectObjectTypeException(refId, ObjectType.Commit);
+                                        }
+                                        else if (item.Equals(""))
+                                        {
+                                            oref = MapObject(refId, null);
+                                            if (oref is Tag)
+                                                refId = ((Tag)oref).Id;
+                                            else
+                                            {
+                                                // self
+                                            }
+                                        }
+                                        else
+                                            throw new RevisionSyntaxException(revstr);
+                                    else
+                                        throw new RevisionSyntaxException(revstr);
+                                    break;
+                                default:
+                                    oref = MapObject(refId, null);
+                                    if (oref is Commit)
+                                        refId = ((Commit)oref).ParentIds[0];
+                                    else
+                                        throw new IncorrectObjectTypeException(refId, ObjectType.Commit);
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            oref = MapObject(refId, null);
+                            if (oref is Commit)
+                                refId = ((Commit)oref).ParentIds[0];
+                            else
+                                throw new IncorrectObjectTypeException(refId, ObjectType.Commit);
+                        }
+                        break;
+                    case '~':
+                        if (oref == null)
+                        {
+                            String refstr = new String(rev, 0, i);
+                            refId = ResolveSimple(refstr);
+                            oref = MapCommit(refId);
+                        }
+                        int l;
+                        for (l = i + 1; l < rev.Length; ++l)
+                        {
+                            if (!Char.IsDigit(rev[l]))
+                                break;
+                        }
+                        String distnum = new String(rev, i + 1, l - i - 1);
+                        int dist = int.Parse(distnum);
+                        while (dist >= 0)
+                        {
+                            refId = ((Commit)oref).ParentIds[0];
+                            oref = MapCommit(refId);
+                            --dist;
+                        }
+                        i = l - 1;
+                        break;
+                    case '@':
+                        int m;
+                        String time = null;
+                        for (m = i + 2; m < rev.Length; ++m)
+                        {
+                            if (rev[m] == '}')
+                            {
+                                time = new String(rev, i + 2, m - i - 2);
+                                break;
+                            }
+                        }
+                        if (time != null)
+                            throw new RevisionSyntaxException("reflogs not yet supported by revision parser yet", revstr);
+                        i = m - 1;
+                        break;
+                    default:
+                        if (refId != null)
+                            throw new RevisionSyntaxException(revstr);
+                        break;
+                }
+            }
+            if (refId == null)
+                refId = ResolveSimple(revstr);
+            return refId;
         }
 
-        internal GitIndex GetIndex()
+        private ObjectId ResolveSimple(string revstr)
         {
-            throw new NotImplementedException();
+            if (ObjectId.IsId(revstr))
+                return ObjectId.FromString(revstr);
+            Ref r = _refs.ReadRef(revstr);
+            return r != null ? r.ObjectId : null;
+        }
+
+        public void Close()
+        {
+            ClosePacks();
+        }
+
+        private void ClosePacks()
+        {
+            foreach (PackFile pack in _packs)
+            {
+                pack.Close();
+            }
+            
+            _packs = new List<PackFile>();
+        }
+
+        public void OpenPack(FileInfo pack, FileInfo idx)
+        {
+            String p = pack.Name;
+            String i = idx.Name;
+            if (p.Length != 50 || !p.StartsWith("pack-") || !p.EndsWith(".pack"))
+                throw new ArgumentException("Not a valid pack " + pack);
+            if (i.Length != 49 || !i.StartsWith("pack-") || !i.EndsWith(".idx"))
+                throw new ArgumentException("Not a valid pack " + idx);
+            if (!p.Substring(0, 45).Equals(i.Substring(0, 45)))
+                throw new ArgumentException("Pack " + pack
+                        + "does not match index " + idx);
+
+            _packs.Add(new PackFile(this, idx, pack));
+            
+        }
+
+        public void WriteSymref(String name, String target)
+        {
+            _refs.Link(name, target);
+        }
+
+        public GitIndex GetIndex()
+        {
+            if (_index == null)
+            {
+                _index = new GitIndex(this);
+                _index.Read();
+            }
+            else
+            {
+                _index.RereadIfNecessary();
+            }
+            return _index;
         }
     }
 }

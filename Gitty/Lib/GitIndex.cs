@@ -7,6 +7,10 @@ namespace Gitty.Lib
 {
     public class GitIndex
     {
+        public GitIndex(Repository db)
+        {
+
+        }
 
         public Repository Repository { get; private set; }
 
@@ -18,6 +22,16 @@ namespace Gitty.Lib
             {
                 throw new NotImplementedException();
             }
+        }
+
+        internal void Read()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void RereadIfNecessary()
+        {
+            throw new NotImplementedException();
         }
     }
 }

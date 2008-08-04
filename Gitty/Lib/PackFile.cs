@@ -33,5 +33,10 @@ namespace Gitty.Lib
         {
             throw new NotImplementedException();
         }
+
+        internal void Close()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

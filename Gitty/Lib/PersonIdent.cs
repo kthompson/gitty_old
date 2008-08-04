@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Gitty.Lib
 {
-    public class Index
+    public class PersonIdent
     {
     }
 }

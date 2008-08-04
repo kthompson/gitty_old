@@ -5,9 +5,14 @@ using System.Text;
 
 namespace Gitty.Lib
 {
-    public class WindowCursor
+    public class ObjectWriter
     {
-        internal void Release()
+        public ObjectWriter(Repository repo)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal ObjectId WriteTag(Tag tag)
         {
             throw new NotImplementedException();
         }

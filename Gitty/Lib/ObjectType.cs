@@ -7,6 +7,8 @@ namespace Gitty.Lib
 {
     public enum ObjectType
     {
+        Bad = -1, 
+        Extension = 0,
         Commit = 1,
         Tree = 2,
         Blob = 3,

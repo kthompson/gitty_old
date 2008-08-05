@@ -60,6 +60,7 @@
     <Compile Include="Lib\AnyObjectId.cs" />
     <Compile Include="Lib\Commit.cs" />
     <Compile Include="Lib\CoreConfig.cs" />
+    <Compile Include="Lib\FileMode.cs" />
     <Compile Include="Lib\FileTreeEntry.cs" />
     <Compile Include="Lib\ForceModified.cs" />
     <Compile Include="Lib\GitException.cs" />

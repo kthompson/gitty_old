@@ -70,6 +70,7 @@
     <Compile Include="Lib\IndexTreeWalker.cs" />
     <Compile Include="Lib\MutableObjectId.cs" />
     <Compile Include="Lib\ObjectId.cs" />
+    <Compile Include="Lib\ObjectIdMap.cs" />
     <Compile Include="Lib\ObjectLoader.cs" />
     <Compile Include="Lib\ObjectType.cs" />
     <Compile Include="Lib\ObjectWriter.cs" />

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Gitty.Util;
 using System.IO;
+using Gitty.Extensions;
 
 namespace Gitty.Lib
 {
@@ -44,6 +45,23 @@ namespace Gitty.Lib
                 return false;
 
             return (this == id);
+        }
+
+        public void CopyTo(StreamWriter w)
+        {
+            w.Write(ToHexByteArray());
+        }
+
+        private byte[] ToHexByteArray()
+        {
+            byte[] dst = new byte[Constants.StringLength];
+
+            Hex.FillHexByteArray(dst, 0, W1);
+            Hex.FillHexByteArray(dst, 8, W2);
+            Hex.FillHexByteArray(dst, 16, W3);
+            Hex.FillHexByteArray(dst, 24, W4);
+            Hex.FillHexByteArray(dst, 32, W5);
+            return dst;
         }
 
         public override int GetHashCode()

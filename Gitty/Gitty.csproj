@@ -52,6 +52,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CompleteAttribute.cs" />
+    <Compile Include="Exceptions\FileLockedException.cs" />
     <Compile Include="Exceptions\IncorrectObjectTypeException.cs" />
     <Compile Include="Exceptions\ObjectWritingException.cs" />
     <Compile Include="Exceptions\RevisionSyntaxException.cs" />
@@ -69,6 +70,7 @@
     <Compile Include="Lib\IndexDiff.cs" />
     <Compile Include="Lib\IndexTreeVisitor.cs" />
     <Compile Include="Lib\IndexTreeWalker.cs" />
+    <Compile Include="Lib\LockFile.cs" />
     <Compile Include="Lib\MutableObjectId.cs" />
     <Compile Include="Lib\ObjectId.cs" />
     <Compile Include="Lib\ObjectIdMap.cs" />
@@ -97,7 +99,6 @@
     <Compile Include="Lib\UnpackedObjectLoader.cs" />
     <Compile Include="Lib\WindowCursor.cs" />
     <Compile Include="Util\Collections.cs" />
-    <Compile Include="Util\FileLock.cs" />
     <Compile Include="Util\Hex.cs" />
     <Compile Include="Util\NestedDictionary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

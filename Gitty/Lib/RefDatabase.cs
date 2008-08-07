@@ -82,26 +82,20 @@ namespace Gitty.Lib
 
         public void Link(string name, string target)
         {
-            byte[] content = Encoding.UTF8.GetBytes("ref: " + target + "\n");
-            FileInfo file = FileForRef(name);
-            FileStream lockFile = FileLock.ObtainLock(file.FullName);
-            if (lockFile != null)
-            {
-                try
-                {
-                    lockFile.Write(content, 0, content.Length);
-                }
-                catch (IOException ioe)
-                {
-                    throw new ObjectWritingException("Unable to write " + name, ioe);
-                }
-            }
-            else
-            {
+            byte[] content = Constants.Encoding.GetBytes("ref: " + target + "\n");
+            LockFile lck = new LockFile(FileForRef(name));
+            if (!lck.Lock())
                 throw new ObjectWritingException("Unable to lock " + name);
+            try
+            {
+                lck.Write(content);
             }
-
-            FileLock.ReleaseLock(file.FullName);
+            catch (IOException ioe)
+            {
+                throw new ObjectWritingException("Unable to write " + name, ioe);
+            }
+            if (!lck.Commit())
+                throw new ObjectWritingException("Unable to write " + name);
         }
 
 

@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="CompleteAttribute.cs" />
     <Compile Include="Exceptions\IncorrectObjectTypeException.cs" />
+    <Compile Include="Exceptions\ObjectWritingException.cs" />
     <Compile Include="Exceptions\RevisionSyntaxException.cs" />
     <Compile Include="Extensions\IntExtensions.cs" />
     <Compile Include="Git.cs" />
@@ -96,6 +97,7 @@
     <Compile Include="Lib\UnpackedObjectLoader.cs" />
     <Compile Include="Lib\WindowCursor.cs" />
     <Compile Include="Util\Collections.cs" />
+    <Compile Include="Util\FileLock.cs" />
     <Compile Include="Util\Hex.cs" />
     <Compile Include="Util\NestedDictionary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

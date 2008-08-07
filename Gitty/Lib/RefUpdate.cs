@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 
 namespace Gitty.Lib
 {
@@ -19,7 +20,10 @@ namespace Gitty.Lib
             IOFailure,
         }
 
+        public RefUpdate(RefDatabase r, Ref refObject, FileInfo f)
+        {
 
+        }
 
         internal void SetNewObjectId(ObjectId id)
         {

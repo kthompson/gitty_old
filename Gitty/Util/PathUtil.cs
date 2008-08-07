@@ -20,5 +20,18 @@ namespace Gitty.Util
             }
             return path;
         }
+
+
+        public static DirectoryInfo CombineDirectoryPath(DirectoryInfo path, string subdir)
+        {
+            return new DirectoryInfo(Path.Combine(path.FullName, subdir));
+        }
+
+        public static FileInfo CombineFilePath(DirectoryInfo path, string subdir)
+        {
+            return new FileInfo(Path.Combine(path.FullName, subdir));
+        }
+
+       
     }
 }

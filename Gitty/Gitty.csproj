@@ -89,6 +89,7 @@
     <Compile Include="Lib\RefUpdate.cs" />
     <Compile Include="Lib\Repository.cs" />
     <Compile Include="Lib\RepositoryConfig.cs" />
+    <Compile Include="Lib\RepositoryState.cs" />
     <Compile Include="Lib\SymlinkTreeEntry.cs" />
     <Compile Include="Lib\Tag.cs" />
     <Compile Include="Lib\Tree.cs" />

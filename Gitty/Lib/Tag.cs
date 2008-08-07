@@ -6,7 +6,7 @@ using System.Text;
 namespace Gitty.Lib
 {
   public class Tag {
-      private class Constants
+      public class Constants
       {
           public static readonly string TagsPrefix = "refs/tags";
       }

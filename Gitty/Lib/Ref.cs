@@ -10,6 +10,7 @@ namespace Gitty.Lib
     {
         public sealed class Storage
         {
+            public static readonly Storage New = new Storage(true, false);
             public static readonly Storage Loose = new Storage(true, false);
             public static readonly Storage Packed = new Storage(false, true);
             public static readonly Storage LoosePacked = new Storage(true, true);

@@ -14,6 +14,7 @@ namespace Gitty.Lib
         public sealed class Constants
         {
             public static readonly string HeadsPrefix = "refs/heads";
+            public static readonly string RemotesPrefix = "refs/remotes";
             public static readonly string Head = "HEAD";
             public static readonly string Master = "master";
         }

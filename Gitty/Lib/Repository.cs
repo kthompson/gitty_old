@@ -20,7 +20,6 @@ namespace Gitty.Lib
 
         private RefDatabase _refs;
         private List<PackFile> _packs ;
-        private GitIndex _index;
 
         [Complete]
         public Repository(DirectoryInfo gitDirectory)
@@ -573,18 +572,22 @@ namespace Gitty.Lib
             _refs.Link(name, target);
         }
 
-        public GitIndex GetIndex()
+        private GitIndex _index;
+        public GitIndex Index
         {
-            if (_index == null)
+            get
             {
-                _index = new GitIndex(this);
-                _index.Read();
+                if (_index == null)
+                {
+                    _index = new GitIndex(this);
+                    _index.Read();
+                }
+                else
+                {
+                    _index.RereadIfNecessary();
+                }
+                return _index;
             }
-            else
-            {
-                _index.RereadIfNecessary();
-            }
-            return _index;
         }
     }
 }

@@ -15,7 +15,7 @@ namespace Gitty.Lib
         public IndexDiff(Repository repository)
         {
             this._tree = repository.MapTree("HEAD");
-            this._index = repository.GetIndex();
+            this._index = repository.Index;
         }
 
         public IndexDiff(Tree tree, GitIndex index)

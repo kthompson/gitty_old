@@ -15,37 +15,31 @@ namespace Gitty.Lib
         public override ObjectType ObjectType
         {
             get { throw new NotImplementedException(); }
-            protected set { throw new NotImplementedException(); }
         }
 
         public override long Size
         {
             get { throw new NotImplementedException(); }
-            protected set { throw new NotImplementedException(); }
         }
 
         public override byte[] Bytes
         {
             get { throw new NotImplementedException(); }
-            protected set { throw new NotImplementedException(); }
         }
 
         public override byte[] CachedBytes
         {
             get { throw new NotImplementedException(); }
-            protected set { throw new NotImplementedException(); }
         }
 
-        public override int RawType
+        public override ObjectType RawType
         {
             get { throw new NotImplementedException(); }
-            protected set { throw new NotImplementedException(); }
         }
 
         public override long RawSize
         {
             get { throw new NotImplementedException(); }
-            protected set { throw new NotImplementedException(); }
         }
     }
 }

@@ -38,5 +38,20 @@ namespace Gitty.Lib
         {
             throw new NotImplementedException();
         }
+
+        internal byte[] Decompress(long p, long p_2, WindowCursor curs)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal UnpackedObjectCache.Entry ReadCache(long p)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void SaveCache(long p, byte[] data, ObjectType objectType)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

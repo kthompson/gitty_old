@@ -37,7 +37,7 @@ namespace Gitty.Lib
             }
         }
 
-        public void EndVisitTree(Tree t)
+        public virtual void EndVisitTree(Tree t)
         {
             currentDirectory = stack.Pop();
         }

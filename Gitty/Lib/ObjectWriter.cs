@@ -16,5 +16,15 @@ namespace Gitty.Lib
         {
             throw new NotImplementedException();
         }
+
+        internal ObjectId WriteBlob(System.IO.FileInfo fileInfo)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal ObjectId WriteTree(Tree t)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

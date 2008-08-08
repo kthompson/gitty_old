@@ -13,11 +13,10 @@ namespace Gitty.Lib
         protected long objectOffset;
 
 
-        PackedObjectLoader(WindowCursor c, PackFile pr,
-                 long dataOffset, long objectOffset)
+        public PackedObjectLoader(WindowCursor c, PackFile pr, long dataOffset, long objectOffset)
         {
-            curs = c;
-            pack = pr;
+            this.curs = c;
+            this.pack = pr;
             this.DataOffset = dataOffset;
             this.objectOffset = objectOffset;
         }
@@ -75,9 +74,23 @@ namespace Gitty.Lib
          */
         public abstract ObjectId GetDeltaBase();
 
-        public override ObjectType ObjectType { get; protected set; }
+        protected ObjectType _objectType;
+        public override ObjectType ObjectType
+        {
+            get
+            {
+                return _objectType;
+            }
+        }
 
-        public override long Size { get; protected set; }
+        protected long _objectSize;
+        public override long Size
+        {
+            get
+            {
+                return _objectSize;
+            }
+        }
 
     }
 }

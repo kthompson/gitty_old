@@ -52,10 +52,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CompleteAttribute.cs" />
+    <Compile Include="Exceptions\CorruptObjectException.cs" />
     <Compile Include="Exceptions\FileLockedException.cs" />
     <Compile Include="Exceptions\IncorrectObjectTypeException.cs" />
     <Compile Include="Exceptions\ObjectWritingException.cs" />
     <Compile Include="Exceptions\RevisionSyntaxException.cs" />
+    <Compile Include="Exceptions\SymlinksNotSupportedException.cs" />
     <Compile Include="Extensions\IntExtensions.cs" />
     <Compile Include="Git.cs" />
     <Compile Include="Lib\AbstractIndexTreeVisitor.cs" />
@@ -100,8 +102,12 @@
     <Compile Include="Lib\Treeish.cs" />
     <Compile Include="Lib\TreeVisitor.cs" />
     <Compile Include="Lib\TreeVisitorWithCurrentDirectory.cs" />
+    <Compile Include="Lib\UnpackedObjectCache.cs" />
     <Compile Include="Lib\UnpackedObjectLoader.cs" />
+    <Compile Include="Lib\WholePackedObjectLoader.cs" />
     <Compile Include="Lib\WindowCursor.cs" />
+    <Compile Include="Lib\WindowedFile.cs" />
+    <Compile Include="Lib\WriteTree.cs" />
     <Compile Include="Util\Collections.cs" />
     <Compile Include="Util\Hex.cs" />
     <Compile Include="Util\NestedDictionary.cs" />
@@ -109,6 +115,7 @@
     <Compile Include="Util\Numbers.cs" />
     <Compile Include="Util\BufferedReader.cs" />
     <Compile Include="Util\PathUtil.cs" />
+    <Compile Include="Util\WeakReference.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

@@ -22,7 +22,37 @@ namespace Gitty.Lib
         }
 
         public string Name { get; protected set; }
-        public ObjectId Id { get; private set; }
+        public Tree Parent { get; private set; }
+        private ObjectId _id;
+        public ObjectId Id { get 
+        {
+            return _id;
+        }
+            set
+            {
+                //
+                Tree p = Parent;
+                if (p != null && _id != value)
+                {
+                    if ((_id == null && value != null) || (_id != null && value == null)
+                            || !_id.Equals(value))
+                    {
+                        p.Id = null;
+                    }
+                }
+
+                _id = value;
+            }
+        }
+
+        public bool IsModified
+        {
+            get
+            {
+                return _id == null;
+            }
+        }
+
         public string GetFullName()
         {
             throw new NotImplementedException();

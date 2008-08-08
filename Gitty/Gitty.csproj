@@ -72,6 +72,7 @@
     <Compile Include="Lib\IndexTreeWalker.cs" />
     <Compile Include="Lib\LockFile.cs" />
     <Compile Include="Lib\MutableObjectId.cs" />
+    <Compile Include="Lib\NullProgressMonitor.cs" />
     <Compile Include="Lib\ObjectId.cs" />
     <Compile Include="Lib\ObjectIdMap.cs" />
     <Compile Include="Lib\ObjectLoader.cs" />
@@ -84,6 +85,7 @@
     <Compile Include="Lib\PackIndexV2.cs" />
     <Compile Include="Lib\PackIndexWriter.cs" />
     <Compile Include="Lib\PersonIdent.cs" />
+    <Compile Include="Lib\ProgressMonitor.cs" />
     <Compile Include="Lib\Ref.cs" />
     <Compile Include="Lib\RefDatabase.cs" />
     <Compile Include="Lib\RefUpdate.cs" />
@@ -92,6 +94,7 @@
     <Compile Include="Lib\RepositoryState.cs" />
     <Compile Include="Lib\SymlinkTreeEntry.cs" />
     <Compile Include="Lib\Tag.cs" />
+    <Compile Include="Lib\TextProgressMonitor.cs" />
     <Compile Include="Lib\Tree.cs" />
     <Compile Include="Lib\TreeEntry.cs" />
     <Compile Include="Lib\Treeish.cs" />

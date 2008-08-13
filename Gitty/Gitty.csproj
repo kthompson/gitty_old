@@ -62,6 +62,7 @@
     <Compile Include="Git.cs" />
     <Compile Include="Lib\AbstractIndexTreeVisitor.cs" />
     <Compile Include="Lib\AnyObjectId.cs" />
+    <Compile Include="Lib\BinaryDelta.cs" />
     <Compile Include="Lib\Commit.cs" />
     <Compile Include="Lib\CoreConfig.cs" />
     <Compile Include="Lib\FileMode.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="Lib\IndexDiff.cs" />
     <Compile Include="Lib\IndexTreeVisitor.cs" />
     <Compile Include="Lib\IndexTreeWalker.cs" />
+    <Compile Include="Lib\InflaterCache.cs" />
     <Compile Include="Lib\LockFile.cs" />
     <Compile Include="Lib\MutableObjectId.cs" />
     <Compile Include="Lib\NullProgressMonitor.cs" />

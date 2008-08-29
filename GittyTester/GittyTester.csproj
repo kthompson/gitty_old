@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30428</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{3C787990-9AFD-4E60-94F2-B641B0C4A4A6}</ProjectGuid>
     <OutputType>Exe</OutputType>
@@ -48,6 +48,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Gitty.Shell\Gitty.Shell.csproj">
+      <Project>{B941526C-BD89-4E03-910B-20BA5D5A7AFF}</Project>
+      <Name>Gitty.Shell</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Gitty\Gitty.csproj">
       <Project>{B3276B5A-E976-4328-A57D-7F4AD5DD5F31}</Project>
       <Name>Gitty</Name>

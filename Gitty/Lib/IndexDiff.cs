@@ -39,7 +39,7 @@ namespace Gitty.Lib
                 else if (indexEntry == null)
                 {
                     if (!(treeEntry is Tree))
-                        Removed.Add(treeEntry.GetFullName());
+                        Removed.Add(treeEntry.FullName);
                     anyChanges = true;
                 }
                 else

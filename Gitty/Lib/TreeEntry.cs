@@ -5,41 +5,117 @@ using System.Text;
 
 namespace Gitty.Lib
 {
+    [Complete]
     public abstract class TreeEntry : IComparable
     {
+        public static int MODIFIED_ONLY = 1 << 0;
+
+        public static int LOADED_ONLY = 1 << 1;
+
+        public static int CONCURRENT_MODIFICATION = 1 << 2;
+
+
+        public Tree Parent { get; private set; }
+        public byte[] NameUTF8 { get; private set; }
+
+        public TreeEntry(Tree myParent, ObjectId id, byte[] nameUTF8)
+        {
+            this.NameUTF8 = nameUTF8;
+            this.Parent = myParent;
+            this._id = id;
+        }
+
+        public void Delete()
+        {
+            this.Parent.RemoveEntry(this);
+            DetachParent();
+        }
+
+
+
+        public void DetachParent()
+        {
+            this.Parent = null;
+        }
+
+        public void AttachParent(Tree p)
+        {
+            this.Parent = p;
+        }
+        public Repository Repository
+        {
+            get
+            {
+                return this.Parent.Repository;
+            }
+        }
+
+        public string Name
+        {
+            get
+            {
+                return this.NameUTF8 != null ? new string(Encoding.ASCII.GetChars(this.NameUTF8)) : null;
+            }
+        }
+
+
+        public void Rename(String n)
+        {
+            Rename(Encoding.ASCII.GetBytes(n));
+        }
+
+        public void Rename(byte[] n)
+        {
+            Tree t = this.Parent;
+            if (t != null)
+            {
+                Delete();
+            }
+            this.NameUTF8 = n;
+            if (t != null)
+            {
+                t.AddEntry(this);
+            }
+        }
+
+
         #region IComparable Members
 
-        public int CompareTo(object obj)
+        public int CompareTo(object o)
         {
-            throw new NotImplementedException();
+
+            if (this == o)
+                return 0;
+            if (o is TreeEntry)
+                return Tree.CompareNames(NameUTF8, ((TreeEntry)o).NameUTF8, lastChar(this), lastChar((TreeEntry)o));
+            return -1;
         }
 
         #endregion
 
-        public void SetModified()
+
+        public static int lastChar(TreeEntry treeEntry)
         {
-            throw new NotImplementedException();
+            if (treeEntry is FileTreeEntry)
+                return '\0';
+            else
+                return '/';
         }
 
-        public string Name { get; protected set; }
-        public Tree Parent { get; private set; }
         private ObjectId _id;
-        public ObjectId Id { get 
+        public ObjectId Id
         {
-            return _id;
-        }
+            get
+            {
+                return _id;
+            }
             set
             {
                 //
                 Tree p = Parent;
                 if (p != null && _id != value)
-                {
-                    if ((_id == null && value != null) || (_id != null && value == null)
-                            || !_id.Equals(value))
-                    {
+                    if ((_id == null && value != null) || (_id != null && value == null) || !_id.Equals(value))
                         p.Id = null;
-                    }
-                }
 
                 _id = value;
             }
@@ -53,11 +129,47 @@ namespace Gitty.Lib
             }
         }
 
-        public string GetFullName()
+        public void SetModified()
         {
-            throw new NotImplementedException();
+            this.Id = null;
         }
 
+        public string FullName
+        {
+            get
+            {
+                StringBuilder r = new StringBuilder();
+                AppendFullName(r);
+                return r.ToString();
+            }
+        }
+
+        private void AppendFullName(StringBuilder r)
+        {
+            TreeEntry p = this.Parent;
+            String n = this.Name;
+            if (p != null)
+            {
+                p.AppendFullName(r);
+                if (r.Length > 0)
+                {
+                    r.Append('/');
+                }
+            }
+            if (n != null)
+            {
+                r.Append(n);
+            }
+        }
+
+        public void Accept(TreeVisitor tv)
+        {
+            Accept(tv, 0);
+        }
+
+        public abstract void Accept(TreeVisitor tv, int flags);
+
+        public abstract FileMode Mode { get; }
 
     }
 }

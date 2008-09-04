@@ -28,7 +28,7 @@ namespace Gitty.Lib
             if (s.IsModified)
             {
                 throw new SymlinksNotSupportedException("Symlink \""
-                        + s.GetFullName()
+                        + s.FullName
                         + "\" cannot be written as the link target"
                         + " cannot be read from within Java.");
             }

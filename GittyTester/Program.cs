@@ -11,13 +11,12 @@ namespace Gitty
     {
         static void Main(string[] args)
         {
-            //Repository repo = new Repository(new DirectoryInfo(@"..\..\..\.git"));
-            //Console.WriteLine(repo.Directory.FullName);
-            Type t = typeof(GitContextMenu);
-            //Edanmo.ShellExtensions.Common.RegisterExtension(t, "ContextMenuHandlers\\" + t.Name);
             
+            Repository repo = new Repository(Git.FindGitDirectory());
+            Console.WriteLine(repo.Config.GetString("user", null, "name"));
+            //Console.WriteLine(repo.Directory.FullName);
            
-            //Console.Read();
+            Console.Read();
         }
     }
 }

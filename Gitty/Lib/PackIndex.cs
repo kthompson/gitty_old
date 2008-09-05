@@ -287,5 +287,10 @@ namespace Gitty.Lib
         }
 
 
+
+        internal static PackIndex Open(FileInfo idxFile)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

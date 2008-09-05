@@ -5,6 +5,7 @@ using System.Text;
 
 namespace Gitty.Lib
 {
+    [Complete]
     public class SymlinkTreeEntry : TreeEntry
     {
         private static long serialVersionUID = 1L;
@@ -22,7 +23,7 @@ namespace Gitty.Lib
             }
         }
 
-        public void accept(TreeVisitor tv, int flags)
+        public override void Accept(TreeVisitor tv, int flags)
         {
             if ((MODIFIED_ONLY & flags) == MODIFIED_ONLY && !this.IsModified)
             {
@@ -39,11 +40,6 @@ namespace Gitty.Lib
             r.Append(" S ");
             r.Append(this.FullName);
             return r.ToString();
-        }
-
-        public override void Accept(TreeVisitor tv, int flags)
-        {
-            throw new NotImplementedException();
         }
     }
 }

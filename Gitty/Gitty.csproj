@@ -63,6 +63,7 @@
     <Compile Include="Lib\AbstractIndexTreeVisitor.cs" />
     <Compile Include="Lib\AnyObjectId.cs" />
     <Compile Include="Lib\BinaryDelta.cs" />
+    <Compile Include="Lib\ByteWindow.cs" />
     <Compile Include="Lib\Commit.cs" />
     <Compile Include="Lib\CoreConfig.cs" />
     <Compile Include="Lib\FileMode.cs" />
@@ -88,10 +89,12 @@
     <Compile Include="Lib\PackIndexV1.cs" />
     <Compile Include="Lib\PackIndexV2.cs" />
     <Compile Include="Lib\PackIndexWriter.cs" />
+    <Compile Include="Lib\PackReverseIndex.cs" />
     <Compile Include="Lib\PersonIdent.cs" />
     <Compile Include="Lib\ProgressMonitor.cs" />
     <Compile Include="Lib\Ref.cs" />
     <Compile Include="Lib\RefDatabase.cs" />
+    <Compile Include="Lib\RefLogWriter.cs" />
     <Compile Include="Lib\RefUpdate.cs" />
     <Compile Include="Lib\Repository.cs" />
     <Compile Include="Lib\RepositoryConfig.cs" />

@@ -7,7 +7,7 @@ using Gitty.Util;
 namespace Gitty.Lib
 {
     [Complete]
-    class UnpackedObjectCache
+    public class UnpackedObjectCache
     {
 
         private static int CACHE_SZ = 256;
@@ -57,7 +57,7 @@ namespace Gitty.Lib
                 }
             }
         }
-        static Entry Get(WindowedFile pack, long position)
+        public static Entry Get(WindowedFile pack, long position)
         {
             lock (typeof(UnpackedObjectCache))
             {
@@ -75,8 +75,7 @@ namespace Gitty.Lib
             }
         }
 
-        static void Store(WindowedFile pack,
-                 long position, byte[] data, ObjectType objectType)
+        public static void Store(WindowedFile pack, long position, byte[] data, ObjectType objectType)
         {
             lock (typeof(UnpackedObjectCache))
             {
@@ -115,7 +114,7 @@ namespace Gitty.Lib
             }
         }
 
-        static void Purge(WindowedFile file)
+        public static void Purge(WindowedFile file)
         {
             lock (typeof(UnpackedObjectCache))
             {

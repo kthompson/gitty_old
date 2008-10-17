@@ -39,7 +39,8 @@ namespace Gitty.Lib
 
                 try
                 {
-                    byte[] data = pack.Decompress(this.DataOffset, this.Size, curs);
+                    // might not should be down converting this.Size
+                    byte[] data = pack.Decompress(this.DataOffset, (int)this.Size, curs);
                     curs.Release();
                     if (this.ObjectType != ObjectType.Commit)
                         pack.SaveCache(this.DataOffset, data, this.ObjectType);

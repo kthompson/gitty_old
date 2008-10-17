@@ -8,9 +8,9 @@ namespace Gitty.Lib
     {
         protected PackFile pack;
 
-        protected WindowCursor curs;
+        internal WindowCursor curs;
 
-        protected long objectOffset;
+        internal long objectOffset;
 
 
         public PackedObjectLoader(WindowCursor c, PackFile pr, long dataOffset, long objectOffset)

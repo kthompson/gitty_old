@@ -4,11 +4,16 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using Gitty.Exceptions;
+using Gitty.Util;
 
 namespace Gitty.Lib
 {
     public class PackFile : IEnumerable<PackIndex.MutableEntry>
     {
+        public sealed class Constants
+        {
+            public static readonly string PackSignature = "PACK";
+        }
         private WindowedFile pack;
 
 	private PackIndex idx;
@@ -158,7 +163,7 @@ namespace Gitty.Lib
 			int headerCnt = (int) (dataOffset - objectOffset);
 			while (headerCnt > 0) {
 				int toRead = Math.Min(headerCnt, buf.Length);
-				int read = pack.read(objectOffset, buf, 0, toRead, curs);
+				int read = pack.Read(objectOffset, buf, 0, toRead, curs);
 				if (read != toRead)
 					throw new EndOfStreamException();
 				crc.update(buf, 0, read);
@@ -195,17 +200,18 @@ namespace Gitty.Lib
 	private void ReadPackHeader(){
 		WindowCursor curs = new WindowCursor();
 		long position = 0;
-		byte[] sig = new byte[Constants.PACK_SIGNATURE.length];
+		byte[] sig = new byte[Constants.PackSignature.Length];
 		byte[] intbuf = new byte[4];
 		long vers;
 
-		if (pack.read(position, sig, curs) != Constants.PACK_SIGNATURE.length)
+        if (pack.read(position, sig, curs) != Constants.PackSignature.Length)
 			throw new IOException("Not a PACK file.");
-		for (int k = 0; k < Constants.PACK_SIGNATURE.length; k++) {
-			if (sig[k] != Constants.PACK_SIGNATURE[k])
+        for (int k = 0; k < Constants.PackSignature.Length; k++)
+        {
+            if (sig[k] != Constants.PackSignature[k])
 				throw new IOException("Not a PACK file.");
 		}
-		position += Constants.PACK_SIGNATURE.length;
+        position += Constants.PackSignature.Length;
 
 		pack.ReadFully(position, intbuf, curs);
 		vers = NB.decodeUInt32(intbuf, 0);
@@ -238,15 +244,13 @@ namespace Gitty.Lib
 		}
 		pos += p;
 
-		switch (typeCode) {
-		case Constants.OBJ_COMMIT:
-		case Constants.OBJ_TREE:
-		case Constants.OBJ_BLOB:
-		case Constants.OBJ_TAG:
-			return new WholePackedObjectLoader(curs, this, pos, objOffset,
-					(ObjectType)typeCode, (int) dataSize);
-
-		case Constants.OBJ_OFS_DELTA: {
+		switch ((ObjectType)typeCode) {
+		case ObjectType.Commit:
+        case ObjectType.Tree:
+        case ObjectType.Blob:
+        case ObjectType.Tag:
+			return new WholePackedObjectLoader(curs, this, pos, objOffset, (ObjectType)typeCode, (int) dataSize);
+		case Constants.OBJ_OFS_DELTA: 
 			pack.ReadFully(pos, ib, curs);
 			p = 0;
 			c = ib[p++] & 0xff;
@@ -257,14 +261,11 @@ namespace Gitty.Lib
 				ofs <<= 7;
 				ofs += (c & 127);
 			}
-			return new DeltaOfsPackedObjectLoader(curs, this, pos + p,
-					objOffset, (int) dataSize, objOffset - ofs);
-		}
-		case Constants.OBJ_REF_DELTA: {
+			return new DeltaOfsPackedObjectLoader(curs, this, pos + p, objOffset, (int) dataSize, objOffset - ofs); 
+		case Constants.OBJ_REF_DELTA: 
 			pack.ReadFully(pos, ib, curs);
-			return new DeltaRefPackedObjectLoader(curs, this, pos + ib.Length,
-					objOffset, (int) dataSize, ObjectId.FromRaw(ib));
-		}
+			return new DeltaRefPackedObjectLoader(curs, this, pos + ib.Length, objOffset, (int) dataSize, ObjectId.FromRaw(ib));
+		
 		default:
 			throw new IOException("Unknown object type " + typeCode + ".");
 		}
@@ -272,7 +273,7 @@ namespace Gitty.Lib
 
 	private long FindEndOffset(long startOffset)
     {
-		long maxOffset = pack.length() - Constants.OBJECT_ID_LENGTH;
+		long maxOffset = pack.Length - ObjectId.Constants.ObjectIdLength;
 		return GetReverseIdx().findNextOffset(startOffset, maxOffset);
 	}
 
@@ -299,5 +300,6 @@ namespace Gitty.Lib
         }
 
         #endregion
+
     }
 }

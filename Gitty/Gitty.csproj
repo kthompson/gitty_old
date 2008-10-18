@@ -66,6 +66,9 @@
     <Compile Include="Lib\ByteWindow.cs" />
     <Compile Include="Lib\Commit.cs" />
     <Compile Include="Lib\CoreConfig.cs" />
+    <Compile Include="Lib\DeltaOfsPackedObjectLoader.cs" />
+    <Compile Include="Lib\DeltaPackedObjectLoader.cs" />
+    <Compile Include="Lib\DeltaRefPackedObjectLoader.cs" />
     <Compile Include="Lib\FileMode.cs" />
     <Compile Include="Lib\FileTreeEntry.cs" />
     <Compile Include="Lib\ForceModified.cs" />

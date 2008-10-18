@@ -31,7 +31,7 @@ namespace Gitty.Lib
         public void StartVisitTree(Tree t)
         {
             stack.Push(currentDirectory);
-            if (!t.IsRoot())
+            if (!t.IsRoot)
             {
                 currentDirectory = new DirectoryInfo(Path.Combine(currentDirectory.FullName, t.Name));
             }

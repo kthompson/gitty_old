@@ -42,7 +42,7 @@ namespace Gitty.Lib
         {
             this.Parent = p;
         }
-        public Repository Repository
+        public virtual Repository Repository
         {
             get
             {
@@ -86,8 +86,11 @@ namespace Gitty.Lib
 
             if (this == o)
                 return 0;
-            if (o is TreeEntry)
-                return Tree.CompareNames(NameUTF8, ((TreeEntry)o).NameUTF8, lastChar(this), lastChar((TreeEntry)o));
+
+			TreeEntry t = o as TreeEntry;
+			
+			if (t != null)
+                return Tree.CompareNames(NameUTF8, t.NameUTF8, lastChar(this), lastChar(t));
             return -1;
         }
 

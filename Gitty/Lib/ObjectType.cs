@@ -14,5 +14,7 @@ namespace Gitty.Lib
         Blob = 3,
         Tag = 4,
         ObjectType5 = 5,
+		OFSDelta = 6,
+		RefDelta = 7
     }
 }

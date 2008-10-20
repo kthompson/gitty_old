@@ -120,7 +120,7 @@ namespace Gitty.Lib
                     {
                         fLck.Release();
                     }
-                    catch (IOException ioe)
+                    catch (IOException)
                     {
                         // Huh?
                     }
@@ -130,7 +130,7 @@ namespace Gitty.Lib
                 {
                     os.Close();
                 }
-                catch (IOException ioe)
+                catch (IOException)
                 {
                     // Ignore this
                 }

@@ -126,6 +126,17 @@ namespace Gitty.Util
 
         #region Public Methods 
 
+        public virtual D[] ToArray()
+        {
+            List<D> array = new List<D>();
+
+            foreach (KeyValuePair<K,D> kvp in this)
+            {
+                array.Add(kvp.Value);
+            }
+            return array.ToArray();
+        }
+
         public virtual T As<T>()
         {
             if (!(_value is T))

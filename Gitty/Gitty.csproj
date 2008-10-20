@@ -52,7 +52,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CompleteAttribute.cs" />
+    <Compile Include="Core\CLICore.cs" />
     <Compile Include="Core\Core.cs" />
+    <Compile Include="Core\HybridCore.cs" />
+    <Compile Include="Core\InternalCore.cs" />
     <Compile Include="Exceptions\CorruptObjectException.cs" />
     <Compile Include="Exceptions\FileLockedException.cs" />
     <Compile Include="Exceptions\IncorrectObjectTypeException.cs" />

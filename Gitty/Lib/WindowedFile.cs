@@ -47,5 +47,15 @@ namespace Gitty.Lib
                 throw new NotImplementedException();
             }
         }
-    }
+
+		internal int Read(long position, byte[] sig, WindowCursor curs)
+		{
+			throw new NotImplementedException();
+		}
+
+		internal string Name
+		{
+			get { throw new NotImplementedException(); }
+		}
+	}
 }

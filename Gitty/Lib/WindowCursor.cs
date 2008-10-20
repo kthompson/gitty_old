@@ -7,6 +7,8 @@ namespace Gitty.Lib
 {
     public class WindowCursor
     {
+		internal byte[] tempId = new byte[ObjectId.Constants.ObjectIdLength];
+
         internal void Release()
         {
             throw new NotImplementedException();

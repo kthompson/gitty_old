@@ -197,20 +197,23 @@ namespace Gitty.Lib
 	}
 
 
-	private void ReadPackHeader(){
+	private void ReadPackHeader()
+    {
 		WindowCursor curs = new WindowCursor();
 		long position = 0;
 		byte[] sig = new byte[Constants.PackSignature.Length];
 		byte[] intbuf = new byte[4];
 		long vers;
 
-        if (pack.read(position, sig, curs) != Constants.PackSignature.Length)
+        if (pack.Read(position, sig, curs) != Constants.PackSignature.Length)
 			throw new IOException("Not a PACK file.");
+
         for (int k = 0; k < Constants.PackSignature.Length; k++)
         {
             if (sig[k] != Constants.PackSignature[k])
 				throw new IOException("Not a PACK file.");
 		}
+
         position += Constants.PackSignature.Length;
 
 		pack.ReadFully(position, intbuf, curs);

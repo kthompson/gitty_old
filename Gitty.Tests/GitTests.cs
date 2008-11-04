@@ -1,23 +1,36 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NUnit.Framework;
-using NUnit.Framework.Constraints;
-using NUnit.Framework.SyntaxHelpers;
 using System.IO;
+using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 
 namespace Gitty.Tests
 {
     [TestFixture]
     public class GitTests
     {
+        public string Root { get; private set; }
+        public string RepoPath { get; private set; }
+
+        [SetUp]
+        public void Setup()
+        {
+            Root = Path.Combine(Path.GetTempPath(), "git" + new Random().Next(int.MaxValue));
+            RepoPath = Path.Combine(Root, ".git");
+
+            Directory.CreateDirectory(Root);
+        }
+
         [Test]
         public void InitTest()
         {
-            string repoPath = Path.Combine(Path.GetTempPath(), "git" + new Random().Next(int.MaxValue).ToString());
-            Git git = Git.Init(new DirectoryInfo(repoPath));
-            Assert.That(repoPath, Is.EqualTo(git.Repository.Directory.FullName));
+            Git git = Git.Init(new DirectoryInfo(Root));
+            Assert.That(RepoPath, Is.EqualTo(git.Repository.Directory.FullName));
+        }
+
+        [TearDown]
+        public void Teardown()
+        {
+            Directory.Delete(Root, true);
         }
     }
 }

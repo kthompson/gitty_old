@@ -124,30 +124,22 @@ namespace Gitty
             string opts = string.Join(" ", options);
 
             Process proc = new Process();
+            proc.StartInfo.CreateNoWindow = true;
             proc.StartInfo.UseShellExecute = false;
+            proc.StartInfo.RedirectStandardError = true;
             proc.StartInfo.RedirectStandardOutput = true;
             proc.StartInfo.FileName = this.GitExecutable;
-            proc.StartInfo.Arguments = command + " " + options + " 2>1"; //redirect error to output
+            proc.StartInfo.Arguments = command + " " + string.Join(" ", options); //redirect error to output
             proc.StartInfo.WorkingDirectory = this.WorkingDirectory.FullName;
             
-            //string wd = Directory.GetCurrentDirectory();
+            //Directory.SetCurrentDirectory(WorkingDirectory.FullName);
+            proc.Start();
 
-            //if (changeDirectory && (wd != this.WorkingDirectory.FullName))
-            //{
-            //    Directory.SetCurrentDirectory(this.WorkingDirectory.FullName);
-            //    proc.Start();
-            //    proc.WaitForExit();
-            //    Directory.SetCurrentDirectory(wd);
-            //}
-            //else
-            //{
-                proc.Start();
+            string output = proc.StandardOutput.ReadToEnd();
+            string err = proc.StandardError.ReadToEnd();
 
-                string output = proc.StandardOutput.ReadToEnd();
-
-                proc.WaitForExit();
-            //}
-
+            proc.WaitForExit();
+      
             
             
             if (proc.ExitCode != 0)
@@ -155,7 +147,7 @@ namespace Gitty
                 if (proc.ExitCode == 1 && string.IsNullOrEmpty(output))
                     return "";
                 
-                throw new Exception(string.Format("git {0}: {1}", proc.StartInfo.Arguments, output));
+                throw new Exception(string.Format("git {0}: {1}", proc.StartInfo.Arguments, output+err));
             }
 
             return output;

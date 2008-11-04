@@ -32,7 +32,7 @@ namespace Gitty.Lib
 
         public static Repository Init(DirectoryInfo directory)
         {
-            if(directory == null)
+            if(directory == null || !directory.Exists)
                 return null;
 
             return GitLib.For(directory).Init();

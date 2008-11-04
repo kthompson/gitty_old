@@ -12,7 +12,7 @@ namespace Gitty
         /// 
         /// It will primarily use the InternalCore where possible and the CLICore elsewhere.
         /// </summary>
-        public class HybridCore : Core
+        public class HybridCore : CoreLib
         {
             private InternalCore _internalCore;
             private CLICore _cliCore;

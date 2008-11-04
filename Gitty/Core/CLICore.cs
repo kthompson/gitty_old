@@ -11,7 +11,7 @@ namespace Gitty
 {
     public partial class Git
     {
-        public class CLICore : Core
+        public class CLICore : CoreLib
         {
 
             #region Core Method implementations

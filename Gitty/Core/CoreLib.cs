@@ -9,7 +9,7 @@ namespace Gitty
 {
     public partial class Git
     {
-        public abstract class Core
+        public abstract class CoreLib : ICoreLib
         {
             public abstract void Init();
             public abstract void Clone(DirectoryInfo repository, string name, params string[] options);

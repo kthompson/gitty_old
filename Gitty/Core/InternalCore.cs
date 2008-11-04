@@ -7,7 +7,7 @@ namespace Gitty
 {
     public partial class Git
     {
-        public class InternalCore : Core
+        public class InternalCore : CoreLib
         {
             public override void Init()
             {

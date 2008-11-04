@@ -16,18 +16,15 @@ namespace Gitty.Lib
         #region constructors
         private Repository(DirectoryInfo directory)
         {
-            this.Directory = directory;
+            Directory = directory;
         }
         #endregion
 
         #region public static methods
         public static Repository Open(DirectoryInfo directory)
         {
-            DirectoryInfo dir = Repository.FindGitDirectory(directory);
-            if (dir == null)
-                return null;
-
-            return new Repository(dir);
+            DirectoryInfo dir = FindGitDirectory(directory);
+            return dir == null ? null : new Repository(dir);
         }
 
         public static Repository Init(DirectoryInfo directory)
@@ -51,25 +48,16 @@ namespace Gitty.Lib
         #endregion
 
         #region private static methods
-        private static DirectoryInfo FindGitDirectory()
-        {
-            return FindGitDirectory(new DirectoryInfo("."));
-        }
         private static DirectoryInfo FindGitDirectory(DirectoryInfo path)
         {
-            if (path == null)
-                return null;
-
-            if (!path.Exists)
+            if (path == null || !path.Exists)
                 return null;
 
             DirectoryInfo[] dirs = path.GetDirectories(".git");
             if (dirs.Length > 0)
                 return dirs[0];
-            else if (path.Parent == null)
-                return null;
-            else
-                return FindGitDirectory(path.Parent);
+
+            return path.Parent == null ? null : FindGitDirectory(path.Parent);
         }
         private static DirectoryInfo FindGitDirectory(FileInfo path)
         {

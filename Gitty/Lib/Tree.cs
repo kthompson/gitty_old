@@ -130,6 +130,40 @@ namespace Gitty.Lib
 				return 1;
 		}
 
+		private static byte[] SubString(byte[] s, int nameStart, int nameEnd)
+		{
+			if (nameStart == 0 && nameStart == s.Length)
+				return 0;
+
+			byte[] n = new byte[nameEnd - nameStart];
+			Array.Copy(s, nameStart, n, 0, n.Length);
+			return n;
+		}
+
+		private static int BinarySearch(
+			TreeEntry[] entries, byte[] nameUTF8, int nameUTF8last, int nameStart, int nameEnd)
+		{
+			if (entries.Length == 0)
+				return -1;
+			int high = entries.Length;
+			int low = 0;
+			do
+			{
+				int mid = (low + high) / 2;
+				int cmp = CompareNames(entries[mid].NameUTF8, nameUTF8, 
+					nameStart, nameEnd, TreeEntry.lastChar(entries[mid]), nameUTF8last);
+
+				if (cmp < 0)
+					low = mid + 1;
+				else if (cmp == 0)
+					return mid;
+				else
+					return high = mid;
+
+			} while (low < high);
+			return -(low + 1);
+		}
+
 		public override void Accept(TreeVisitor tv, int flags)
 		{
 			throw new NotImplementedException();

@@ -62,10 +62,10 @@ namespace Gitty
         public void CherryPick(params string[] options){}
         public void Citool(params string[] options){}
         public void Clean(params string[] options){}
-        public Repository Clone(string repospec, params string[] options)
+        public Git Clone(string repospec, params string[] options)
         {
             Command("clone", repospec);
-            return Repository.Open(WorkingDirectory);
+            return Git.Open(WorkingDirectory);
         }
         public void Commit(params string[] options){}
         public void Diff(params string[] options){}
@@ -74,11 +74,11 @@ namespace Gitty
         public void Gc(params string[] options){}
         public void Grep(params string[] options){}
         public void Gui(params string[] options){}
-        public Repository Init(params string[] options)
+        public Git Init(params string[] options)
         {
             // run git init and return the resulting repo
             Command("init");
-            return Repository.Open(WorkingDirectory);
+            return Git.Open(WorkingDirectory);
         }
         public void Log(params string[] options){}
         public void Merge(params string[] options){}

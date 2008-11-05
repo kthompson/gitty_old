@@ -10,43 +10,81 @@ namespace Gitty
     {
         #region properties
         public Repository Repository { get; private set; }
-        public DirectoryInfo WorkingDirectory { get; private set; }
-
+        public WorkingDirectory WorkingDirectory { get; private set; }
+        public Index Index { get; private set; }
         #endregion
 
         #region constructors
-        private Git(Repository repo)
+
+        private Git(WorkingDirectory working, Repository repo, Index index)
         {
             Repository = repo;
+            WorkingDirectory = working;
+            Index = index;
         }
 
-        private Git(DirectoryInfo working)
+        
+        private Git(WorkingDirectory working, Repository repo)
+            : this(working, repo, new Index(Path.Combine(working, "index")))
         {
-            WorkingDirectory = working;
         }
+
+        private Git(WorkingDirectory working)
+            : this(working, new Repository(Path.Combine(working, ".git")))
+        {
+        }
+        #endregion
+
+        #region private static methods
+        private static DirectoryInfo FindGitDirectory(DirectoryInfo path)
+        {
+            if (path == null || !path.Exists)
+                return null;
+
+            DirectoryInfo[] dirs = path.GetDirectories(".git");
+            if (dirs.Length > 0)
+                return dirs[0];
+
+            return path.Parent == null ? null : FindGitDirectory(path.Parent);
+        }
+        private static DirectoryInfo FindGitDirectory(FileInfo path)
+        {
+            if (!path.Exists)
+                return null;
+
+            return FindGitDirectory(path.Directory);
+        }
+        
 
         #endregion
 
-        
         #region public member methods
 
         public static Git Open(DirectoryInfo directory)
         {
-            Repository repo = Repository.Open(directory);
-            return repo == null ? null : new Git(repo);
+            DirectoryInfo dir = FindGitDirectory(directory);
+            return dir == null ? null : new Git(new WorkingDirectory(dir));
         }
 
+        public static Git Bare(DirectoryInfo directory)
+        {
+            throw new NotImplementedException();
+        }
 
         public static Git Init(DirectoryInfo directory)
         {
-            Repository repo = Repository.Init(directory);
-            return repo == null ? null : new Git(repo);
+            if (directory == null || !directory.Exists)
+                return null;
+
+            return GitLib.For(directory).Init();
         }
 
         public static Git Clone(DirectoryInfo directory, string repouri)
         {
-            Repository repo = Repository.Clone(directory, repouri);
-            return repo == null ? null : new Git(repo);
+            if (directory == null || string.IsNullOrEmpty(repouri))
+                return null;
+
+            return GitLib.For(directory).Clone(repouri);
         }
 
         #endregion

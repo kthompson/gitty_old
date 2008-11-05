@@ -2,14 +2,14 @@
 
 namespace Gitty.Lib
 {
-    public class Repository: GitPath
+    public class WorkingDirectory : GitPath
     {
-        public Repository(string directory)
+        public WorkingDirectory(string directory)
             : base(directory)
         {
         }
 
-        public Repository(DirectoryInfo directory)
+        public WorkingDirectory(DirectoryInfo directory)
             : base(directory)
         {
         }

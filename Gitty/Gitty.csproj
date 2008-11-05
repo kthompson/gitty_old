@@ -55,8 +55,12 @@
     <Compile Include="GitLib.cs" />
     <Compile Include="Git.cs" />
     <Compile Include="Lib\FileMode.cs" />
+    <Compile Include="Lib\GitPath.cs" />
+    <Compile Include="Lib\Index.cs" />
     <Compile Include="Lib\ObjectType.cs" />
     <Compile Include="Lib\Repository.cs" />
+    <Compile Include="Lib\RepositoryState.cs" />
+    <Compile Include="Lib\WorkingDirectory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

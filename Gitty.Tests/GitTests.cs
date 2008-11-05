@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 
 namespace Gitty.Tests
 {
@@ -19,7 +18,7 @@ namespace Gitty.Tests
             Directory.CreateDirectory(Root);
 
             Git git = Git.Init(new DirectoryInfo(Root));
-            Assert.That(RepoPath, Is.EqualTo(git.Repository.Directory.FullName));
+            Assert.AreEqual(RepoPath, git.Repository);
 
 
             //teardown 

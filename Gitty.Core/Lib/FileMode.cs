@@ -6,6 +6,7 @@ using System.IO;
 
 namespace Gitty.Lib
 {
+    [Complete]
     public class FileMode
     {
 

@@ -51,11 +51,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="CompleteAttribute.cs" />
+    <Compile Include="Util\Hex.cs" />
+    <Compile Include="GitLib.cs" />
     <Compile Include="Git.cs" />
     <Compile Include="Lib\FileMode.cs" />
     <Compile Include="Lib\ObjectType.cs" />
-    <Compile Include="Util\Hex.cs" />
+    <Compile Include="Lib\Repository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

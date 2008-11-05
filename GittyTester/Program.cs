@@ -12,8 +12,8 @@ namespace Gitty
         static void Main(string[] args)
         {
             
-            Repository repo = new Repository(Git.FindGitDirectory());
-            Console.WriteLine(repo.Config.GetString("user", null, "name"));
+            //Repository repo = new Repository(Git.FindGitDirectory());
+            //Console.WriteLine(repo.Config.GetString("user", null, "name"));
             //Console.WriteLine(repo.Directory.FullName);
            
             Console.Read();

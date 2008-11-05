@@ -4,6 +4,11 @@ namespace Gitty.Lib
 {
     public class Repository: GitPath
     {
+        public Repository(string directory, string subdirectory)
+            : base(directory, subdirectory)
+        {
+        }
+
         public Repository(string directory)
             : base(directory)
         {

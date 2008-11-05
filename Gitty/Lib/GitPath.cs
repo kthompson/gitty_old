@@ -6,6 +6,11 @@ namespace Gitty.Lib
     {
         public DirectoryInfo Directory { get; private set; }
 
+        public GitPath(string directory, string subdirectory)
+            : this(Path.Combine(directory, subdirectory))
+        {
+        }
+
         public GitPath(string directory)
             : this(new DirectoryInfo(directory))
         {

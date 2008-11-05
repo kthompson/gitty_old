@@ -16,6 +16,11 @@ namespace Gitty
 
         #region constructors
 
+        private Git(Repository repo, Index index)
+            : this(null, repo, index)
+        {
+        }
+
         private Git(WorkingDirectory working, Repository repo, Index index)
         {
             Repository = repo;
@@ -23,14 +28,13 @@ namespace Gitty
             Index = index;
         }
 
-        
         private Git(WorkingDirectory working, Repository repo)
-            : this(working, repo, new Index(Path.Combine(working, "index")))
+            : this(working, repo, new Index(working, "index"))
         {
         }
 
         private Git(WorkingDirectory working)
-            : this(working, new Repository(Path.Combine(working, ".git")))
+            : this(working, new Repository(working, ".git"))
         {
         }
         #endregion

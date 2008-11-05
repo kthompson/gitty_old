@@ -6,7 +6,7 @@ using Gitty.Lib;
 
 namespace Gitty
 {
-    public partial class Git
+    public class Git
     {
         #region properties
         public Repository Repository { get; private set; }
@@ -17,28 +17,38 @@ namespace Gitty
         #region constructors
         private Git(Repository repo)
         {
-            this.Repository = repo;
+            Repository = repo;
         }
+
+        private Git(DirectoryInfo working)
+        {
+            WorkingDirectory = working;
+        }
+
         #endregion
 
         
         #region public member methods
+
         public static Git Open(DirectoryInfo directory)
         {
             Repository repo = Repository.Open(directory);
-            if (repo == null)
-                return null;
-            return new Git(repo);
+            return repo == null ? null : new Git(repo);
         }
 
 
         public static Git Init(DirectoryInfo directory)
         {
             Repository repo = Repository.Init(directory);
-            if (repo == null)
-                return null;
-            return new Git(repo);
+            return repo == null ? null : new Git(repo);
         }
+
+        public static Git Clone(DirectoryInfo directory, string repouri)
+        {
+            Repository repo = Repository.Clone(directory, repouri);
+            return repo == null ? null : new Git(repo);
+        }
+
         #endregion
 
 

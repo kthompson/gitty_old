@@ -29,8 +29,8 @@ namespace Gitty
         #region constructors
         private GitLib(DirectoryInfo working)
         {
-            this.WorkingDirectory = working;
-            this.GitExecutable = GitLib.GetGitPath();
+            WorkingDirectory = working;
+            GitExecutable = GetGitPath();
             
         }
         #endregion
@@ -62,9 +62,10 @@ namespace Gitty
         public void CherryPick(params string[] options){}
         public void Citool(params string[] options){}
         public void Clean(params string[] options){}
-        public Repository Clone(params string[] options)
+        public Repository Clone(string repospec, params string[] options)
         {
-            throw new NotImplementedException();
+            Command("clone", repospec);
+            return Repository.Open(WorkingDirectory);
         }
         public void Commit(params string[] options){}
         public void Diff(params string[] options){}
@@ -77,7 +78,7 @@ namespace Gitty
         {
             // run git init and return the resulting repo
             Command("init");
-            return Repository.Open(this.WorkingDirectory);
+            return Repository.Open(WorkingDirectory);
         }
         public void Log(params string[] options){}
         public void Merge(params string[] options){}
@@ -99,16 +100,14 @@ namespace Gitty
 
         #region private methods
 
-
         private static string GetGitPath()
         {
             foreach (string path in Constants.GitSearchPaths)
             {
                 if (File.Exists(Path.Combine(path, "git")))
                     return Path.Combine(path, "git");
-                else if(File.Exists(Path.Combine(path, "git.exe")))
+                if(File.Exists(Path.Combine(path, "git.exe")))
                     return Path.Combine(path, "git.exe");
-                
             }
 
             throw new FileNotFoundException("Could not find git executable");
@@ -121,33 +120,31 @@ namespace Gitty
 
         private string Command(string command, params string[] options)
         {
-            string opts = string.Join(" ", options);
-
+            string opts = string.Join(" ", options.Select(s => s.Contains(" ") ? "\"" + s + "\"" : s).ToArray());
+            
             Process proc = new Process();
             proc.StartInfo.CreateNoWindow = true;
             proc.StartInfo.UseShellExecute = false;
             proc.StartInfo.RedirectStandardError = true;
             proc.StartInfo.RedirectStandardOutput = true;
-            proc.StartInfo.FileName = this.GitExecutable;
-            proc.StartInfo.Arguments = command + " " + string.Join(" ", options); //redirect error to output
-            proc.StartInfo.WorkingDirectory = this.WorkingDirectory.FullName;
+            proc.StartInfo.FileName = GitExecutable;
+            proc.StartInfo.Arguments = command + " " + opts; //redirect error to output
+            proc.StartInfo.WorkingDirectory = WorkingDirectory.FullName;
             
             //Directory.SetCurrentDirectory(WorkingDirectory.FullName);
             proc.Start();
 
             string output = proc.StandardOutput.ReadToEnd();
-            string err = proc.StandardError.ReadToEnd();
+            output += proc.StandardError.ReadToEnd();
 
             proc.WaitForExit();
-      
-            
             
             if (proc.ExitCode != 0)
             {
                 if (proc.ExitCode == 1 && string.IsNullOrEmpty(output))
                     return "";
                 
-                throw new Exception(string.Format("git {0}: {1}", proc.StartInfo.Arguments, output+err));
+                throw new Exception(string.Format("git {0}: {1}", proc.StartInfo.Arguments, output));
             }
 
             return output;

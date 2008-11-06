@@ -8,7 +8,7 @@ using System.Diagnostics;
 
 namespace Gitty
 {
-    public class GitLib
+    public class GitLib : IGit
     {
 
         public class Constants
@@ -22,32 +22,30 @@ namespace Gitty
         }
 
         #region properties
-        public DirectoryInfo WorkingDirectory { get; private set; }
+        public WorkingDirectory WorkingDirectory { get; set; }
+        public Repository Repository { get; set; }
+        public Index Index { get; set; }
+
         public string GitExecutable { get; private set; }
         #endregion
 
         #region constructors
-        private GitLib(DirectoryInfo working)
+        public GitLib()
         {
-            WorkingDirectory = working;
             GitExecutable = GetGitPath();
-            
         }
         #endregion
-
-        #region syntactic sugar
-        public static GitLib For(DirectoryInfo dir)
-        {
-            return new GitLib(dir);
-        }
-        #endregion
-
+        
         #region the porcelain
         public void AddInteractive(params string[] options)
         {
         }
         public void Add(params string[] options) 
         {
+            if (options.Length == 0)
+                Command("add", ".");
+            else
+                Command("add", options);
         }
         public void Am(params string[] options) 
         {
@@ -62,23 +60,32 @@ namespace Gitty
         public void CherryPick(params string[] options){}
         public void Citool(params string[] options){}
         public void Clean(params string[] options){}
-        public Git Clone(string repospec, params string[] options)
+        public IGit Clone(string repospec, params string[] options)
         {
             Command("clone", repospec);
-            return Git.Open(WorkingDirectory);
+            //TODO: set the repo directory 
+            return this;
         }
-        public void Commit(params string[] options){}
+        public void Commit(params string[] options)
+        {
+            Command("commit", options);
+        }
         public void Diff(params string[] options){}
         public void Fetch(params string[] options){}
         public void FormatPatch(params string[] options){}
         public void Gc(params string[] options){}
         public void Grep(params string[] options){}
         public void Gui(params string[] options){}
-        public Git Init(params string[] options)
+        public IGit Init(params string[] options)
         {
-            // run git init and return the resulting repo
             Command("init");
-            return Git.Open(WorkingDirectory);
+
+            if(Repository ==null)
+                Repository  = new Repository(WorkingDirectory);
+            if(Index == null)
+                Index = new Index(Repository);
+
+            return this;
         }
         public void Log(params string[] options){}
         public void Merge(params string[] options){}
@@ -129,9 +136,8 @@ namespace Gitty
             proc.StartInfo.RedirectStandardOutput = true;
             proc.StartInfo.FileName = GitExecutable;
             proc.StartInfo.Arguments = command + " " + opts; //redirect error to output
-            proc.StartInfo.WorkingDirectory = WorkingDirectory.FullName;
+            proc.StartInfo.WorkingDirectory = WorkingDirectory;
             
-            //Directory.SetCurrentDirectory(WorkingDirectory.FullName);
             proc.Start();
 
             string output = proc.StandardOutput.ReadToEnd();
@@ -149,6 +155,12 @@ namespace Gitty
 
             return output;
         }
+        #endregion
+
+        #region IGit Members
+
+ 
+
         #endregion
     }
 }

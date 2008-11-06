@@ -6,7 +6,7 @@ using Gitty.Lib;
 
 namespace Gitty
 {
-    public class Git
+    public class Git 
     {
         #region properties
         public Repository Repository { get; private set; }
@@ -15,6 +15,15 @@ namespace Gitty
         #endregion
 
         #region constructors
+
+        private Git(Repository repo)
+            : this(null, repo, null)
+        {
+            if(repo != null && repo.Directory.Parent!= null)
+            {
+                Index = new Index(repo.Directory.Parent.FullName, "index");
+            }
+        }
 
         private Git(Repository repo, Index index)
             : this(null, repo, index)
@@ -45,6 +54,9 @@ namespace Gitty
             if (path == null || !path.Exists)
                 return null;
 
+            if (path.Name == ".git")
+                return path;
+
             DirectoryInfo[] dirs = path.GetDirectories(".git");
             if (dirs.Length > 0)
                 return dirs[0];
@@ -64,36 +76,33 @@ namespace Gitty
 
         #region public member methods
 
-        public static Git Open(DirectoryInfo directory)
+        public static IGit Open(DirectoryInfo directory)
         {
             DirectoryInfo dir = FindGitDirectory(directory);
-            return dir == null ? null : new Git(new WorkingDirectory(dir));
+            return dir == null ? null : new GitLib{Repository = new Repository(dir)};
         }
 
-        public static Git Bare(DirectoryInfo directory)
+        public static IGit Bare(DirectoryInfo directory)
         {
             throw new NotImplementedException();
         }
 
-        public static Git Init(DirectoryInfo directory)
+        public static IGit Init(DirectoryInfo directory)
         {
             if (directory == null || !directory.Exists)
                 return null;
 
-            return GitLib.For(directory).Init();
+            return new GitLib{WorkingDirectory = new WorkingDirectory(directory)}.Init();
         }
 
-        public static Git Clone(DirectoryInfo directory, string repouri)
+        public static IGit Clone(DirectoryInfo directory, string repouri)
         {
             if (directory == null || string.IsNullOrEmpty(repouri))
                 return null;
 
-            return GitLib.For(directory).Clone(repouri);
+            return new GitLib{WorkingDirectory = new WorkingDirectory(directory)}.Clone(repouri);
         }
 
         #endregion
-
-
-
     }
 }

@@ -8,18 +8,23 @@ namespace Gitty.Lib
 {
     public class Index : GitPath
     {
-        public Index(string directory, string subdirectory)
-            : base(directory, subdirectory)
+        public Index(string directory, string file)
+            : this(Path.Combine(directory, file))
         {
         }
 
-        public Index(string directory)
-            : base(directory)
+        public Index(string file)
+            : this(new FileInfo(file))
         {
         }
 
-        public Index(DirectoryInfo directory)
-            : base(directory)
+        public Index(FileInfo file)
+            : base(file)
+        {
+        }
+
+        public Index(Repository repo)
+            : this(repo, "index")
         {
         }
     }

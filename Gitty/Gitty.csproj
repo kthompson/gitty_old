@@ -51,6 +51,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="IGit.cs" />
     <Compile Include="Util\Hex.cs" />
     <Compile Include="GitLib.cs" />
     <Compile Include="Git.cs" />

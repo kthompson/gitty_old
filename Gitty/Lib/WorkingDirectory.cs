@@ -5,12 +5,12 @@ namespace Gitty.Lib
     public class WorkingDirectory : GitPath
     {
         public WorkingDirectory(string directory, string subdirectory)
-            : base(directory, subdirectory)
+            : this(Path.Combine(directory, subdirectory))
         {
         }
 
         public WorkingDirectory(string directory)
-            : base(directory)
+            : this(new DirectoryInfo(directory))
         {
         }
 

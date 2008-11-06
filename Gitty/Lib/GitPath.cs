@@ -1,23 +1,27 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace Gitty.Lib
 {
     public class GitPath
     {
         public DirectoryInfo Directory { get; private set; }
+        public FileInfo File { get; private set; }
 
-        public GitPath(string directory, string subdirectory)
-            : this(Path.Combine(directory, subdirectory))
+        public GitPath(FileInfo file)
+            : this(file.Directory)
         {
-        }
+            if (file == null)
+                throw new ArgumentNullException("file");
 
-        public GitPath(string directory)
-            : this(new DirectoryInfo(directory))
-        {
+            File = file;
         }
 
         public GitPath(DirectoryInfo directory)
         {
+            if(directory == null)
+                throw new ArgumentNullException("directory");
+
             Directory = directory;
         }
 
@@ -31,19 +35,14 @@ namespace Gitty.Lib
             return value.Directory;
         }
 
-        public static explicit operator GitPath(DirectoryInfo value)
+        public static implicit operator FileInfo(GitPath value)
         {
-            return new GitPath(value);
-        }
-
-        public static explicit operator GitPath(string value)
-        {
-            return new GitPath(value);
+            return value.File;
         }
 
         public override string ToString()
         {
-            return Directory.FullName;
+            return File != null ? File.ToString() : Directory.FullName;
         }
 
     }

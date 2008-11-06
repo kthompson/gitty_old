@@ -133,7 +133,7 @@ namespace Gitty.Lib
 		private static byte[] SubString(byte[] s, int nameStart, int nameEnd)
 		{
 			if (nameStart == 0 && nameStart == s.Length)
-				return 0;
+				return new byte[]{ };
 
 			byte[] n = new byte[nameEnd - nameStart];
 			Array.Copy(s, nameStart, n, 0, n.Length);

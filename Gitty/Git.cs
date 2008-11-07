@@ -1,7 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.IO;
+using Autofac;
+using Autofac.Builder;
 using Gitty.Lib;
 
 namespace Gitty
@@ -9,42 +13,24 @@ namespace Gitty
     public class Git 
     {
         #region properties
-        public Repository Repository { get; private set; }
-        public WorkingDirectory WorkingDirectory { get; private set; }
-        public Index Index { get; private set; }
+        private static readonly IContainer container;
         #endregion
 
         #region constructors
 
-        private Git(Repository repo)
-            : this(null, repo, null)
+        static Git()
         {
-            if(repo != null && repo.Directory.Parent!= null)
+            var libraryTypes = from file in new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory).GetFiles("Git.Core*.dll") 
+                               from type in Assembly.Load(file.FullName).GetTypes()
+                               where typeof (IGit).IsAssignableFrom(type)
+                               select type;
+            var builder = new ContainerBuilder();
+            foreach (var type in libraryTypes)
             {
-                Index = new Index(repo.Directory.Parent.FullName, "index");
+                builder.Register(type).As<IGit>().FactoryScoped();
             }
-        }
 
-        private Git(Repository repo, Index index)
-            : this(null, repo, index)
-        {
-        }
-
-        private Git(WorkingDirectory working, Repository repo, Index index)
-        {
-            Repository = repo;
-            WorkingDirectory = working;
-            Index = index;
-        }
-
-        private Git(WorkingDirectory working, Repository repo)
-            : this(working, repo, new Index(working, "index"))
-        {
-        }
-
-        private Git(WorkingDirectory working)
-            : this(working, new Repository(working, ".git"))
-        {
+            container = builder.Build();
         }
         #endregion
 
@@ -63,23 +49,7 @@ namespace Gitty
 
             return path.Parent == null ? null : FindGitDirectory(path.Parent);
         }
-        private static DirectoryInfo FindGitDirectory(FileInfo path)
-        {
-            if (!path.Exists)
-                return null;
-
-            return FindGitDirectory(path.Directory);
-        }
-
-        private static IGit NewGit(Repository repo)
-        {
-            throw new NotImplementedException();
-        }
-
-        private static IGit NewGit(WorkingDirectory wd)
-        {
-            throw new NotImplementedException();
-        }
+       
 
         #endregion
 
@@ -91,7 +61,10 @@ namespace Gitty
             if(dir == null)
                 return null;
 
-            return NewGit(new Repository(dir));
+            var git = container.Resolve<IGit>();
+            git.Repository = new Repository(dir);
+
+            return git;
         }
 
         public static IGit Bare(DirectoryInfo directory)
@@ -104,7 +77,10 @@ namespace Gitty
             if (directory == null || !directory.Exists)
                 return null;
 
-            return NewGit(new WorkingDirectory(directory)).Init();
+            var git = container.Resolve<IGit>();
+            git.WorkingDirectory = new WorkingDirectory(directory);
+            git.Init();
+            return git;
         }
 
         public static IGit Clone(DirectoryInfo directory, string repouri)
@@ -112,7 +88,10 @@ namespace Gitty
             if (directory == null || string.IsNullOrEmpty(repouri))
                 return null;
 
-            return NewGit(new WorkingDirectory(directory)).Clone(repouri);
+            var git = container.Resolve<IGit>();
+            git.WorkingDirectory = new WorkingDirectory(directory);
+            git.Clone(repouri);
+            return git;
         }
 
         #endregion

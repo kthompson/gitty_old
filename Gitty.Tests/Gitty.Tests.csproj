@@ -53,6 +53,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Gitty.Lib.CLI\Gitty.Lib.CLI.csproj">
+      <Project>{B90D1621-2596-44B2-A7D9-493D347F2277}</Project>
+      <Name>Gitty.Lib.CLI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Gitty.Lib.CSharp\Gitty.Lib.CSharp.csproj">
+      <Project>{C46EDD61-C202-465A-93F1-ADE20A83BB59}</Project>
+      <Name>Gitty.Lib.CSharp</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Gitty\Gitty.csproj">
       <Project>{B3276B5A-E976-4328-A57D-7F4AD5DD5F31}</Project>
       <Name>Gitty</Name>

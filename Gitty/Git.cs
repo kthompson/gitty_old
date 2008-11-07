@@ -20,8 +20,8 @@ namespace Gitty
 
         static Git()
         {
-            var libraryTypes = from file in new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory).GetFiles("Git.Core*.dll") 
-                               from type in Assembly.Load(file.FullName).GetTypes()
+            var libraryTypes = from file in new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory).GetFiles("Gitty.Lib.*.dll") 
+                               from type in Assembly.LoadFrom(file.FullName).GetTypes()
                                where typeof (IGit).IsAssignableFrom(type)
                                select type;
             var builder = new ContainerBuilder();

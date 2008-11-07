@@ -3,13 +3,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30428</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{B90D1621-2596-44B2-A7D9-493D347F2277}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Gitty.Core.CLI</RootNamespace>
-    <AssemblyName>Gitty.Core.CLI</AssemblyName>
+    <RootNamespace>Gitty.Lib.CLI</RootNamespace>
+    <AssemblyName>Gitty.Lib.CLI</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -56,4 +56,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <PostBuildEvent>copy $(TargetDir)$(TargetName).* $(SolutionDir)Gitty\$(OutDir)</PostBuildEvent>
+  </PropertyGroup>
 </Project>

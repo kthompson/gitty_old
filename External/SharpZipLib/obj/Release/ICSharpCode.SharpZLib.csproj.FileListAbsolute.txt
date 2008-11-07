@@ -1,6 +1,6 @@
 C:\projects\Gitty\External\bin\ICSharpCode.SharpZipLib.dll
 C:\projects\Gitty\External\SharpZipLib\obj\Release\ResolveAssemblyReference.cache
 C:\projects\Gitty\External\SharpZipLib\obj\Release\ICSharpCode.SharpZipLib.dll
-C:\code\Gitty\External\bin\ICSharpCode.SharpZipLib.dll
 C:\code\Gitty\External\SharpZipLib\obj\Release\ResolveAssemblyReference.cache
 C:\code\Gitty\External\SharpZipLib\obj\Release\ICSharpCode.SharpZipLib.dll
+C:\code\Gitty\External\ICSharpCode.SharpZipLib.dll

@@ -21,7 +21,7 @@ namespace Gitty.Tests
             Assert.AreEqual(RepoPath, git.Repository.ToString(), "Test#010");
 
             Assert.IsTrue(git.Repository.Directory.Exists, "Test#020");
-            Assert.IsFalse(git.Index.File.Exists, "Test#030");
+            Assert.IsFalse(git.Repository.Index.File.Exists, "Test#030");
             Assert.IsTrue(git.WorkingDirectory.Directory.Exists, "Test#040");
 
             using(StreamWriter writer = File.CreateText(Path.Combine(git.WorkingDirectory, "hello")))
@@ -31,9 +31,9 @@ namespace Gitty.Tests
 
             git.Add();
 
-            git.Index.File.Refresh();
+            git.Repository.Index.File.Refresh();
 
-            Assert.IsTrue(git.Index.File.Exists, "Test#050");
+            Assert.IsTrue(git.Repository.Index.File.Exists, "Test#050");
 
             git.Commit("-m", "sample commit");
 

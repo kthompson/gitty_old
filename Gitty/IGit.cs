@@ -10,7 +10,6 @@ namespace Gitty
     {
         Repository Repository { get; set; }
         WorkingDirectory WorkingDirectory { get; set; }
-        Index Index { get; set; }
 
         #region porcelain
         void AddInteractive(params string[] options);

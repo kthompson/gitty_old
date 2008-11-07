@@ -6,7 +6,7 @@ using Gitty.Lib;
 using System.IO;
 using System.Diagnostics;
 
-namespace Gitty
+namespace Gitty.Core.CLI
 {
     public class GitLib : IGit
     {
@@ -14,11 +14,11 @@ namespace Gitty
         public class Constants
         {
             public static readonly string[] GitSearchPaths = { 
-                                                                Environment.ExpandEnvironmentVariables(@"%ProgramFiles%\Git\bin"), 
-                                                                "/bin", 
-                                                                Environment.SystemDirectory,
-                                                                Environment.CurrentDirectory                                                                
-                                                                };
+                                                                 Environment.ExpandEnvironmentVariables(@"%ProgramFiles%\Git\bin"), 
+                                                                 "/bin", 
+                                                                 Environment.SystemDirectory,
+                                                                 Environment.CurrentDirectory                                                                
+                                                             };
         }
 
         #region properties
@@ -155,12 +155,6 @@ namespace Gitty
 
             return output;
         }
-        #endregion
-
-        #region IGit Members
-
- 
-
         #endregion
     }
 }

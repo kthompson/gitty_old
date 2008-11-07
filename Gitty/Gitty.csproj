@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30428</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{B3276B5A-E976-4328-A57D-7F4AD5DD5F31}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -53,7 +53,6 @@
   <ItemGroup>
     <Compile Include="IGit.cs" />
     <Compile Include="Util\Hex.cs" />
-    <Compile Include="GitLib.cs" />
     <Compile Include="Git.cs" />
     <Compile Include="Lib\FileMode.cs" />
     <Compile Include="Lib\GitPath.cs" />

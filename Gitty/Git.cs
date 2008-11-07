@@ -70,7 +70,16 @@ namespace Gitty
 
             return FindGitDirectory(path.Directory);
         }
-        
+
+        private static IGit NewGit(Repository repo)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static IGit NewGit(WorkingDirectory wd)
+        {
+            throw new NotImplementedException();
+        }
 
         #endregion
 
@@ -79,7 +88,10 @@ namespace Gitty
         public static IGit Open(DirectoryInfo directory)
         {
             DirectoryInfo dir = FindGitDirectory(directory);
-            return dir == null ? null : new GitLib{Repository = new Repository(dir)};
+            if(dir == null)
+                return null;
+
+            return NewGit(new Repository(dir));
         }
 
         public static IGit Bare(DirectoryInfo directory)
@@ -92,7 +104,7 @@ namespace Gitty
             if (directory == null || !directory.Exists)
                 return null;
 
-            return new GitLib{WorkingDirectory = new WorkingDirectory(directory)}.Init();
+            return NewGit(new WorkingDirectory(directory)).Init();
         }
 
         public static IGit Clone(DirectoryInfo directory, string repouri)
@@ -100,7 +112,7 @@ namespace Gitty
             if (directory == null || string.IsNullOrEmpty(repouri))
                 return null;
 
-            return new GitLib{WorkingDirectory = new WorkingDirectory(directory)}.Clone(repouri);
+            return NewGit(new WorkingDirectory(directory)).Clone(repouri);
         }
 
         #endregion

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using Autofac.Builder;
+using Gitty.Lib.CommandLine;
 using Module=Autofac.Builder.Module;
 
 namespace Gitty.Lib.CLI

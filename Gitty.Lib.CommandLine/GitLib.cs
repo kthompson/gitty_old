@@ -6,7 +6,7 @@ using System.IO;
 using System.Diagnostics;
 using Gitty.Lib.CLI;
 
-namespace Gitty.Lib.CLI
+namespace Gitty.Lib.CommandLine
 {
     public class GitLib : IGit
     {
@@ -111,9 +111,26 @@ namespace Gitty.Lib.CLI
         public void Shortlog(params string[] options){}
         public void Show(params string[] options){}
         public void Stash(params string[] options){}
-        public void Status(params string[] options){}
+        public IDictionary<string,IStatusResult> Status(params string[] options)
+        {
+            throw new NotImplementedException();
+        }
         public void Submodule(params string[] options){}
         public void Tag(params string[] options){ }
+        #endregion
+
+        #region the plumbing
+        public IDictionary<string,ILsFilesFile> LsFiles(params string[] options)
+        {
+            var hash = new Dictionary<string, ILsFilesFile>();
+            foreach(string result in CommandLines("ls-files", "--stage"))
+            {
+                var fileResult = new LsFilesFile(result);
+                hash.Add(fileResult.Path, fileResult);
+            }
+                
+            return hash;
+        }
         #endregion
 
         #region private methods
@@ -167,6 +184,6 @@ namespace Gitty.Lib.CLI
             return output;
         }
         #endregion
- 
+
     }
 }

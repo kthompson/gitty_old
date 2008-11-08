@@ -49,9 +49,14 @@ namespace Gitty
         void Shortlog(params string[] options);
         void Show(params string[] options);
         void Stash(params string[] options);
-        void Status(params string[] options);
+        IDictionary<string,IStatusResult> Status(params string[] options);
         void Submodule(params string[] options);
         void Tag(params string[] options);
+        #endregion
+
+        #region plumbing
+
+        IDictionary<string,ILsFilesFile> LsFiles(params string[] options);
         #endregion
     }
 }

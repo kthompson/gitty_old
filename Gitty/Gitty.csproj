@@ -51,11 +51,19 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="IDiffFilesFile.cs" />
+    <Compile Include="IDiffIndexFile.cs" />
+    <Compile Include="IFile.cs" />
     <Compile Include="IGit.cs" />
     <Compile Include="IIndex.cs" />
+    <Compile Include="IIndexFile.cs" />
     <Compile Include="IPath.cs" />
     <Compile Include="IRepository.cs" />
+    <Compile Include="IRepositoryFile.cs" />
+    <Compile Include="IStatusResult.cs" />
     <Compile Include="IWorkingDirectory.cs" />
+    <Compile Include="ILsFilesFile.cs" />
+    <Compile Include="IWorkingDirectoryFile.cs" />
     <Compile Include="Util\Hex.cs" />
     <Compile Include="Git.cs" />
     <Compile Include="Lib\FileMode.cs" />

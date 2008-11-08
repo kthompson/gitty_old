@@ -10,28 +10,30 @@ namespace Gitty.Lib
     {
 
         public static readonly FileMode Tree = new FileMode(0040000, ObjectType.Tree,
-            delegate(int modeBits) { return (modeBits & 0170000) == 0040000; }
-        );
+                                                            modeBits => (modeBits & 0170000) == 0040000
+            );
 
         public static readonly FileMode Symlink = new FileMode(0120000, ObjectType.Blob,
-            delegate(int modeBits) { return (modeBits & 0170000) == 0120000; }
-        );
+                                                               modeBits => (modeBits & 0170000) == 0120000
+            );
 
         public static readonly FileMode RegularFile = new FileMode(0100644, ObjectType.Blob,
-            delegate(int modeBits) { return (modeBits & 0170000) == 0100000 && (modeBits & 0111) == 0; }
-        );
+                                                                   modeBits =>
+                                                                   (modeBits & 0170000) == 0100000 &&
+                                                                   (modeBits & 0111) == 0
+            );
 
         public static readonly FileMode ExecutableFile = new FileMode(0100755, ObjectType.Blob,
-            delegate(int modeBits) { return (modeBits & 0170000) == 0100000 && (modeBits & 0111) != 0; }
-        );
+                                                                      modeBits =>
+                                                                      (modeBits & 0170000) == 0100000 &&
+                                                                      (modeBits & 0111) != 0
+            );
 
         public static readonly FileMode GitLink = new FileMode(0160000, ObjectType.Commit,
-            delegate(int modeBits) { return (modeBits & 0170000) == 0160000; }
-        );
+                                                               modeBits => (modeBits & 0170000) == 0160000
+            );
 
-        public static readonly FileMode Missing = new FileMode(0000000, ObjectType.Bad,
-            delegate(int modeBits) { return modeBits == 0; }
-        );
+        public static readonly FileMode Missing = new FileMode(0000000, ObjectType.Bad, modeBits => modeBits == 0);
 
         private byte[] _octalBytes;
 
@@ -86,18 +88,14 @@ namespace Gitty.Lib
                 case 0040000:
                     return Tree;
                 case 0100000:
-                    if ((bits & 0111) != 0)
-                        return ExecutableFile;
-                    return RegularFile;
+                    return (bits & 0111) != 0 ? ExecutableFile : RegularFile;
                 case 0120000:
                     return Symlink;
                 case 0160000:
                     return GitLink;
             }
 
-            return new FileMode(bits, ObjectType.Bad,
-                delegate(int a) { return bits == a; }
-            );
+            return new FileMode(bits, ObjectType.Bad, a => bits == a);
         }
 
         public void CopyTo(StreamWriter writer)

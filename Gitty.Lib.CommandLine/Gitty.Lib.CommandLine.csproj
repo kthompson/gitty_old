@@ -3,13 +3,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30428</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{B90D1621-2596-44B2-A7D9-493D347F2277}</ProjectGuid>
+    <ProjectGuid>{6BBAF76C-573C-49FD-8245-58C153A1BBCE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Gitty.Lib.CLI</RootNamespace>
-    <AssemblyName>Gitty.Lib.CLI</AssemblyName>
+    <RootNamespace>Gitty.Lib.CommandLine</RootNamespace>
+    <AssemblyName>Gitty.Lib.CommandLine</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

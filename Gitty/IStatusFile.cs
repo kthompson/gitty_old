@@ -11,7 +11,7 @@ namespace Gitty
         Index
     }
 
-    public interface IStatusResult : ILsFilesFile, IRepositoryFile
+    public interface IStatusFile : ILsFilesFile, IRepositoryFile
     {
         StatusType Type { get; }
         bool Untracked { get; }

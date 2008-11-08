@@ -35,6 +35,9 @@ namespace Gitty.Tests
 
             Assert.IsTrue(git.Repository.Index.File.Exists, "Test#050");
 
+            git.Status();
+            
+
             git.Commit("-m", "sample commit");
 
             //teardown 

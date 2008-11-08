@@ -111,9 +111,9 @@ namespace Gitty.Lib.CommandLine
         public void Shortlog(params string[] options){}
         public void Show(params string[] options){}
         public void Stash(params string[] options){}
-        public IDictionary<string,IStatusResult> Status(params string[] options)
+        public IStatus Status(params string[] options)
         {
-            throw new NotImplementedException();
+            return new Status(this);
         }
         public void Submodule(params string[] options){}
         public void Tag(params string[] options){ }
@@ -125,10 +125,12 @@ namespace Gitty.Lib.CommandLine
             var hash = new Dictionary<string, ILsFilesFile>();
             foreach(string result in CommandLines("ls-files", "--stage"))
             {
-                var fileResult = new LsFilesFile(result);
-                hash.Add(fileResult.Path, fileResult);
+                if (result.Length != 0)
+                {
+                    var fileResult = new LsFilesFile(result);
+                    hash.Add(fileResult.Path, fileResult);
+                }
             }
-                
             return hash;
         }
 
@@ -138,6 +140,19 @@ namespace Gitty.Lib.CommandLine
             foreach (string line in CommandLines("diff-files"))
             {
                 var file = new DiffFilesFile(line);
+                hash.Add(file.Path, file);
+            }
+            return hash;
+        }
+
+        public IDictionary<string, IDiffIndexFile> DiffIndex(string treeish, params string[] options)
+        {
+            Enforce.ArgumentNotNull(treeish, "treeish");
+
+            var hash = new Dictionary<string, IDiffIndexFile>();
+            foreach (string line in CommandLines("diff-index", treeish))
+            {
+                var file = new DiffIndexFile(line);
                 hash.Add(file.Path, file);
             }
             return hash;
@@ -169,15 +184,20 @@ namespace Gitty.Lib.CommandLine
         {
             string opts = string.Join(" ", options.Select(s => s.Contains(" ") ? "\"" + s + "\"" : s).ToArray());
             
-            Process proc = new Process();
-            proc.StartInfo.CreateNoWindow = true;
-            proc.StartInfo.UseShellExecute = false;
-            proc.StartInfo.RedirectStandardError = true;
-            proc.StartInfo.RedirectStandardOutput = true;
-            proc.StartInfo.FileName = GitExecutable;
-            proc.StartInfo.Arguments = command + " " + opts; //redirect error to output
-            proc.StartInfo.WorkingDirectory = WorkingDirectory.ToString();
-            
+            var proc = new Process
+                               {
+                                   StartInfo =
+                                       {
+                                           CreateNoWindow = true,
+                                           UseShellExecute = false,
+                                           RedirectStandardError = true,
+                                           RedirectStandardOutput = true,
+                                           FileName = GitExecutable,
+                                           Arguments = (command + " " + opts),
+                                           WorkingDirectory = WorkingDirectory.ToString()
+                                       }
+                               };
+
             proc.Start();
 
             string output = proc.StandardOutput.ReadToEnd();

@@ -51,6 +51,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Enforce.cs" />
     <Compile Include="IDiffFilesFile.cs" />
     <Compile Include="IDiffIndexFile.cs" />
     <Compile Include="IFile.cs" />
@@ -60,7 +61,8 @@
     <Compile Include="IPath.cs" />
     <Compile Include="IRepository.cs" />
     <Compile Include="IRepositoryFile.cs" />
-    <Compile Include="IStatusResult.cs" />
+    <Compile Include="IStatus.cs" />
+    <Compile Include="IStatusFile.cs" />
     <Compile Include="IWorkingDirectory.cs" />
     <Compile Include="ILsFilesFile.cs" />
     <Compile Include="IWorkingDirectoryFile.cs" />

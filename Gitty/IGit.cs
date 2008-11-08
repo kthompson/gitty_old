@@ -49,7 +49,7 @@ namespace Gitty
         void Shortlog(params string[] options);
         void Show(params string[] options);
         void Stash(params string[] options);
-        IDictionary<string,IStatusResult> Status(params string[] options);
+        IStatus Status(params string[] options);
         void Submodule(params string[] options);
         void Tag(params string[] options);
         #endregion
@@ -58,6 +58,7 @@ namespace Gitty
 
         IDictionary<string,ILsFilesFile> LsFiles(params string[] options);
         IDictionary<string, IDiffFilesFile> DiffFiles(params string[] options);
+        IDictionary<string, IDiffIndexFile> DiffIndex(string treeish, params string[] options);
         #endregion
     }
 }

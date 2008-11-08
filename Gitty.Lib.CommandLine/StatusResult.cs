@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Gitty.Lib.CommandLine
 {
-    public class StatusResult : LsFilesFile, IStatusResult
+    public class StatusResult : LsFilesFile, IStatusFile
     {
         #region IStatusResult Members
 

@@ -12,6 +12,7 @@ namespace Gitty.Lib.CommandLine
         }
         public LsFilesFile(string lsFilesResultLine)
         {
+            Enforce.ArgumentNotNullOrEmpty(lsFilesResultLine, "lsFilesResultLine");
             string[] lineParts = lsFilesResultLine.Split('\t');
 
             string[] options = lineParts[0].Split(' ');

@@ -131,6 +131,18 @@ namespace Gitty.Lib.CommandLine
                 
             return hash;
         }
+
+        public IDictionary<string, IDiffFilesFile> DiffFiles(params string[] options)
+        {
+            var hash = new Dictionary<string, IDiffFilesFile>();
+            foreach (string line in CommandLines("diff-files"))
+            {
+                var file = new DiffFilesFile(line);
+                hash.Add(file.Path, file);
+            }
+            return hash;
+        }
+
         #endregion
 
         #region private methods

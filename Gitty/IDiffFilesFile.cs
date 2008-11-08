@@ -5,7 +5,20 @@ using System.Text;
 
 namespace Gitty
 {
-    public interface IDiffFilesFile: IWorkingDirectoryFile, IRepositoryFile
+    public enum DiffMode
     {
+        Add = 'A',
+        Copy = 'C',
+        Delete = 'D',
+        Modification = 'M',
+        Rename = 'R',
+        TypeChange = 'T',
+        Unmerged = 'U',
+        Unknown = 'X',
+    }
+
+    public interface IDiffFilesFile: IWorkingDirectoryFile, IIndexFile
+    {
+        DiffMode Type{ get; }
     }
 }

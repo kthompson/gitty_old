@@ -57,6 +57,7 @@ namespace Gitty
         #region plumbing
 
         IDictionary<string,ILsFilesFile> LsFiles(params string[] options);
+        IDictionary<string, IDiffFilesFile> DiffFiles(params string[] options);
         #endregion
     }
 }

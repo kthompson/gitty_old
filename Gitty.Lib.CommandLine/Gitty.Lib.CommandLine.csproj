@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DiffFilesFile.cs" />
     <Compile Include="GitCommandLine.cs" />
     <Compile Include="GitLib.cs" />
     <Compile Include="GitPath.cs" />

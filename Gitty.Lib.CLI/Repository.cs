@@ -1,8 +1,9 @@
 ﻿using System.IO;
+using Gitty.Lib.CLI;
 
-namespace Gitty.Lib
+namespace Gitty.Lib.CLI
 {
-    public class Repository: GitPath
+    public class Repository: GitPath, IRepository
     {
 
         public Repository(string directory, string subdirectory)
@@ -18,15 +19,15 @@ namespace Gitty.Lib
         public Repository(DirectoryInfo directory)
             : base(directory)
         {
-            Index = new Index(this);
+            Index = new Index((IRepository)this);
         }
 
-        public Repository(WorkingDirectory directory)
-            : this(Path.Combine(directory, ".git"))
+        public Repository(IWorkingDirectory directory)
+            : this(Path.Combine(directory.ToString(), ".git"))
         {
         }
 
 
-        public Index Index { get; private set; }
+        public IIndex Index { get; private set; }
     }
 }

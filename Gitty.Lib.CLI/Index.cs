@@ -4,9 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Gitty.Lib
+namespace Gitty.Lib.CLI
 {
-    public class Index : GitPath
+    public class Index : GitPath, IIndex
     {
         public Index(string directory, string file)
             : this(Path.Combine(directory, file))
@@ -23,9 +23,23 @@ namespace Gitty.Lib
         {
         }
 
-        public Index(Repository repo)
-            : this(repo, "index")
+        public Index(IRepository repo)
+            : this(repo.ToString(), "index")
         {
         }
+
+        #region IIndex Members
+
+        public void Checkout(string branch)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Add(FileInfo file, string sha)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }

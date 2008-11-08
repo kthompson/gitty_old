@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Gitty.Lib;
 using System.IO;
 using System.Diagnostics;
+using Gitty.Lib.CLI;
 
-namespace Gitty.Core.CLI
+namespace Gitty.Lib.CLI
 {
     public class GitLib : IGit
     {
@@ -22,9 +22,19 @@ namespace Gitty.Core.CLI
         }
 
         #region properties
-        public WorkingDirectory WorkingDirectory { get; set; }
-        public Repository Repository { get; set; }
-        public Index Index { get; set; }
+        public IWorkingDirectory WorkingDirectory { get; set; }
+        public IRepository Repository { get; set; }
+
+
+        public string CurrentBranch
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public string[] Branches
+        {
+            get { throw new NotImplementedException(); }
+        }
 
         public string GitExecutable { get; private set; }
         #endregion
@@ -40,13 +50,16 @@ namespace Gitty.Core.CLI
         public void AddInteractive(params string[] options)
         {
         }
-        public void Add(params string[] options) 
+        public bool Add(params string[] options) 
         {
             if (options.Length == 0)
                 Command("add", ".");
             else
                 Command("add", options);
+            //TODO: make add command return a proper result
+            return true;
         }
+
         public void Am(params string[] options) 
         {
         }
@@ -82,8 +95,6 @@ namespace Gitty.Core.CLI
 
             if(Repository ==null)
                 Repository  = new Repository(WorkingDirectory);
-            if(Index == null)
-                Index = new Index(Repository);
 
             return this;
         }
@@ -136,7 +147,7 @@ namespace Gitty.Core.CLI
             proc.StartInfo.RedirectStandardOutput = true;
             proc.StartInfo.FileName = GitExecutable;
             proc.StartInfo.Arguments = command + " " + opts; //redirect error to output
-            proc.StartInfo.WorkingDirectory = WorkingDirectory;
+            proc.StartInfo.WorkingDirectory = WorkingDirectory.ToString();
             
             proc.Start();
 
@@ -156,5 +167,6 @@ namespace Gitty.Core.CLI
             return output;
         }
         #endregion
+ 
     }
 }

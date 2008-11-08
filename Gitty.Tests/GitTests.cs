@@ -24,7 +24,7 @@ namespace Gitty.Tests
             Assert.IsFalse(git.Repository.Index.File.Exists, "Test#030");
             Assert.IsTrue(git.WorkingDirectory.Directory.Exists, "Test#040");
 
-            using(StreamWriter writer = File.CreateText(Path.Combine(git.WorkingDirectory, "hello")))
+            using(StreamWriter writer = File.CreateText(Path.Combine(git.WorkingDirectory.ToString(), "hello")))
             {
                 writer.WriteLine("Simple file to be added to repo");
             }

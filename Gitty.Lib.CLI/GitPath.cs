@@ -3,7 +3,7 @@ using System.IO;
 
 namespace Gitty.Lib
 {
-    public class GitPath
+    public class GitPath : IPath
     {
         public DirectoryInfo Directory { get; private set; }
         public FileInfo File { get; private set; }

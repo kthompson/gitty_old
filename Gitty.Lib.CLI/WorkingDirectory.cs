@@ -2,7 +2,7 @@
 
 namespace Gitty.Lib
 {
-    public class WorkingDirectory : GitPath
+    public class WorkingDirectory : GitPath, IWorkingDirectory
     {
         public WorkingDirectory(string directory, string subdirectory)
             : this(Path.Combine(directory, subdirectory))

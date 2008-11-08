@@ -12,25 +12,29 @@ namespace Gitty
 {
     public class Git 
     {
+
         #region properties
-        private static readonly IContainer container;
+        private static readonly ContainerBuilder builder = new ContainerBuilder();
         #endregion
 
         #region constructors
 
         static Git()
         {
-            var libraryTypes = from file in new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory).GetFiles("Gitty.Lib.*.dll") 
-                               from type in Assembly.LoadFrom(file.FullName).GetTypes()
-                               where typeof (IGit).IsAssignableFrom(type)
-                               select type;
-            var builder = new ContainerBuilder();
-            foreach (var type in libraryTypes)
-            {
-                builder.Register(type).As<IGit>().FactoryScoped();
-            }
+            var modules =
+                from module in new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory).GetFiles("Gitty.Lib.*.dll")
+                from type in Assembly.LoadFrom(module.FullName).GetTypes()
+                where typeof (IModule).IsAssignableFrom(type)
+                select type;
 
-            container = builder.Build();
+            //add first module
+            builder.RegisterModule((IModule)Activator.CreateInstance(modules.First()));
+
+        }
+
+        private Git()
+        {
+
         }
         #endregion
 
@@ -49,7 +53,6 @@ namespace Gitty
 
             return path.Parent == null ? null : FindGitDirectory(path.Parent);
         }
-       
 
         #endregion
 
@@ -61,10 +64,14 @@ namespace Gitty
             if(dir == null)
                 return null;
 
-            var git = container.Resolve<IGit>();
-            git.Repository = new Repository(dir);
-
-            return git;
+            builder.Register(dir);
+            using(var container = builder.Build())
+            {
+                var git = container.Resolve<IGit>();
+                git.Repository = container.Resolve<IRepository>();
+                return git;    
+            }
+            
         }
 
         public static IGit Bare(DirectoryInfo directory)
@@ -77,10 +84,14 @@ namespace Gitty
             if (directory == null || !directory.Exists)
                 return null;
 
-            var git = container.Resolve<IGit>();
-            git.WorkingDirectory = new WorkingDirectory(directory);
-            git.Init();
-            return git;
+            builder.Register(directory);
+            using (var container = builder.Build())
+            {
+                var git = container.Resolve<IGit>();
+                git.WorkingDirectory = container.Resolve<IWorkingDirectory>(new TypedParameter(typeof(DirectoryInfo), directory));
+                git.Init();
+                return git;
+            }
         }
 
         public static IGit Clone(DirectoryInfo directory, string repouri)
@@ -88,10 +99,14 @@ namespace Gitty
             if (directory == null || string.IsNullOrEmpty(repouri))
                 return null;
 
-            var git = container.Resolve<IGit>();
-            git.WorkingDirectory = new WorkingDirectory(directory);
-            git.Clone(repouri);
-            return git;
+            builder.Register(directory);
+            using (var container = builder.Build())
+            {
+                var git = container.Resolve<IGit>();
+                git.WorkingDirectory = container.Resolve<IWorkingDirectory>(new TypedParameter(typeof(DirectoryInfo), directory));
+                git.Clone(repouri);
+                return git;
+            }
         }
 
         #endregion

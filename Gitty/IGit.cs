@@ -8,12 +8,14 @@ namespace Gitty
 {
     public interface IGit
     {
-        Repository Repository { get; set; }
-        WorkingDirectory WorkingDirectory { get; set; }
+        IRepository Repository { get; set; }
+        IWorkingDirectory WorkingDirectory { get; set; }
+        string CurrentBranch { get; }
+        string[] Branches { get; }
 
         #region porcelain
         void AddInteractive(params string[] options);
-        void Add(params string[] options);
+        bool Add(params string[] options);
         void Am(params string[] options);
         void Annotate(params string[] options);
         void Apply(params string[] options);

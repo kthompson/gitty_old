@@ -15,7 +15,8 @@ namespace Gitty.Lib.CommandLine
 
             var files = Git.LsFiles();
 
-            var wdfiles = git.WorkingDirectory.Directory.GetFiles("**/*");
+            var wdfiles = new WorkingDirectory(git.WorkingDirectory.Directory).GetFiles();
+            throw  new NotImplementedException();
         }
 
      

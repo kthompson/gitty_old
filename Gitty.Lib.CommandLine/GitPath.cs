@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
-namespace Gitty.Lib
+namespace Gitty.Lib.CommandLine
 {
     public class GitPath : IPath
     {
@@ -45,5 +47,37 @@ namespace Gitty.Lib
             return File != null ? File.ToString() : Directory.FullName;
         }
 
+        public string[] GetFiles()
+        {
+            return GetFiles(Directory, "");
+        }
+
+        private static string[] GetFiles(DirectoryInfo directory, string parentPath)
+        {
+
+            if (directory == null) throw new ArgumentNullException("directory");
+            if (parentPath == null) throw new ArgumentNullException("parentPath");
+
+            if (parentPath.Length != 0 && !parentPath.EndsWith("/"))
+                parentPath += "/";
+
+
+            var results = new List<string>();
+            
+
+            var files = from file in directory.GetFiles()
+                        select parentPath + file.Name;
+
+            results.AddRange(files);
+
+            foreach (var folder in directory.GetDirectories())
+            {
+                var name = parentPath + folder.Name;
+                results.Add(name);
+                results.AddRange(GetFiles(folder, name));
+            }
+
+            return results.ToArray();
+        }
     }
 }

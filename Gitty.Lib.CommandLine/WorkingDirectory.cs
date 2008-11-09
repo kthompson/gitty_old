@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Gitty.Lib.CommandLine;
 
 namespace Gitty.Lib
 {

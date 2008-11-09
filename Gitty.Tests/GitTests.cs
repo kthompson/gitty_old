@@ -79,6 +79,12 @@ namespace Gitty.Tests
 
             Touch(Path.Combine(subdir, "file4"));
 
+            var subdir2 = Path.Combine(subdir, "dir2");
+            Directory.CreateDirectory(subdir2);
+
+            Touch(Path.Combine(subdir2, "file5"));
+            Touch(Path.Combine(subdir2, "file6"));
+
             var simpledir = new DirectoryInfo(testdir);
             var path = new GitPath(simpledir);
 
@@ -90,6 +96,9 @@ namespace Gitty.Tests
             Assert.AreEqual("file3", files[2], "0400");
             Assert.AreEqual("dir", files[3], "0450");
             Assert.AreEqual("dir/file4", files[4], "0500");
+            Assert.AreEqual("dir/dir2", files[5], "0600");
+            Assert.AreEqual("dir/dir2/file5", files[6], "0700");
+            Assert.AreEqual("dir/dir2/file6", files[7], "0800");
 
             Directory.Delete(testdir, true);
         }

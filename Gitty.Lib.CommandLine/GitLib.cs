@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Diagnostics;
-using Gitty.Lib.CLI;
 
 namespace Gitty.Lib.CommandLine
 {

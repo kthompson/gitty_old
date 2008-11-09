@@ -16,7 +16,7 @@ namespace Gitty.Lib.CommandLine
             var files = Git.LsFiles();
 
             var wdfiles = new WorkingDirectory(git.WorkingDirectory.Directory).GetFiles();
-            throw  new NotImplementedException();
+            throw new NotImplementedException();
         }
 
      
@@ -24,22 +24,22 @@ namespace Gitty.Lib.CommandLine
 
         public List<IStatusFile> Changed
         {
-            get { throw new System.NotImplementedException(); }
+            get { throw new NotImplementedException(); }
         }
 
         public List<IStatusFile> Added
         {
-            get { throw new System.NotImplementedException(); }
+            get { throw new NotImplementedException(); }
         }
 
         public List<IStatusFile> Deleted
         {
-            get { throw new System.NotImplementedException(); }
+            get { throw new NotImplementedException(); }
         }
 
         public List<IStatusFile> Untracked
         {
-            get { throw new System.NotImplementedException(); }
+            get { throw new NotImplementedException(); }
         }
 
         public class StatusFile : IStatusFile

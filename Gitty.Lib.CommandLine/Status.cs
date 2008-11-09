@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -13,9 +14,43 @@ namespace Gitty.Lib.CommandLine
         {
             Git = git;
 
-            var files = Git.LsFiles();
+            foreach (var file in Git.LsFiles())
+            {
+                Add(file.Key , new StatusFile(file.Value));
+            }
 
-            var wdfiles = new WorkingDirectory(git.WorkingDirectory.Directory).GetFiles();
+            foreach (var file in git.WorkingDirectory.GetFiles())
+            {
+                var relPath = GitPath.GetRelativePath(git.WorkingDirectory, file.FullName);
+                if (!ContainsKey(relPath) && ((file.Attributes & FileAttributes.Directory) != FileAttributes.Directory))
+                    Add(relPath, new StatusFile { Untracked = true, Path = relPath });
+            }
+
+            foreach (var pair in git.DiffFiles())
+            {
+                if (ContainsKey(pair.Key))
+                {
+
+                }
+                else
+                {
+                    Add(pair.Key, new StatusFile(pair.Value));
+                }
+            }
+
+
+            foreach (var pair in git.DiffIndex("HEAD"))
+            {
+                if (ContainsKey(pair.Key))
+                {
+
+                }
+                else
+                {
+                    Add(pair.Key, new StatusFile(pair.Value));
+                }
+            }
+
             throw new NotImplementedException();
         }
 
@@ -42,20 +77,6 @@ namespace Gitty.Lib.CommandLine
             get { throw new NotImplementedException(); }
         }
 
-        public class StatusFile : IStatusFile
-        {
-            public StatusFile()
-            {
-            }
-
-            public string Path { get; set; }
-            public string IndexMode { get; set; }
-            public string IndexSha { get; set; }
-            public bool Stage { get; set; }
-            public string RepositoryMode { get; set; }
-            public string RepositorySha { get; set; }
-            public StatusType Type { get; set; }
-            public bool Untracked { get; set; }
-        }
+       
     }
 }

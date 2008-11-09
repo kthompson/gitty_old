@@ -10,5 +10,6 @@ namespace Gitty
     {
         DirectoryInfo Directory { get; }
         FileInfo File { get; }
+        FileSystemInfo[] GetFiles();
     }
 }

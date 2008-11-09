@@ -47,37 +47,52 @@ namespace Gitty.Lib.CommandLine
             return File != null ? File.ToString() : Directory.FullName;
         }
 
-        public string[] GetFiles()
+        public FileSystemInfo[] GetFiles()
         {
-            return GetFiles(Directory, "");
+            return GetFiles(Directory);
         }
 
-        private static string[] GetFiles(DirectoryInfo directory, string parentPath)
+        private static FileSystemInfo[] GetFiles(DirectoryInfo directory)
         {
-
             if (directory == null) throw new ArgumentNullException("directory");
-            if (parentPath == null) throw new ArgumentNullException("parentPath");
 
-            if (parentPath.Length != 0 && !parentPath.EndsWith("/"))
-                parentPath += "/";
-
-
-            var results = new List<string>();
+            var results = new List<FileSystemInfo>();
             
-
-            var files = from file in directory.GetFiles()
-                        select parentPath + file.Name;
-
-            results.AddRange(files);
+            results.AddRange(directory.GetFileSystemInfos());
 
             foreach (var folder in directory.GetDirectories())
             {
-                var name = parentPath + folder.Name;
-                results.Add(name);
-                results.AddRange(GetFiles(folder, name));
+                results.AddRange(GetFiles(folder));
+            }
+            
+            return results.ToArray();
+        }
+        public string GetRelativePath(string path)
+        {
+            return GetRelativePath(this, path);
+        }
+
+        public static string GetRelativePath(IPath directory, string path)
+        {
+            if (path == null) throw new ArgumentNullException("path");
+
+            var relativeToParts = new List<string>(directory.Directory.FullName.Split(Path.DirectorySeparatorChar));
+            var pathParts = new List<string>(path.Split(Path.DirectorySeparatorChar));
+
+            while (relativeToParts.Count > 0 && pathParts.Count > 0 && relativeToParts[0] == pathParts[0])
+            {
+                relativeToParts.RemoveAt(0);
+                pathParts.RemoveAt(0);
             }
 
-            return results.ToArray();
+            while (relativeToParts.Count > 0)
+            {
+                relativeToParts.RemoveAt(0);
+                pathParts.Insert(0, "..");
+            }
+
+            return string.Join("/", pathParts.ToArray());
+
         }
     }
 }

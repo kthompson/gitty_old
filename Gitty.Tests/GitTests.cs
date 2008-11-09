@@ -91,14 +91,14 @@ namespace Gitty.Tests
             Assert.AreEqual(simpledir, path.Directory,"0100");
 
             var files = path.GetFiles();
-            Assert.AreEqual("file1", files[0], "0200");
-            Assert.AreEqual("file2", files[1], "0300");
-            Assert.AreEqual("file3", files[2], "0400");
-            Assert.AreEqual("dir", files[3], "0450");
-            Assert.AreEqual("dir/file4", files[4], "0500");
-            Assert.AreEqual("dir/dir2", files[5], "0600");
-            Assert.AreEqual("dir/dir2/file5", files[6], "0700");
-            Assert.AreEqual("dir/dir2/file6", files[7], "0800");
+            Assert.AreEqual("dir", path.GetRelativePath(files[0].FullName), "0200");
+            Assert.AreEqual("file1", path.GetRelativePath(files[1].FullName), "0300");
+            Assert.AreEqual("file2", path.GetRelativePath(files[2].FullName), "0400");
+            Assert.AreEqual("file3", path.GetRelativePath(files[3].FullName), "0450");
+            Assert.AreEqual("dir/dir2", path.GetRelativePath(files[4].FullName), "0500");
+            Assert.AreEqual("dir/file4", path.GetRelativePath(files[5].FullName), "0600");
+            Assert.AreEqual("dir/dir2/file5", path.GetRelativePath(files[6].FullName), "0700");
+            Assert.AreEqual("dir/dir2/file6", path.GetRelativePath(files[7].FullName), "0800");
 
             Directory.Delete(testdir, true);
         }

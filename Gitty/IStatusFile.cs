@@ -7,6 +7,7 @@ namespace Gitty
 {
     public enum StatusType
     {
+        None,
         Repository,
         Index
     }

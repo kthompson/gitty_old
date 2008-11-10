@@ -12,9 +12,9 @@ namespace Gitty
         Index
     }
 
-    public interface IStatusFile : ILsFilesFile, IRepositoryFile
+    public interface IStatusFile : ILsFilesFile, IRepositoryFile, IWorkingDirectoryFile
     {
-        StatusType Type { get; }
-        bool Untracked { get; }
+        DiffMode Type { get; set; }
+        bool Untracked { get; set; }
     }
 }

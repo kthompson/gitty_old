@@ -28,7 +28,7 @@ namespace Gitty
         void Citool(params string[] options);
         void Clean(params string[] options);
         IGit Clone(string repospec, params string[] options);
-        void Commit(params string[] options);
+        void Commit(string message, params string[] options);
         void Diff(params string[] options);
         void Fetch(params string[] options);
         void FormatPatch(params string[] options);

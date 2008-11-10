@@ -7,7 +7,7 @@ namespace Gitty
 {
     public interface IWorkingDirectoryFile : IFile
     {
-        string WorkingDirectoryMode { get; }
-        string WorkingDirectorySha { get; }
+        string WorkingDirectoryMode { get; set; }
+        string WorkingDirectorySha { get; set; }
     }
 }

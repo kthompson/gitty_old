@@ -7,9 +7,9 @@ namespace Gitty
 {
     public interface IStatus : IDictionary<string,IStatusFile>
     {
-        List<IStatusFile> Changed { get; }
-        List<IStatusFile> Added { get; }
-        List<IStatusFile> Deleted { get; }
-        List<IStatusFile> Untracked { get; }
+        IEnumerable<IStatusFile> Changed { get; }
+        IEnumerable<IStatusFile> Added { get; }
+        IEnumerable<IStatusFile> Deleted { get; }
+        IEnumerable<IStatusFile> Untracked { get; }
     }
 }

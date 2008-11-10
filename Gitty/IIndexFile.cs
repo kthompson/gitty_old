@@ -7,7 +7,7 @@ namespace Gitty
 {
     public interface IIndexFile : IFile
     {
-        string IndexMode { get; }
-        string IndexSha { get; }
+        string IndexMode { get; set; }
+        string IndexSha { get; set; }
     }
 }

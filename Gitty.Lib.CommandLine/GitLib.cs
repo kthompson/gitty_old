@@ -78,9 +78,13 @@ namespace Gitty.Lib.CommandLine
             //TODO: set the repo directory 
             return this;
         }
-        public void Commit(params string[] options)
+        public void Commit(string message, params string[] options)
         {
-            Command("commit", options);
+            string[] newOptions = new string[options.Length+2];
+            newOptions[0] = "-m";
+            newOptions[1] = message;
+            options.CopyTo(newOptions,2);
+            Command("commit", newOptions);
         }
         public void Diff(params string[] options){}
         public void Fetch(params string[] options){}
@@ -124,11 +128,9 @@ namespace Gitty.Lib.CommandLine
             var hash = new Dictionary<string, ILsFilesFile>();
             foreach(string result in CommandLines("ls-files", "--stage"))
             {
-                if (result.Length != 0)
-                {
-                    var fileResult = new LsFilesFile(result);
-                    hash.Add(fileResult.Path, fileResult);
-                }
+                if (string.IsNullOrEmpty(result)) continue;
+                var fileResult = new LsFilesFile(result);
+                hash.Add(fileResult.Path, fileResult);
             }
             return hash;
         }
@@ -138,6 +140,7 @@ namespace Gitty.Lib.CommandLine
             var hash = new Dictionary<string, IDiffFilesFile>();
             foreach (string line in CommandLines("diff-files"))
             {
+                if(string.IsNullOrEmpty(line)) continue;
                 var file = new DiffFilesFile(line);
                 hash.Add(file.Path, file);
             }
@@ -151,6 +154,7 @@ namespace Gitty.Lib.CommandLine
             var hash = new Dictionary<string, IDiffIndexFile>();
             foreach (string line in CommandLines("diff-index", treeish))
             {
+                if (string.IsNullOrEmpty(line)) continue;
                 var file = new DiffIndexFile(line);
                 hash.Add(file.Path, file);
             }

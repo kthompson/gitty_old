@@ -19,7 +19,7 @@ namespace Gitty.Lib.CommandLine
             var options = parts[0].Split(' ');
 
             Path = parts[1];
-            RepositoryMode = options[0].Substring(1, 7);
+            RepositoryMode = options[0].Substring(1, 6);
             IndexMode = options[1];
             RepositorySha = options[2];
             IndexSha = options[3];

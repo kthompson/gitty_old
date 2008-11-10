@@ -30,12 +30,18 @@ namespace Gitty.Lib.CommandLine
             {
                 if (ContainsKey(pair.Key))
                 {
+                    var diffFile = pair.Value;
+                    var currentFile = this[pair.Key];
 
+                    currentFile.Path = diffFile.Path;
+                    currentFile.IndexMode = diffFile.IndexMode;
+                    currentFile.IndexSha = diffFile.IndexSha;
+                    currentFile.Type = diffFile.Type;
+                    currentFile.WorkingDirectoryMode = diffFile.WorkingDirectoryMode;
+                    currentFile.WorkingDirectorySha = diffFile.WorkingDirectorySha;
                 }
                 else
-                {
                     Add(pair.Key, new StatusFile(pair.Value));
-                }
             }
 
 
@@ -43,40 +49,42 @@ namespace Gitty.Lib.CommandLine
             {
                 if (ContainsKey(pair.Key))
                 {
+                    var diffFile = pair.Value;
+                    var currentFile = this[pair.Key];
 
+                    currentFile.Path = diffFile.Path;
+                    currentFile.IndexMode = diffFile.IndexMode;
+                    currentFile.IndexSha = diffFile.IndexSha;
+                    currentFile.Type = diffFile.Type;
+                    currentFile.RepositoryMode = diffFile.RepositoryMode;
+                    currentFile.RepositorySha = diffFile.RepositorySha;
                 }
                 else
-                {
                     Add(pair.Key, new StatusFile(pair.Value));
-                }
             }
-
-            throw new NotImplementedException();
         }
 
-     
-       
 
-        public List<IStatusFile> Changed
+
+
+        public IEnumerable<IStatusFile> Changed
         {
-            get { throw new NotImplementedException(); }
+            get { return this.Where(file => file.Value.Type == DiffMode.Modification).Select(file => file.Value); }
         }
 
-        public List<IStatusFile> Added
+        public IEnumerable<IStatusFile> Added
         {
-            get { throw new NotImplementedException(); }
+            get { return this.Where(file => file.Value.Type == DiffMode.Add).Select(file => file.Value); }
         }
 
-        public List<IStatusFile> Deleted
+        public IEnumerable<IStatusFile> Deleted
         {
-            get { throw new NotImplementedException(); }
+            get { return this.Where(file => file.Value.Type == DiffMode.Delete).Select(file => file.Value); }
         }
 
-        public List<IStatusFile> Untracked
+        public IEnumerable<IStatusFile> Untracked
         {
-            get { throw new NotImplementedException(); }
+            get { return this.Where(file => file.Value.Untracked).Select(file => file.Value); }
         }
-
-       
     }
 }

@@ -45,7 +45,7 @@ namespace Gitty.Tests
             Directory.Delete(Root, true);
         }
 
-        private string GetTempFolder(string name)
+        private static string GetTempFolder(string name)
         {
             return Path.Combine(Path.GetTempPath(), name);
         }
@@ -103,7 +103,62 @@ namespace Gitty.Tests
             Directory.Delete(testdir, true);
         }
 
-        private void Touch(string combine)
+
+        [Test]
+        public void GitStatusTest()
+        {
+            //setup 
+            IGit git = GetTempGit();
+            string wd = git.WorkingDirectory.ToString();
+
+            using (StreamWriter writer = File.CreateText(Path.Combine(wd, "hello")))
+            {
+                writer.WriteLine("Simple file to be added to repo");
+            }
+
+            git.Add("hello");
+
+            git.Commit("first commit");
+
+            using (StreamWriter writer = File.CreateText(Path.Combine(wd, "uncommitedfile")))
+            {
+                writer.WriteLine("<empty file>");
+            }
+
+            git.Add("uncommitedfile");
+
+
+            using (StreamWriter writer = File.CreateText(Path.Combine(wd, "untrackedfile")))
+            {
+                writer.WriteLine("<empty file>");
+            }
+
+            var status = git.Status();
+
+            Assert.IsTrue(status.ContainsKey("hello"), "0100");
+            Assert.AreEqual("hello",status["hello"].Path, "0200");
+
+            Assert.IsTrue(status.ContainsKey("uncommitedfile"), "0300");
+            Assert.AreEqual(DiffMode.Add, status["uncommitedfile"].Type, "0400");
+
+            Assert.IsTrue(status.ContainsKey("untrackedfile"), "0500");
+            Assert.IsTrue(status["untrackedfile"].Untracked, "0600");
+            
+            
+            //teardown 
+            Directory.Delete(wd, true);
+        }
+
+        private IGit GetTempGit()
+        {
+            string Root = GetTempFolder("git" + new Random().Next(int.MaxValue));
+
+            Directory.CreateDirectory(Root);
+
+            return Git.Init(new DirectoryInfo(Root));
+        }
+
+        private static void Touch(string combine)
         {
             File.Create(combine).Close();
         }

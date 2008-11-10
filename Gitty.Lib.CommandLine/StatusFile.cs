@@ -18,7 +18,7 @@ namespace Gitty.Lib.CommandLine
             Stage = file.Stage;
         }
 
-        public StatusFile(IDiffFilesFile file)
+        public StatusFile(IIndexFile file)
         {
             ConstructIndex(file);
             ConstructFile(file);
@@ -49,13 +49,21 @@ namespace Gitty.Lib.CommandLine
         }
 
         public string Path { get; set; }
+
+        public bool Stage { get; set; }
+
         public string IndexMode { get; set; }
         public string IndexSha { get; set; }
-        public bool Stage { get; set; }
+        
         public string RepositoryMode { get; set; }
         public string RepositorySha { get; set; }
-        public StatusType Type { get; set; }
+
+        public string WorkingDirectoryMode { get; set; }
+        public string WorkingDirectorySha { get; set; }
+
+        public DiffMode Type { get; set; }
         public bool Untracked { get; set; }
 
+        
     }
 }

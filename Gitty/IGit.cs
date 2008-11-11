@@ -27,7 +27,7 @@ namespace Gitty
         void CherryPick(params string[] options);
         void Citool(params string[] options);
         void Clean(params string[] options);
-        IGit Clone(string repospec, params string[] options);
+        IGit Clone(string repospec, string name, params string[] options);
         void Commit(string message, params string[] options);
         void Diff(params string[] options);
         void Fetch(params string[] options);

@@ -39,7 +39,7 @@ namespace Gitty.Tests
             //git.Status();
             
 
-            git.Commit("-m", "sample commit");
+            git.Commit("sample commit");
 
             //teardown 
             Directory.Delete(Root, true);
@@ -54,13 +54,98 @@ namespace Gitty.Tests
         public void CloneTest()
         {
             //setup 
-            string Root2 = Path.GetTempPath();
+            string name = "cloneTest" + new Random().Next(int.MaxValue);
+            string Root2 = Path.Combine(Path.GetTempPath(), name);
 
-            var git = Git.Clone(new DirectoryInfo(Root2), "git://localhost/kthompson/gitty.git");
+            var git1 = GetTempGit();
+
+            Touch(Path.Combine(git1.WorkingDirectory.ToString(), "file1"));
+            Touch(Path.Combine(git1.WorkingDirectory.ToString(), "file2"));
+            Touch(Path.Combine(git1.WorkingDirectory.ToString(), "file3"));
+
+            git1.Add();
+
+            git1.Commit("committed");
+
+            var git = Git.Clone(new DirectoryInfo(Path.GetTempPath()), git1.WorkingDirectory.ToString(), name);
             //Assert.AreEqual(RepoPath, git.Repository);
-
+            var files = git.LsFiles();
+            Assert.IsTrue(files.ContainsKey("file1"), "0100");
+            Assert.IsTrue(files.ContainsKey("file2"), "0200");
+            Assert.IsTrue(files.ContainsKey("file3"), "0300");
             //teardown 
+            Directory.Delete(git1.WorkingDirectory.ToString(), true);
             Directory.Delete(Root2, true);
+        }
+
+        [Test]
+        public void CloneTest2()
+        {
+            //setup 
+            
+            string name = "cloneTest" + new Random().Next(int.MaxValue);
+            string root1 = GetTempFolder(name);
+            
+            Directory.CreateDirectory(root1);
+
+            IGit git1 = GetPopulatedGitRepo();
+
+            string root2 = Path.Combine(root1, git1.WorkingDirectory.Directory.Name);
+
+            var git = Git.Clone(new DirectoryInfo(root1), git1.WorkingDirectory.ToString());
+
+            Assert.AreEqual(git.WorkingDirectory.ToString(), root2, "0050");
+
+            var files = git.LsFiles();
+            Assert.IsTrue(files.ContainsKey("file1"), "0100");
+            Assert.IsTrue(files.ContainsKey("file2"), "0200");
+            Assert.IsTrue(files.ContainsKey("file3"), "0300");
+            //teardown 
+            Directory.Delete(git1.WorkingDirectory.ToString(), true);
+            Directory.Delete(root1, true);
+        }
+
+        private static IGit GetPopulatedGitRepo()
+        {
+            var git1 = GetTempGit();
+
+            
+
+            Touch(Path.Combine(git1.WorkingDirectory.ToString(), "file1"));
+            Touch(Path.Combine(git1.WorkingDirectory.ToString(), "file2"));
+            Touch(Path.Combine(git1.WorkingDirectory.ToString(), "file3"));
+
+            git1.Add();
+
+            git1.Commit("committed");
+            return git1;
+        }
+
+        [Test]
+        public void CloneTest3()
+        {
+            //setup 
+
+            string name = "cloneTest" + new Random().Next(int.MaxValue);
+            string root1 = GetTempFolder(name);
+
+            Directory.CreateDirectory(root1);
+
+            IGit git1 = GetPopulatedGitRepo();
+
+            string root2 = Path.Combine(root1, git1.WorkingDirectory.Directory.Name);
+
+            var git = Git.Clone(new DirectoryInfo(root1), git1.WorkingDirectory+".git");
+
+            Assert.AreEqual(git.WorkingDirectory.ToString(), root2, "0050");
+
+            var files = git.LsFiles();
+            Assert.IsTrue(files.ContainsKey("file1"), "0100");
+            Assert.IsTrue(files.ContainsKey("file2"), "0200");
+            Assert.IsTrue(files.ContainsKey("file3"), "0300");
+            //teardown 
+            Directory.Delete(git1.WorkingDirectory.ToString(), true);
+            Directory.Delete(root1, true);
         }
 
         [Test]
@@ -149,7 +234,7 @@ namespace Gitty.Tests
             Directory.Delete(wd, true);
         }
 
-        private IGit GetTempGit()
+        private static IGit GetTempGit()
         {
             string Root = GetTempFolder("git" + new Random().Next(int.MaxValue));
 

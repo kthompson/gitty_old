@@ -72,20 +72,27 @@ namespace Gitty.Lib.CommandLine
         public void CherryPick(params string[] options){}
         public void Citool(params string[] options){}
         public void Clean(params string[] options){}
-        public IGit Clone(string repospec, params string[] options)
+        public IGit Clone(string repospec, string name, params string[] options)
         {
-            Command("clone", repospec);
-            //TODO: set the repo directory 
+            var newOptions = MergeOptions(new[] {repospec, name}, options);
+            Command("clone", newOptions);
+            WorkingDirectory = new WorkingDirectory(WorkingDirectory.ToString(), name);
             return this;
         }
         public void Commit(string message, params string[] options)
         {
-            string[] newOptions = new string[options.Length+2];
-            newOptions[0] = "-m";
-            newOptions[1] = message;
-            options.CopyTo(newOptions,2);
+            var newOptions = MergeOptions(new []{"-m", message}, options);
             Command("commit", newOptions);
         }
+
+        private static string[] MergeOptions(string[] options, string[] options2)
+        {
+            string[] newOptions = new string[options.Length + options2.Length];
+            options.CopyTo(newOptions, 0);
+            options2.CopyTo(newOptions, options2.Length);
+            return newOptions;
+        }
+
         public void Diff(params string[] options){}
         public void Fetch(params string[] options){}
         public void FormatPatch(params string[] options){}
@@ -186,7 +193,8 @@ namespace Gitty.Lib.CommandLine
         private string Command(string command, params string[] options)
         {
             string opts = string.Join(" ", options.Select(s => s.Contains(" ") ? "\"" + s + "\"" : s).ToArray());
-            
+
+
             var proc = new Process
                                {
                                    StartInfo =

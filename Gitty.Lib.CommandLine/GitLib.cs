@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Diagnostics;
-using Gitty.Lib.CLI;
 
 namespace Gitty.Lib.CommandLine
 {
@@ -73,16 +72,27 @@ namespace Gitty.Lib.CommandLine
         public void CherryPick(params string[] options){}
         public void Citool(params string[] options){}
         public void Clean(params string[] options){}
-        public IGit Clone(string repospec, params string[] options)
+        public IGit Clone(string repospec, string name, params string[] options)
         {
-            Command("clone", repospec);
-            //TODO: set the repo directory 
+            var newOptions = MergeOptions(new[] {repospec, name}, options);
+            Command("clone", newOptions);
+            WorkingDirectory = new WorkingDirectory(WorkingDirectory.ToString(), name);
             return this;
         }
-        public void Commit(params string[] options)
+        public void Commit(string message, params string[] options)
         {
-            Command("commit", options);
+            var newOptions = MergeOptions(new []{"-m", message}, options);
+            Command("commit", newOptions);
         }
+
+        private static string[] MergeOptions(string[] options, string[] options2)
+        {
+            string[] newOptions = new string[options.Length + options2.Length];
+            options.CopyTo(newOptions, 0);
+            options2.CopyTo(newOptions, options2.Length);
+            return newOptions;
+        }
+
         public void Diff(params string[] options){}
         public void Fetch(params string[] options){}
         public void FormatPatch(params string[] options){}
@@ -111,9 +121,9 @@ namespace Gitty.Lib.CommandLine
         public void Shortlog(params string[] options){}
         public void Show(params string[] options){}
         public void Stash(params string[] options){}
-        public IDictionary<string,IStatusResult> Status(params string[] options)
+        public IStatus Status(params string[] options)
         {
-            throw new NotImplementedException();
+            return new Status(this);
         }
         public void Submodule(params string[] options){}
         public void Tag(params string[] options){ }
@@ -125,10 +135,10 @@ namespace Gitty.Lib.CommandLine
             var hash = new Dictionary<string, ILsFilesFile>();
             foreach(string result in CommandLines("ls-files", "--stage"))
             {
+                if (string.IsNullOrEmpty(result)) continue;
                 var fileResult = new LsFilesFile(result);
                 hash.Add(fileResult.Path, fileResult);
             }
-                
             return hash;
         }
 
@@ -137,7 +147,22 @@ namespace Gitty.Lib.CommandLine
             var hash = new Dictionary<string, IDiffFilesFile>();
             foreach (string line in CommandLines("diff-files"))
             {
+                if(string.IsNullOrEmpty(line)) continue;
                 var file = new DiffFilesFile(line);
+                hash.Add(file.Path, file);
+            }
+            return hash;
+        }
+
+        public IDictionary<string, IDiffIndexFile> DiffIndex(string treeish, params string[] options)
+        {
+            Enforce.ArgumentNotNull(treeish, "treeish");
+
+            var hash = new Dictionary<string, IDiffIndexFile>();
+            foreach (string line in CommandLines("diff-index", treeish))
+            {
+                if (string.IsNullOrEmpty(line)) continue;
+                var file = new DiffIndexFile(line);
                 hash.Add(file.Path, file);
             }
             return hash;
@@ -168,16 +193,22 @@ namespace Gitty.Lib.CommandLine
         private string Command(string command, params string[] options)
         {
             string opts = string.Join(" ", options.Select(s => s.Contains(" ") ? "\"" + s + "\"" : s).ToArray());
-            
-            Process proc = new Process();
-            proc.StartInfo.CreateNoWindow = true;
-            proc.StartInfo.UseShellExecute = false;
-            proc.StartInfo.RedirectStandardError = true;
-            proc.StartInfo.RedirectStandardOutput = true;
-            proc.StartInfo.FileName = GitExecutable;
-            proc.StartInfo.Arguments = command + " " + opts; //redirect error to output
-            proc.StartInfo.WorkingDirectory = WorkingDirectory.ToString();
-            
+
+
+            var proc = new Process
+                               {
+                                   StartInfo =
+                                       {
+                                           CreateNoWindow = true,
+                                           UseShellExecute = false,
+                                           RedirectStandardError = true,
+                                           RedirectStandardOutput = true,
+                                           FileName = GitExecutable,
+                                           Arguments = (command + " " + opts),
+                                           WorkingDirectory = WorkingDirectory.ToString()
+                                       }
+                               };
+
             proc.Start();
 
             string output = proc.StandardOutput.ReadToEnd();

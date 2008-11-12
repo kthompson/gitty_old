@@ -27,8 +27,8 @@ namespace Gitty
         void CherryPick(params string[] options);
         void Citool(params string[] options);
         void Clean(params string[] options);
-        IGit Clone(string repospec, params string[] options);
-        void Commit(params string[] options);
+        IGit Clone(string repospec, string name, params string[] options);
+        void Commit(string message, params string[] options);
         void Diff(params string[] options);
         void Fetch(params string[] options);
         void FormatPatch(params string[] options);
@@ -49,7 +49,7 @@ namespace Gitty
         void Shortlog(params string[] options);
         void Show(params string[] options);
         void Stash(params string[] options);
-        IDictionary<string,IStatusResult> Status(params string[] options);
+        IStatus Status(params string[] options);
         void Submodule(params string[] options);
         void Tag(params string[] options);
         #endregion
@@ -58,6 +58,7 @@ namespace Gitty
 
         IDictionary<string,ILsFilesFile> LsFiles(params string[] options);
         IDictionary<string, IDiffFilesFile> DiffFiles(params string[] options);
+        IDictionary<string, IDiffIndexFile> DiffIndex(string treeish, params string[] options);
         #endregion
     }
 }

@@ -7,6 +7,6 @@ namespace Gitty
 {
     public interface IFile
     {
-        string Path { get; }
+        string Path { get; set; }
     }
 }

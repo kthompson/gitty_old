@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Gitty.Lib.CommandLine;
 
-namespace Gitty.Lib.CLI
+namespace Gitty.Lib.CommandLine
 {
     public class Index : GitPath, IIndex
     {

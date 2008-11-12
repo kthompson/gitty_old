@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DiffFilesFile.cs" />
+    <Compile Include="DiffIndexFile.cs" />
     <Compile Include="GitCommandLine.cs" />
     <Compile Include="GitLib.cs" />
     <Compile Include="GitPath.cs" />
@@ -51,7 +52,8 @@
     <Compile Include="LsFilesFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository.cs" />
-    <Compile Include="StatusResult.cs" />
+    <Compile Include="Status.cs" />
+    <Compile Include="StatusFile.cs" />
     <Compile Include="WorkingDirectory.cs" />
   </ItemGroup>
   <ItemGroup>

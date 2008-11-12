@@ -7,5 +7,6 @@ namespace Gitty
 {
     public interface IDiffIndexFile : IIndexFile, IRepositoryFile
     {
+        DiffMode Type { get; }
     }
 }

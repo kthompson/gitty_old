@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.IO;
+using System.Threading;
 using Autofac;
 using Autofac.Builder;
 using Gitty.Lib;
@@ -14,12 +15,16 @@ namespace Gitty
     {
 
         #region properties
-        private static readonly ContainerBuilder builder = new ContainerBuilder();
         #endregion
 
         #region constructors
 
         static Git()
+        {
+            
+        }
+
+        private static ContainerBuilder GetBuilder()
         {
             var modules =
                 from module in new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory).GetFiles("Gitty.Lib.*.dll")
@@ -28,8 +33,10 @@ namespace Gitty
                 select type;
 
             //add first module
+            var builder = new ContainerBuilder();
             builder.RegisterModule((IModule)Activator.CreateInstance(modules.First()));
 
+            return builder;
         }
 
         private Git()
@@ -64,6 +71,8 @@ namespace Gitty
             if(dir == null)
                 return null;
 
+            var builder = GetBuilder();
+
             builder.Register(dir);
             using(var container = builder.Build())
             {
@@ -84,6 +93,8 @@ namespace Gitty
             if (directory == null || !directory.Exists)
                 return null;
 
+            var builder = GetBuilder();
+
             builder.Register(directory);
             using (var container = builder.Build())
             {
@@ -96,16 +107,33 @@ namespace Gitty
 
         public static IGit Clone(DirectoryInfo directory, string repouri)
         {
+            var lastPart = repouri.Split(new[]{'/', '\\'}).Last();
+
+            var name = lastPart.EndsWith(".git") ? lastPart.Remove(lastPart.Length - 4) : lastPart;
+
+            return Clone(directory, repouri, name);
+        }
+        public static IGit Clone(DirectoryInfo directory, string repouri, string name)
+        {
             if (directory == null || string.IsNullOrEmpty(repouri))
                 return null;
 
+            var builder = GetBuilder();
+
             builder.Register(directory);
-            using (var container = builder.Build())
+            try
             {
-                var git = container.Resolve<IGit>();
-                git.WorkingDirectory = container.Resolve<IWorkingDirectory>(new TypedParameter(typeof(DirectoryInfo), directory));
-                git.Clone(repouri);
-                return git;
+                using (var container = builder.Build())
+                {
+                    var git = container.Resolve<IGit>();
+                    git.WorkingDirectory = container.Resolve<IWorkingDirectory>(new TypedParameter(typeof (DirectoryInfo), directory));
+                    git.Clone(repouri, name);
+                    return git;
+                }
+            }
+            catch(InvalidOperationException ex)
+            {
+                throw ex;
             }
         }
 

@@ -29,7 +29,7 @@ namespace Gitty
             var modules =
                 from module in new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory).GetFiles("Gitty.Lib.*.dll")
                 from type in Assembly.LoadFrom(module.FullName).GetTypes()
-                where typeof (IModule).IsAssignableFrom(type)
+                where typeof (GitModule).IsAssignableFrom(type)
                 select type;
 
             //add first module

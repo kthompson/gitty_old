@@ -9,7 +9,7 @@ using Module=Autofac.Builder.Module;
 
 namespace Gitty.Lib.CommandLine
 {
-    public class GitCommandLine : Module
+    public class GitCommandLine : GitModule
     {
         protected override void Load(ContainerBuilder builder)
         {
@@ -17,6 +17,16 @@ namespace Gitty.Lib.CommandLine
             builder.Register(c => new Repository(c.Resolve<IWorkingDirectory>())).As<IRepository>().ContainerScoped();
             builder.Register(c => new Index(c.Resolve<IRepository>())).As<IIndex>();
             builder.Register(c => new GitLib()).As<IGit>();
+        }
+
+        public override string Name
+        {
+            get { return "Command Line Library"; }
+        }
+
+        public override string Description
+        {
+            get { return "The Gitty Command Line libary is dependant on msysgit for windows."; }
         }
     }
 }

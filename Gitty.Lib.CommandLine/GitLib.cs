@@ -226,7 +226,12 @@ namespace Gitty.Lib.CommandLine
 
             return output;
         }
-        #endregion
 
+        public GitContext GetContext()
+        {
+            return new GitContext(this);
+        }
+
+        #endregion
     }
 }

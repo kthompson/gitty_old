@@ -60,5 +60,9 @@ namespace Gitty
         IDictionary<string, IDiffFilesFile> DiffFiles(params string[] options);
         IDictionary<string, IDiffIndexFile> DiffIndex(string treeish, params string[] options);
         #endregion
+
+        #region other
+        GitContext GetContext();
+        #endregion
     }
 }

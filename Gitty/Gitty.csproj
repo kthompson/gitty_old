@@ -52,6 +52,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Enforce.cs" />
+    <Compile Include="GitContext.cs" />
     <Compile Include="GitModule.cs" />
     <Compile Include="IDiffFilesFile.cs" />
     <Compile Include="IDiffIndexFile.cs" />

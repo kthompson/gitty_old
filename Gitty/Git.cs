@@ -5,9 +5,9 @@ using System.Reflection;
 using System.Text;
 using System.IO;
 using System.Threading;
+using Gitty.Lib;
 using Autofac;
 using Autofac.Builder;
-using Gitty.Lib;
 
 namespace Gitty
 {

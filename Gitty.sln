@@ -13,7 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gitty.Lib.CSharp", "Gitty.L
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gitty.Lib.CommandLine", "Gitty.Lib.CommandLine\Gitty.Lib.CommandLine.csproj", "{6BBAF76C-573C-49FD-8245-58C153A1BBCE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gitty.Lib.CSharp.Tests", "Gitty.Lib.CSharp.Tests\Gitty.Lib.CSharp.Tests.csproj", "{37052DA4-F6A9-47D0-94AA-96F4A7E0462C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gitty.Lib.CSharp.Tests", "Gitty.Lib.CSharp\Tests\Gitty.Lib.CSharp.Tests.csproj", "{37052DA4-F6A9-47D0-94AA-96F4A7E0462C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

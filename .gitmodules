@@ -1,5 +1,5 @@
-[submodule "Gitty.Shell/"]
-	path = Gitty.Shell/
+[submodule "Gitty.Shell"]
+	path = Gitty.Shell
 	url = git@github.com:kthompson/gitty.shell.git
 [submodule "Gitty.Lib.CSharp/"]
 	path = Gitty.Lib.CSharp/

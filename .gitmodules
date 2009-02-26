@@ -4,3 +4,6 @@
 [submodule "Gitty.Lib.CSharp"]
 	path = Gitty.Lib.CSharp
 	url = git@github.com:kthompson/gitty.core.git
+[submodule "Gitty.Api/"]
+	path = Gitty.Api/
+	url = git@github.com:kthompson/gitty.api.git

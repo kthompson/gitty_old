@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
-using Gitty.Lib;
-using Gitty.Shell;
 
 namespace Gitty
 {
@@ -11,11 +9,11 @@ namespace Gitty
     {
         static void Main(string[] args)
         {
-            
+
             //Repository repo = new Repository(Git.FindGitDirectory());
             //Console.WriteLine(repo.Config.GetString("user", null, "name"));
             //Console.WriteLine(repo.Directory.FullName);
-           
+
             Console.Read();
         }
     }

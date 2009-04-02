@@ -25,7 +25,7 @@ namespace Gitty.Tests
             Assert.IsFalse(git.Repository.Index.File.Exists, "Test#030");
             Assert.IsTrue(git.WorkingDirectory.Directory.Exists, "Test#040");
 
-            using(StreamWriter writer = File.CreateText(Path.Combine(git.WorkingDirectory.ToString(), "hello")))
+            using (StreamWriter writer = File.CreateText(Path.Combine(git.WorkingDirectory.ToString(), "hello")))
             {
                 writer.WriteLine("Simple file to be added to repo");
             }
@@ -37,7 +37,7 @@ namespace Gitty.Tests
             Assert.IsTrue(git.Repository.Index.File.Exists, "Test#050");
 
             //git.Status();
-            
+
 
             git.Commit("sample commit");
 
@@ -82,10 +82,10 @@ namespace Gitty.Tests
         public void CloneTest2()
         {
             //setup 
-            
+
             string name = "cloneTest" + new Random().Next(int.MaxValue);
             string root1 = GetTempFolder(name);
-            
+
             Directory.CreateDirectory(root1);
 
             IGit git1 = GetPopulatedGitRepo();
@@ -109,7 +109,7 @@ namespace Gitty.Tests
         {
             var git1 = GetTempGit();
 
-            
+
 
             Touch(Path.Combine(git1.WorkingDirectory.ToString(), "file1"));
             Touch(Path.Combine(git1.WorkingDirectory.ToString(), "file2"));
@@ -135,7 +135,7 @@ namespace Gitty.Tests
 
             string root2 = Path.Combine(root1, git1.WorkingDirectory.Directory.Name);
 
-            var git = Git.Clone(new DirectoryInfo(root1), git1.WorkingDirectory+".git");
+            var git = Git.Clone(new DirectoryInfo(root1), git1.WorkingDirectory + ".git");
 
             Assert.AreEqual(git.WorkingDirectory.ToString(), root2, "0050");
 
@@ -173,7 +173,7 @@ namespace Gitty.Tests
             var simpledir = new DirectoryInfo(testdir);
             var path = new GitPath(simpledir);
 
-            Assert.AreEqual(simpledir, path.Directory,"0100");
+            Assert.AreEqual(simpledir, path.Directory, "0100");
 
             var files = path.GetFiles();
             Assert.AreEqual("dir", path.GetRelativePath(files[0].FullName), "0200");
@@ -221,15 +221,15 @@ namespace Gitty.Tests
             var status = git.Status();
 
             Assert.IsTrue(status.ContainsKey("hello"), "0100");
-            Assert.AreEqual("hello",status["hello"].Path, "0200");
+            Assert.AreEqual("hello", status["hello"].Path, "0200");
 
             Assert.IsTrue(status.ContainsKey("uncommitedfile"), "0300");
             Assert.AreEqual(DiffMode.Add, status["uncommitedfile"].Type, "0400");
 
             Assert.IsTrue(status.ContainsKey("untrackedfile"), "0500");
             Assert.IsTrue(status["untrackedfile"].Untracked, "0600");
-            
-            
+
+
             //teardown 
             Directory.Delete(wd, true);
         }

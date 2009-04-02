@@ -50,12 +50,6 @@
   <ItemGroup>
     <None Include="app.config" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Gitty.Shell\Gitty.Shell.csproj">
-      <Project>{B941526C-BD89-4E03-910B-20BA5D5A7AFF}</Project>
-      <Name>Gitty.Shell</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

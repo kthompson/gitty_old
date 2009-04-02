@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gitty.Tests", "Gitty.Tests\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gitty.Shell", "Gitty.Shell\Gitty.Shell.csproj", "{B941526C-BD89-4E03-910B-20BA5D5A7AFF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gitty.Lib.CommandLine", "Gitty.Lib.CommandLine\Gitty.Lib.CommandLine.csproj", "{6BBAF76C-573C-49FD-8245-58C153A1BBCE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gitty.CommandLine", "Gitty.Lib.CommandLine\Gitty.CommandLine.csproj", "{6BBAF76C-573C-49FD-8245-58C153A1BBCE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gitty.Api", "Gitty.Api\Gitty.Api.csproj", "{B3276B5A-E976-4328-A57D-7F4AD5DD5F31}"
 EndProject

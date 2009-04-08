@@ -7,7 +7,7 @@ using System.Text;
 using Autofac.Builder;
 using Module=Autofac.Builder.Module;
 
-namespace Gitty.Lib.CommandLine
+namespace Gitty.CommandLine
 {
     public class GitCommandLine : GitModule
     {

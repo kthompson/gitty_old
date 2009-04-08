@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Gitty.Lib.CommandLine
+namespace Gitty.CommandLine
 {
     public class Status : Dictionary<string, IStatusFile>,  IStatus
     {

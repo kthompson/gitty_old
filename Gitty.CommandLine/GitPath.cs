@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace Gitty.Lib.CommandLine
+namespace Gitty.CommandLine
 {
     public class GitPath : IPath
     {

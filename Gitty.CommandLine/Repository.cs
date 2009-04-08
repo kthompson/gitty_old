@@ -1,7 +1,7 @@
 ﻿using System.IO;
-using Gitty.Lib.CommandLine;
+using Gitty.CommandLine;
 
-namespace Gitty.Lib.CommandLine
+namespace Gitty.CommandLine
 {
     public class Repository: GitPath, IRepository
     {

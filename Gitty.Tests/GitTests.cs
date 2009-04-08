@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using Gitty.Lib.CommandLine;
+using Gitty.CommandLine;
 using NUnit.Framework;
 
 namespace Gitty.Tests

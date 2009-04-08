@@ -5,7 +5,7 @@ using System.Text;
 using System.IO;
 using System.Diagnostics;
 
-namespace Gitty.Lib.CommandLine
+namespace Gitty.CommandLine
 {
     public class GitLib : IGit
     {

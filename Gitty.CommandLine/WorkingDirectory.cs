@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Gitty.Lib.CommandLine
+namespace Gitty.CommandLine
 {
     public class WorkingDirectory : GitPath, IWorkingDirectory
     {

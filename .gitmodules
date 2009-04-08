@@ -4,6 +4,3 @@
 [submodule "Gitty.Core"]
 	path = Gitty.Core
 	url = git@github.com:kthompson/gitty.core.git
-[submodule "Gitty.Api"]
-	path = Gitty.Api
-	url = git@github.com:kthompson/gitty.api.git

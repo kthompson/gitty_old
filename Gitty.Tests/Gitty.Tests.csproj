@@ -57,7 +57,7 @@
       <Project>{B3276B5A-E976-4328-A57D-7F4AD5DD5F31}</Project>
       <Name>Gitty.Api</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Gitty.Lib.CommandLine\Gitty.CommandLine.csproj">
+    <ProjectReference Include="..\Gitty.CommandLine\Gitty.CommandLine.csproj">
       <Project>{6BBAF76C-573C-49FD-8245-58C153A1BBCE}</Project>
       <Name>Gitty.CommandLine</Name>
     </ProjectReference>

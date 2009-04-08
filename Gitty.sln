@@ -3,17 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GittyTester", "GittyTester\GittyTester.csproj", "{3C787990-9AFD-4E60-94F2-B641B0C4A4A6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gitty.Tests", "Gitty.Tests\Gitty.Tests.csproj", "{31702C66-BA9B-4AC5-B927-5566A1619EB5}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gitty.Shell", "Gitty.Shell\Gitty.Shell.csproj", "{B941526C-BD89-4E03-910B-20BA5D5A7AFF}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gitty.Api", "Gitty.Api\Gitty.Api.csproj", "{B3276B5A-E976-4328-A57D-7F4AD5DD5F31}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gitty.Core", "Gitty.Core\Gitty.Core.csproj", "{C46EDD61-C202-465A-93F1-ADE20A83BB59}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gitty.Core.Tests", "Gitty.Core\Tests\Gitty.Core.Tests.csproj", "{37052DA4-F6A9-47D0-94AA-96F4A7E0462C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gitty.CommandLine", "Gitty.CommandLine\Gitty.CommandLine.csproj", "{6BBAF76C-573C-49FD-8245-58C153A1BBCE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gitty", "Gitty\Gitty.csproj", "{EF791A1E-32E8-439C-83BF-3621047BB275}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,17 +19,6 @@ Global
 		{3C787990-9AFD-4E60-94F2-B641B0C4A4A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C787990-9AFD-4E60-94F2-B641B0C4A4A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C787990-9AFD-4E60-94F2-B641B0C4A4A6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{31702C66-BA9B-4AC5-B927-5566A1619EB5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{31702C66-BA9B-4AC5-B927-5566A1619EB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{31702C66-BA9B-4AC5-B927-5566A1619EB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{31702C66-BA9B-4AC5-B927-5566A1619EB5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B941526C-BD89-4E03-910B-20BA5D5A7AFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B941526C-BD89-4E03-910B-20BA5D5A7AFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B941526C-BD89-4E03-910B-20BA5D5A7AFF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B3276B5A-E976-4328-A57D-7F4AD5DD5F31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B3276B5A-E976-4328-A57D-7F4AD5DD5F31}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B3276B5A-E976-4328-A57D-7F4AD5DD5F31}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B3276B5A-E976-4328-A57D-7F4AD5DD5F31}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C46EDD61-C202-465A-93F1-ADE20A83BB59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C46EDD61-C202-465A-93F1-ADE20A83BB59}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C46EDD61-C202-465A-93F1-ADE20A83BB59}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -44,10 +27,10 @@ Global
 		{37052DA4-F6A9-47D0-94AA-96F4A7E0462C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{37052DA4-F6A9-47D0-94AA-96F4A7E0462C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{37052DA4-F6A9-47D0-94AA-96F4A7E0462C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6BBAF76C-573C-49FD-8245-58C153A1BBCE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6BBAF76C-573C-49FD-8245-58C153A1BBCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6BBAF76C-573C-49FD-8245-58C153A1BBCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6BBAF76C-573C-49FD-8245-58C153A1BBCE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF791A1E-32E8-439C-83BF-3621047BB275}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF791A1E-32E8-439C-83BF-3621047BB275}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF791A1E-32E8-439C-83BF-3621047BB275}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF791A1E-32E8-439C-83BF-3621047BB275}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

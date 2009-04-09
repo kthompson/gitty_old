@@ -6,7 +6,7 @@ using Gitty.Core;
 
 namespace Gitty
 {
-    public class Branch : Command
+    public class LogCommand : Command
     {
         public override bool RequiresRepository
         {
@@ -18,7 +18,7 @@ namespace Gitty
             get { throw new NotImplementedException(); }
         }
 
-        public Branch(Repository repo)
+        public LogCommand(Repository repo)
             : base(repo)
         {
 

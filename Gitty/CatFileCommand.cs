@@ -6,7 +6,7 @@ using Gitty.Core;
 
 namespace Gitty
 {
-    public class CatFile : Command
+    public class CatFileCommand : Command
     {
         public override bool RequiresRepository
         {
@@ -18,7 +18,7 @@ namespace Gitty
             get { return true; }
         }
 
-        public CatFile(Repository repo)
+        public CatFileCommand(Repository repo)
             : base(repo)
         {
         }

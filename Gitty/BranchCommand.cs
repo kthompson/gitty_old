@@ -6,22 +6,21 @@ using Gitty.Core;
 
 namespace Gitty
 {
-    public class Log : Command
+    public class BranchCommand : Command
     {
         public override bool RequiresRepository
         {
-            get { throw new NotImplementedException(); }
+            get { return true; }
         }
 
         public override bool RequiresArguments
         {
-            get { throw new NotImplementedException(); }
+            get { return false; }
         }
 
-        public Log(Repository repo)
+        public BranchCommand(Repository repo)
             : base(repo)
         {
-
         }
     }
 }

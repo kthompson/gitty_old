@@ -34,13 +34,13 @@ namespace Gitty
             {
 
                 case "branch":
-                    return new Branch(repo);
+                    return new BranchCommand(repo);
                 case "cat-file":
-                    return new CatFile(repo);
+                    return new CatFileCommand(repo);
                 case "log":
-                    return new Log(repo);
+                    return new LogCommand(repo);
                 case "tag":
-                    return new Tag(repo);
+                    return new TagCommand(repo);
                 //case "add--interactive
                 case "add":
                 case "am":

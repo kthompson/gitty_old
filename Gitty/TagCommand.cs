@@ -6,7 +6,7 @@ using Gitty.Core;
 
 namespace Gitty
 {
-    public class Tag : Command
+    public class TagCommand : Command
     {
         public override bool RequiresRepository
         {
@@ -18,7 +18,7 @@ namespace Gitty
             get { throw new NotImplementedException(); }
         }
 
-        public Tag(Repository repo)
+        public TagCommand(Repository repo)
             : base(repo)
         {
 

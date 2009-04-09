@@ -39,7 +39,7 @@ namespace Gitty
             }
             else if (args.Length == 1)
             {
-                switch (args[0])
+                switch (args.First())
                 {
                     case "--help":
                     case "/?":

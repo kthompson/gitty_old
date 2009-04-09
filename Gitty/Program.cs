@@ -10,15 +10,16 @@ namespace Gitty
     {
         static void Main(string[] args)
         {
-            
+
             if (args.Length > 0)
             {
                 Repository repo = Repository.Open(".");
-                Command cmd;
-                switch (args[0])
+                Command cmd = null;
+                switch (args.First())
                 {
                     case "cat-file":
-                    //cmd = new CatFile(Repository.Find()
+                        cmd = new CatFile(repo);
+                        break;
                     //case "add--interactive
                     case "add":
                     case "am":
@@ -159,12 +160,20 @@ namespace Gitty
                     case "whatchanged":
                     case "write-tree":
                         Console.WriteLine("gitty: '{0}' is not currently supported by gitty.", args[0]);
-                        break;
+                        return;
                     default:
                         Console.WriteLine("gitty: '{0}' is not a git-command. See 'gitty --help'.", args[0]);
-                        break;
+                        return;
                 }
+                cmd.PerformAction(args.Skip(1).ToArray());
             }
+            else
+            {
+                //no arguments
+                Console.WriteLine("usage: gitty [--version] [--git-dir=GIT_DIR] [--work-tree=GIT_WORK_TREE] [--help] COMMAND [ARGS]");
+            }
+            Console.Read();
         }
+        
     }
 }

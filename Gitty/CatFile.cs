@@ -33,9 +33,13 @@ namespace Gitty
                 return true;
             }
 
-            //TODO: This should support rev-parsing 
-            var id = ObjectId.FromString(args[1]);
+            var id = this.Repository.Resolve(args[1]);
 
+            if (id == null)
+            {
+                Console.WriteLine("fatal: Not a valid object name {0}", args[1]);
+                return true;
+            }
 
             switch (args[0])
             {
@@ -67,7 +71,7 @@ namespace Gitty
 #warning this needs a bit of revision
                     Console.WriteLine(commit.Message);
                     break;
-                case "tag":
+                case Constants.ObjectTypes.Tag:
 #warning this needs a bit of revision too
                     var tag = this.Repository.MapTag(args[1], id);
                     Console.WriteLine(tag.TagName);

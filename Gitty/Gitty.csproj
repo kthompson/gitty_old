@@ -45,13 +45,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Branch.cs" />
-    <Compile Include="CatFile.cs" />
+    <Compile Include="BranchCommand.cs" />
+    <Compile Include="CatFileCommand.cs" />
     <Compile Include="Command.cs" />
-    <Compile Include="Log.cs" />
+    <Compile Include="LogCommand.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Tag.cs" />
+    <Compile Include="TagCommand.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Gitty.Core\Gitty.Core.csproj">

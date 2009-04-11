@@ -177,10 +177,10 @@ namespace Gitty
                 //case "web--browse":
                 case "whatchanged":
                 case "write-tree":
-                    Console.WriteLine("gitty: '{0}' is not currently supported by gitty.", args[0]);
+                    Console.WriteLine("gitty: '{0}' is not currently supported by gitty.", command);
                     return null;
                 default:
-                    Console.WriteLine("gitty: '{0}' is not a git-command. See 'gitty --help'.", args[0]);
+                    Console.WriteLine("gitty: '{0}' is not a git-command. See 'gitty --help'.", command);
                     return null;
             }
         }

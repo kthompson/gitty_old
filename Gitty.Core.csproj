@@ -101,6 +101,14 @@
     <Compile Include="Repository.cs" />
     <Compile Include="RepositoryConfig.cs" />
     <Compile Include="RepositoryState.cs" />
+    <Compile Include="RevWalk\RevCommit.cs" />
+    <Compile Include="RevWalk\RevFlag.cs" />
+    <Compile Include="RevWalk\RevFlagSet.cs" />
+    <Compile Include="RevWalk\RevObject.cs" />
+    <Compile Include="RevWalk\RevTree.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="RevWalk\RevWalk.cs" />
     <Compile Include="SymlinkTreeEntry.cs" />
     <Compile Include="Tag.cs" />
     <Compile Include="TextProgressMonitor.cs" />
@@ -112,6 +120,7 @@
     <Compile Include="TreeVisitor.cs" />
     <Compile Include="TreeVisitorWithCurrentDirectory.cs" />
     <Compile Include="TreeWalk\AbstractTreeIterator.cs" />
+    <Compile Include="TreeWalk\TreeWalk.cs" />
     <Compile Include="UnpackedObjectLoader.cs" />
     <Compile Include="Util\CheckedOutputStream.cs" />
     <Compile Include="Util\CRC32.cs" />
@@ -135,6 +144,9 @@
     <None Include="app.config" />
     <None Include="ClassDiagram.cd" />
     <None Include="Makefile" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="TreeWalk\Filter\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

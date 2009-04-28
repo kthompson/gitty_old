@@ -63,6 +63,12 @@ SOURCES =  \
 	RepositoryChangedEventArgs.cs \
 	RepositoryConfig.cs \
 	RepositoryState.cs \
+	RevWalk/RevCommit.cs \
+	RevWalk/RevFlag.cs \
+	RevWalk/RevFlagSet.cs \
+	RevWalk/RevObject.cs \
+	RevWalk/RevTree.cs \
+	RevWalk/RevWalk.cs \
 	SymlinkTreeEntry.cs \
 	Tag.cs \
 	test.cs \
@@ -75,6 +81,7 @@ SOURCES =  \
 	TreeVisitor.cs \
 	TreeVisitorWithCurrentDirectory.cs \
 	TreeWalk/AbstractTreeIterator.cs \
+	TreeWalk/TreeWalk.cs \
 	UnpackedObjectLoader.cs \
 	Util/BufferedReader.cs \
 	Util/CheckedOutputStream.cs \

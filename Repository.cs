@@ -74,7 +74,7 @@ namespace Gitty.Core
     public class Repository
     {
         private RefDatabase _refDb;
-        //private List<PackFile> _packs;
+        private List<PackFile> _packs;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Repository"/> class. Assumes parent directory is the working directory.
@@ -100,7 +100,7 @@ namespace Gitty.Core
 
             this.Config = new RepositoryConfig(this);
             _refDb = new RefDatabase(this);
-            //_packs = new List<PackFile>();
+            _packs = new List<PackFile>();
 
             bool isExisting = _objectsDirs[0].Exists;
             if (isExisting)
@@ -118,8 +118,8 @@ namespace Gitty.Core
             {
                 this.Config.Create();
             }
-            //if (isExisting)
-            //    ScanForPacks();
+            if (isExisting)
+                ScanForPacks();
         }
 
 		#region events
@@ -149,27 +149,53 @@ namespace Gitty.Core
          */
         public void Create()
         {
-            if (this.Directory.Exists)
-                throw new GitException("Unable to create repository. Directory already exists.");
+            lock (this)
+            {
+                if (this.Directory.Exists)
+                    throw new GitException("Unable to create repository. Directory already exists.");
 
-            this.Directory.Create();
-            this._refDb.Create();
+                this.Directory.Create();
+                this._refDb.Create();
 
-            this._objectsDirs[0].Create();
-            new DirectoryInfo(Path.Combine(this._objectsDirs[0].FullName, "pack")).Create();
-            new DirectoryInfo(Path.Combine(this._objectsDirs[0].FullName, "info")).Create();
+                this._objectsDirs[0].Create();
+                new DirectoryInfo(Path.Combine(this._objectsDirs[0].FullName, "pack")).Create();
+                new DirectoryInfo(Path.Combine(this._objectsDirs[0].FullName, "info")).Create();
 
-            new DirectoryInfo(Path.Combine(this.Directory.FullName, "branches")).Create();
-            new DirectoryInfo(Path.Combine(this.Directory.FullName, "remote")).Create();
+                new DirectoryInfo(Path.Combine(this.Directory.FullName, "branches")).Create();
+                new DirectoryInfo(Path.Combine(this.Directory.FullName, "remote")).Create();
 
-            string master = Constants.RefsHeads + Constants.Master;
+                string master = Constants.RefsHeads + Constants.Master;
 
-            this._refDb.Link(Constants.Head, master);
+                this._refDb.Link(Constants.Head, master);
 
-            this.Config.Create();
-            this.Config.Save();
-
+                this.Config.Create();
+                this.Config.Save();
+            }
         }
+
+        private List<PackFile> Packs
+        {
+            get
+            {
+                lock (this)
+                {
+                    return this._packs;
+                }
+            }
+        }
+
+
+        private List<DirectoryInfo> ObjectDirectories
+        {
+            get
+            {
+                lock (this)
+                {
+                    return this._objectsDirs;
+                }
+            }
+        }
+
         /**
          * @param objectId
          * @return true if the specified object is stored in this repo or any of the
@@ -177,68 +203,72 @@ namespace Gitty.Core
          */
         public bool HasObject(AnyObjectId objectId)
         {
-            //int k = this._packs.Count;
-            //if (k > 0)
-            //{
-            //    do
-            //    {
-            //        if (this._packs[--k].HasObject(objectId))
-            //            return true;
-            //    } while (k > 0);
-            //}
+            int k = this._packs.Count;
+            while (k > 0)
+            {
+                try
+                {
+                    if (this._packs[--k].HasObject(objectId))
+                        return true;
+                }
+                catch (IOException)
+                {
+                    continue;
+                }
+            }
             return ToFile(objectId).Exists;
         }
 
 
         #region private methods
-        ///**
-        // * Scan the object dirs, including alternates for packs
-        // * to use.
-        // */
-        //public void ScanForPacks()
-        //{
-        //    List<PackFile> p = new List<PackFile>();
-        //    for (int i = 0; i < _objectsDirs.Count; ++i)
-        //        ScanForPacks(new DirectoryInfo(Path.Combine(_objectsDirs[i].FullName, "pack")), p);
+        /**
+         * Scan the object dirs, including alternates for packs
+         * to use.
+         */
+        public void ScanForPacks()
+        {
+            List<PackFile> p = new List<PackFile>();
+            for (int i = 0; i < _objectsDirs.Count; ++i)
+                ScanForPacks(new DirectoryInfo(Path.Combine(_objectsDirs[i].FullName, "pack")), p);
 
-        //    _packs = p;
+            _packs = p;
 
-        //}
+        }
 
-        //private void ScanForPacks(DirectoryInfo packDir, List<PackFile> packList)
-        //{
-        //    // Must match "pack-[0-9a-f]{40}.idx" to be an index.
-        //    IEnumerable<FileInfo> idxList =
-        //        packDir.GetFiles().Where(
-        //            file => file.Name.Length == 49 && file.Name.EndsWith(".idx") && file.Name.StartsWith("pack-"));
+        private void ScanForPacks(DirectoryInfo packDir, List<PackFile> packList)
+        {
+            // Must match "pack-[0-9a-f]{40}.idx" to be an index.
+            IEnumerable<FileInfo> idxList =
+                packDir.GetFiles().Where(
+                    file => file.Name.Length == 49 && file.Name.EndsWith(".idx") && file.Name.StartsWith("pack-"));
 
-        //    if (idxList == null) return;
-        //    foreach (FileInfo indexName in idxList)
-        //    {
-        //        String n = indexName.FullName.Substring(0, indexName.FullName.Length - 4);
-        //        FileInfo idxFile = new FileInfo(n + ".idx");
-        //        FileInfo packFile = new FileInfo(n + ".pack");
+            if (idxList == null) return;
+            foreach (FileInfo indexName in idxList)
+            {
+                String n = indexName.FullName.Substring(0, indexName.FullName.Length - 4);
+                FileInfo idxFile = new FileInfo(n + ".idx");
+                FileInfo packFile = new FileInfo(n + ".pack");
 
-        //        if (!packFile.Exists)
-        //        {
-        //            // Sometimes C Git's http fetch transport leaves a
-        //            // .idx file behind and does not download the .pack.
-        //            // We have to skip over such useless indexes.
-        //            //
-        //            continue;
-        //        }
+                if (!packFile.Exists)
+                {
+                    // Sometimes C Git's http fetch transport leaves a
+                    // .idx file behind and does not download the .pack.
+                    // We have to skip over such useless indexes.
+                    //
+                    continue;
+                }
 
-        //        try
-        //        {
-        //            packList.Add(new PackFile(this, idxFile, packFile));
-        //        }
-        //        catch (IOException)
-        //        {
-        //            // Whoops. That's not a pack!
-        //            //
-        //        }
-        //    }
-        //}
+                try
+                {
+                    packList.Add(new PackFile(idxFile, packFile));
+                }
+                catch (IOException)
+                {
+                    // Whoops. That's not a pack!
+                    //
+                }
+            }
+        }
 
         private List<DirectoryInfo> ReadObjectsDirs(string objectsDir, ref List<DirectoryInfo> ret)
         {
@@ -263,7 +293,7 @@ namespace Gitty.Core
         private List<DirectoryInfo> _objectsDirs = new List<DirectoryInfo>();
         public DirectoryInfo ObjectsDirectory
         {
-            get { return this._objectsDirs[0]; }
+            get { return this.ObjectDirectories[0]; }
         }
 
         public DirectoryInfo Directory { get; private set; }
@@ -286,16 +316,14 @@ namespace Gitty.Core
             string n = objectId.ToString();
             string d = n.Substring(0, 2);
             string f = n.Substring(2);
-            for (int i = 0; i < _objectsDirs.Count; ++i)
+            foreach (DirectoryInfo dir in this.ObjectDirectories)
             {
-                FileInfo ret = new FileInfo(PathUtil.Combine(_objectsDirs[i].FullName, d, f));
+                FileInfo ret = new FileInfo(PathUtil.Combine(dir.FullName, d, f));
                 if (ret.Exists)
                     return ret;
             }
-            return new FileInfo(PathUtil.Combine(_objectsDirs[0].FullName, d, f));
+            return new FileInfo(PathUtil.Combine(this.ObjectDirectories[0].FullName, d, f));
         }
-
-#warning commented out to get compiled
 
         /**
          * @param id
@@ -308,109 +336,64 @@ namespace Gitty.Core
         public ObjectLoader OpenObject(AnyObjectId id)
         {
             if (id == null) return null;
+            int k = _packs.Count;
+            while (k > 0)
+            {
+                ObjectLoader ol = _packs[--k].Get(id);
+                if (ol != null)
+                    return ol;
+            }
             try
             {
-                return new UnpackedObjectLoader(this, id.ToObjectId());
+                return new UnpackedObjectLoader(this, id);
             }
             catch (FileNotFoundException)
             {
                 return null;
             }
-            //return OpenObject(new WindowCursor(), id);
         }
 
 
-        ///**
-        // * @param curs
-        // *            temporary working space associated with the calling thread.
-        // * @param id
-        // *            SHA-1 of an object.
-        // * 
-        // * @return a {@link ObjectLoader} for accessing the data of the named
-        // *         object, or null if the object does not exist.
-        // * @throws IOException
-        // */
-        //public ObjectLoader OpenObject(WindowCursor windowCursor, AnyObjectId id)
-        //{
-        //    int k = _packs.Count;
-        //    if (k > 0)
-        //    {
-        //        do
-        //        {
-        //            try
-        //            {
-        //                ObjectLoader ol = _packs[--k].Get(windowCursor, id);
-        //                if (ol != null)
-        //                    return ol;
-        //            }
-        //            catch (IOException)
-        //            {
-        //                try
-        //                {
-        //                    windowCursor.Release();
-        //                    GC.Collect();
-        //                    ObjectLoader ol = _packs[k].Get(windowCursor, id);
-        //                    if (ol != null)
-        //                        return ol;
-        //                }
-        //                catch (IOException)
-        //                {
+        /**
+         * Open object in all packs containing specified object.
+         *
+         * @param objectId
+         *            id of object to search for
+         * @param curs
+         *            temporary working space associated with the calling thread.
+         * @return collection of loaders for this object, from all packs containing
+         *         this object
+         * @throws IOException
+         */
+        public ICollection<PackedObjectLoader> OpenObjectInAllPacks(AnyObjectId objectId)
+        {
+            ICollection<PackedObjectLoader> result = new LinkedList<PackedObjectLoader>();
+            OpenObjectInAllPacks(objectId, result);
+            return result;
+        }
 
-        //                }
-        //            }
-        //        } while (k > 0);
-        //    }
-        //    try
-        //    {
-        //        return new UnpackedObjectLoader(this, id.ToObjectId());
-        //    }
-        //    catch (FileNotFoundException)
-        //    {
-        //        return null;
-        //    }
-        //}
+        /**
+         * Open object in all packs containing specified object.
+         *
+         * @param objectId
+         *            id of object to search for
+         * @param resultLoaders
+         *            result collection of loaders for this object, filled with
+         *            loaders from all packs containing specified object
+         * @param curs
+         *            temporary working space associated with the calling thread.
+         * @throws IOException
+         */
 
-
-        ///**
-        // * Open object in all packs containing specified object.
-        // *
-        // * @param objectId
-        // *            id of object to search for
-        // * @param curs
-        // *            temporary working space associated with the calling thread.
-        // * @return collection of loaders for this object, from all packs containing
-        // *         this object
-        // * @throws IOException
-        // */
-        //public ICollection<PackedObjectLoader> OpenObjectInAllPacks(AnyObjectId objectId, WindowCursor cursor)
-        //{
-        //    ICollection<PackedObjectLoader> result = new LinkedList<PackedObjectLoader>();
-        //    OpenObjectInAllPacks(objectId, result, cursor);
-        //    return result;
-        //}
-
-        ///**
-        // * Open object in all packs containing specified object.
-        // *
-        // * @param objectId
-        // *            id of object to search for
-        // * @param resultLoaders
-        // *            result collection of loaders for this object, filled with
-        // *            loaders from all packs containing specified object
-        // * @param curs
-        // *            temporary working space associated with the calling thread.
-        // * @throws IOException
-        // */
-
-        //private void OpenObjectInAllPacks(AnyObjectId objectId, ICollection<PackedObjectLoader> resultLoaders, WindowCursor cursor)
-        //{
-        //    foreach (PackFile pack in _packs)
-        //    {
-        //        PackedObjectLoader loader = pack.Get(cursor, objectId);
-        //        if (loader != null)
-        //            resultLoaders.Add(loader);
-        //    }
-        //}
+        private void OpenObjectInAllPacks(AnyObjectId objectId, ICollection<PackedObjectLoader> resultLoaders)
+        {
+            foreach (PackFile pack in _packs)
+            {
+                PackedObjectLoader loader = pack.Get(objectId);
+                if (loader != null)
+                    resultLoaders.Add(loader);
+            }
+        }
 
 
         /**
@@ -477,6 +460,8 @@ namespace Gitty.Core
         public object MapObject(ObjectId id, string refName)
         {
             ObjectLoader or = OpenObject(id);
+            if (or == null)
+                return null;
             byte[] raw = or.Bytes;
             switch (or.ObjectType)
             {
@@ -488,9 +473,9 @@ namespace Gitty.Core
                     return MakeTag(id, refName, raw);
                 case ObjectType.Blob:
                     return raw;
+                default:
+                    throw new IncorrectObjectTypeException(id, or.ObjectType);
             }
-            return null;
-
         }
 
 
@@ -536,8 +521,9 @@ namespace Gitty.Core
                     return new Tree(this, id, raw);
                 case ObjectType.Commit:
                     return MapTree(ObjectId.FromString(raw, 5));
+                default:
+                    throw new IncorrectObjectTypeException(id, ObjectType.Tree);
             }
-            throw new IncorrectObjectTypeException(id, ObjectType.Tree);
         }
 
         private Tag MakeTag(ObjectId id, string refName, byte[] raw)
@@ -807,42 +793,46 @@ namespace Gitty.Core
          */
         public void Close()
         {
-            //ClosePacks();
+            ClosePacks();
         }
 
-        //private void ClosePacks()
-        //{
-        //    foreach (PackFile pack in _packs)
-        //        pack.Close();
+        private void ClosePacks()
+        {
+            lock (_packs)
+            {
+                foreach (PackFile pack in _packs)
+                    pack.Close();
 
-        //    _packs = new List<PackFile>();
-        //}
-        ///**
-        // * Add a single existing pack to the list of available pack files.
-        // * 
-        // * @param pack
-        // *            path of the pack file to open.
-        // * @param idx
-        // *            path of the corresponding index file.
-        // * @throws IOException
-        // *             index file could not be opened, read, or is not recognized as
-        // *             a Git pack file index.
-        // */
-        //public void OpenPack(FileInfo pack, FileInfo idx)
-        //{
-        //    String p = pack.Name;
-        //    String i = idx.Name;
-        //    if (p.Length != 50 || !p.StartsWith("pack-") || !p.EndsWith(".pack"))
-        //        throw new ArgumentException("Not a valid pack " + pack);
-        //    if (i.Length != 49 || !i.StartsWith("pack-") || !i.EndsWith(".idx"))
-        //        throw new ArgumentException("Not a valid pack " + idx);
-        //    if (!p.Substring(0, 45).Equals(i.Substring(0, 45)))
-        //        throw new ArgumentException("Pack " + pack
-        //                + "does not match index " + idx);
+                _packs.Clear();
+            }
+        }
+        /**
+         * Add a single existing pack to the list of available pack files.
+         * 
+         * @param pack
+         *            path of the pack file to open.
+         * @param idx
+         *            path of the corresponding index file.
+         * @throws IOException
+         *             index file could not be opened, read, or is not recognized as
+         *             a Git pack file index.
+         */
+        public void OpenPack(FileInfo pack, FileInfo idx)
+        {
+            String p = pack.Name;
+            String i = idx.Name;
+            if (p.Length != 50 || !p.StartsWith("pack-") || !p.EndsWith(".pack"))
+                throw new ArgumentException("Not a valid pack " + pack);
+            if (i.Length != 49 || !i.StartsWith("pack-") || !i.EndsWith(".idx"))
+                throw new ArgumentException("Not a valid pack " + idx);
+            if (!p.Substring(0, 45).Equals(i.Substring(0, 45)))
+                throw new ArgumentException("Pack " + pack + "does not match index " + idx);
 
-        //    _packs.Add(new PackFile(this, idx, pack));
-
-        //}
+            lock (this)
+            {
+                _packs.Add(new PackFile(idx, pack));    
+            }
+        }
         /**
          * Writes a symref (e.g. HEAD) to disk
          *
@@ -850,9 +840,57 @@ namespace Gitty.Core
          * @param target pointed to ref
          * @throws IOException
          */
-        public void WriteSymref(String name, String target)
+        public void WriteSymRef(String name, String target)
         {
             _refDb.Link(name, target);
+        }
+
+        public override string ToString()
+        {
+            return "Repository[" + this.Directory.ToString() +"]";
+        }
+
+        public string GetFullBranch()
+        {
+         	FileInfo ptr = PathUtil.CombineFilePath(this.Directory, Constants.Head);
+			using(var reader = ptr.OpenText())
+			{
+				 var reff = reader.ReadLine();
+				if (reff.StartsWith("ref: "))
+					return reff.Substring(5);
+				return reff;
+			}			
+        }
+
+        public string GetBranch()
+        {
+        	try 
+			{
+				FileInfo ptr = PathUtil.CombineFilePath(this.Directory, Constants.Head);
+				using(var reader = ptr.OpenText())
+				{
+					var reff = reader.ReadLine();
+				
+					if (reff.StartsWith("ref: "))
+						return reff.Substring(5);
+					if (reff.StartsWith("refs/heads/"))
+						return reff.Substring(11);
+					return reff;
+				}
+			}
+			catch (FileNotFoundException e) 
+			{
+				FileInfo ptr = PathUtil.CombineFilePath(this.Directory, "head-name");
+				using(var reader = ptr.OpenText())
+				{
+					return reader.ReadLine();
+				}
+			}
+        }
+
+        public Ref GetRef(string name)
+        {
+            return _refDb.ReadRef(name);
         }
 
         private GitIndex _index;
@@ -881,6 +919,12 @@ namespace Gitty.Core
         public void RefreshFromDisk()
         {
             _refDb.ClearCache();
+
+            _refs = null;
+            _tags = null;
+            _branches = null;
+            _remoteBranches = null;
+            _head = null;
         }
 
         internal static byte[] GitInternalSlash(byte[] bytes)
@@ -913,25 +957,32 @@ namespace Gitty.Core
         {
             get
             {
+                // Pre Git-1.6 logic
                 if (WorkingDirectory.GetFiles(".dotest").Length > 0)
                     return RepositoryState.Rebasing;
                 if (WorkingDirectory.GetFiles(".dotest-merge").Length > 0)
                     return RepositoryState.RebasingInteractive;
+
+                // From 1.6 onwards
+                if (File.Exists(PathUtil.Combine(WorkingDirectory.FullName, "rebase-apply", "rebasing")))
+                    return RepositoryState.RebasingRebasing;
+                if (File.Exists(PathUtil.Combine(WorkingDirectory.FullName, "rebase-apply", "applying")))
+                    return RepositoryState.Apply;
+                if (File.Exists(PathUtil.Combine(WorkingDirectory.FullName, "rebase-apply")))
+                    return RepositoryState.Rebasing;
+
+                if (WorkingDirectory.GetFiles("rebase-merge/interactive").Length > 0)
+                    return RepositoryState.RebasingInteractive;
+                if (WorkingDirectory.GetFiles("rebase-merge").Length > 0)
+                    return RepositoryState.RebasingMerge;
+
+                // Both versions
                 if (WorkingDirectory.GetFiles("MERGE_HEAD").Length > 0)
                     return RepositoryState.Merging;
                 if (WorkingDirectory.GetFiles("BISECT_LOG").Length > 0)
                     return RepositoryState.Bisecting;
                 return RepositoryState.Safe;
             }
-        }
-
-        public void ReloadRefs()
-        {
-            _refs = null;
-            _tags = null;
-            _branches = null;
-            _remoteBranches = null;
-            _head = null;
         }
 
         private Ref _head;
@@ -993,6 +1044,31 @@ namespace Gitty.Core
         public Ref Peel(Ref pRef)
         {
             return _refDb.Peel(pRef);
+        }
+
+        public Dictionary<AnyObjectId, List<Ref>> GetAllRefsByPeeledObjectId()
+        {
+            Dictionary<String, Ref> allRefs = this.Refs;
+            Dictionary<AnyObjectId, List<Ref>> ret = new Dictionary<AnyObjectId, List<Ref>>(allRefs.Count);
+            foreach (Ref aref in allRefs.Values)
+            {
+                var r = aref;
+                if (!r.Peeled)
+                    r = Peel(r);
+                AnyObjectId target = r.PeeledObjectId;
+                if (target == null)
+                    target = r.ObjectId;
+                // We assume most Sets here are singletons
+                if (ret.ContainsKey(target))
+                {
+                    ret[target].Add(r);
+                }
+                else
+                {
+                    ret.Add(target, new List<Ref> { r });
+                }
+            }
+            return ret;
         }
 
         public static Repository Open(string directory)
@@ -1065,7 +1141,7 @@ namespace Gitty.Core
             return true;
         }
 
-        public object OpenCommit(ObjectId id)
+        public void ScanForRepoChanges()
         {
             throw new NotImplementedException();
         }

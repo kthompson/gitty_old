@@ -1,6 +1,7 @@
 CSC=gmcs
 
 SOURCES =  \
+	AbbreviatedObjectId.cs \
 	AbstractIndexTreeVisitor.cs \
 	AnyObjectId.cs \
 	BinaryDelta.cs \

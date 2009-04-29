@@ -45,7 +45,7 @@ namespace Gitty.Core
     internal static class Codec
     {
 
-        public static ObjectType DecodeTypeString(ObjectId id, byte[] typeString, byte endMark, ref int offset)
+        public static ObjectType DecodeTypeString(AnyObjectId id, byte[] typeString, byte endMark, ref int offset)
         {
             try
             {

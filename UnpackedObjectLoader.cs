@@ -52,7 +52,7 @@ namespace Gitty.Core
     {
         
 
-        public UnpackedObjectLoader(Repository repo, ObjectId objectId)
+        public UnpackedObjectLoader(Repository repo, AnyObjectId objectId)
             : this(ReadCompressed(repo, objectId), objectId)
         {
         }
@@ -62,7 +62,7 @@ namespace Gitty.Core
         {
         }
 
-        public UnpackedObjectLoader(byte[] compressed, ObjectId id)
+        public UnpackedObjectLoader(byte[] compressed, AnyObjectId id)
         {
             // Try to determine if this is a legacy format loose object or
             // a new style loose object. The legacy format was completely
@@ -151,7 +151,7 @@ namespace Gitty.Core
             
         }
 
-        private void Decompress(ObjectId id, DeflateStream inf, int p)
+        private void Decompress(AnyObjectId id, DeflateStream inf, int p)
         {
             try
             {
@@ -171,7 +171,7 @@ namespace Gitty.Core
                 throw new CorruptObjectException(id, "Invalid Length");
         }
 
-        static byte[] ReadCompressed(Repository db, ObjectId id)
+        static byte[] ReadCompressed(Repository db, AnyObjectId id)
         {
             byte[] compressed;
 

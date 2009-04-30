@@ -56,12 +56,21 @@ namespace Gitty.Core
         private DirectoryInfo _refsDir;
         private FileInfo _packedRefsFile;
 
-        private Dictionary<String, CachedRef> looseRefs;
+        private Dictionary<String, Ref> looseRefs;
+		private Dictionary<string, DateTime> looseRefsMTime;
+		private Dictionary<string, string> looseSymRefs;
         private Dictionary<String, Ref> packedRefs;
 
         private DateTime packedRefsLastModified;
         private long packedRefsLength;
 
+		private int lastRefModification;
+
+		private int lastNotifiedRefModification;
+
+		private int refModificationCounter;
+
+		
         public RefDatabase(Repository repo)
         {
             this.Repository = repo;
@@ -73,8 +82,10 @@ namespace Gitty.Core
 
         public void ClearCache()
         {
-            looseRefs = new Dictionary<String, CachedRef>();
+            looseRefs = new Dictionary<String, Ref>();
+			looseRefsMTime = new Dictionary<string, DateTime>();
             packedRefs = new Dictionary<String, Ref>();
+			looseSymRefs = new Dictionary<string, string>();
             packedRefsLastModified = DateTime.MinValue;
             packedRefsLength = 0;
         }
@@ -100,9 +111,15 @@ namespace Gitty.Core
             return new RefUpdate(this, r, FileForRef(r.Name));
         }
 
-        public void Stored(String name, ObjectId id, DateTime time)
+        public void Stored(string origName, string name, ObjectId id, DateTime time)
         {
-            looseRefs.Add(name, new CachedRef(Ref.Storage.Loose, name, id, time));
+			lock(this)
+			{
+            	looseRefs.Add(name, new Ref(Ref.Storage.Loose, origName, name, id));
+				looseRefsMTime.Add(name, time);
+				SetModified();
+			}
+			this.OnChanged();
         }
 
         public void Link(string name, string target)
@@ -123,6 +140,9 @@ namespace Gitty.Core
                 throw new ObjectWritingException("Unable to write " + name);
         }
 
+		private void SetModified() {
+			lastRefModification = refModificationCounter++;
+		}
 
         public Ref ReadRef(String partialName)
         {
@@ -179,9 +199,18 @@ namespace Gitty.Core
             var avail = new Dictionary<String, Ref>();
             ReadPackedRefs(avail);
             ReadLooseRefs(avail, Constants.Refs, _refsDir);
-            ReadOneLooseRef(avail, Constants.Head, PathUtil.CombineFilePath(_gitDir, Constants.Head));
-            return avail;
-        }
+       		try 
+			{
+				Ref r = ReadRefBasic(Constants.Head, 0);
+				if (r != null && r.ObjectId != null)
+					avail.AddOrReplace(Constants.Head, r);
+			} catch (IOException e) {
+				// ignore here
+			}
+			this.OnChanged();
+			return avail;
+            
+		}
 
         private void ReadPackedRefs(Dictionary<string, Ref> avail)
         {
@@ -203,23 +232,25 @@ namespace Gitty.Core
                 if(ent is DirectoryInfo)
                     ReadLooseRefs(avail, prefix + ent.Name, (DirectoryInfo)ent);
                 else
-                    ReadOneLooseRef(avail, prefix + "/" + ent.Name, ent);
+                    ReadOneLooseRef(avail, prefix + "/" + ent.Name, prefix + "/" + ent.Name, ent);
             }
 
         }
 
-        private void ReadOneLooseRef(Dictionary<string, Ref> avail, string refName, FileSystemInfo ent)
+        private void ReadOneLooseRef(Dictionary<string, Ref> avail, string origName, string refName, FileSystemInfo ent)
         {
-            CachedRef reff;
+            Ref reff = looseRefs.GetValue(refName);
 
-            if (looseRefs.TryGetValue(refName, out reff) && reff != null)
+            if (reff != null)
             {
-                if (reff.LastModified == ent.LastWriteTime)
+				var cachedLastModified = looseRefsMTime[refName];
+                if (cachedLastModified == ent.LastWriteTime)
                 {
                     avail.Add(reff.Name, reff);
                     return;
                 }
                 looseRefs.Remove(refName);
+				looseRefsMTime.Remove(refName);
             }
 
             // Assume its a valid loose reference we need to cache.
@@ -235,9 +266,10 @@ namespace Gitty.Core
                     if (id == null)
                         return;
 
-                    reff = new CachedRef(Ref.Storage.Loose, refName, id, ent.LastWriteTime);
+                    reff = new Ref(Ref.Storage.Loose, origName, refName, id, null, false);
 
                     looseRefs.AddOrReplace(reff.Name, reff);
+					looseRefsMTime.AddOrReplace(reff.Name, ent.LastWriteTime);
                     avail.AddOrReplace(reff.Name, reff);
                 }
             }
@@ -261,19 +293,27 @@ namespace Gitty.Core
             return PathUtil.CombineFilePath(_gitDir, name);
         }
 
-        private Ref ReadRefBasic(string name, int depth)
+		private Ref ReadRefBasic(string name, int depth)
+		{
+			return ReadRefBasic(name, name,depth);
+		}
+		
+        private Ref ReadRefBasic(string origName, string name, int depth)
         {
             // Prefer loose ref to packed ref as the loose
             // file can be more up-to-date than a packed one.
             //
+			Ref r = looseRefs.GetValue(origName);
             FileInfo loose = FileForRef(name);
             DateTime mtime = loose.LastWriteTime;
 
-            if (looseRefs.ContainsKey(name))
+            if (r != null)
             {
-                if (looseRefs[name].LastModified == mtime)
-                    return looseRefs[name];
+				var cachedLastModified = looseRefsMTime.GetValue(name);
+                if (cachedLastModified != null && cachedLastModified == mtime)
+                    return r;
                 looseRefs.Remove(name);
+				looseRefsMTime.Remove(name);
             }
 
             if (!loose.Exists)
@@ -281,24 +321,60 @@ namespace Gitty.Core
                 // If last modified is 0 the file does not exist.
                 // Try packed cache.
                 //
-                return (packedRefs.ContainsKey(name)) ? packedRefs[name] : null;
+				r = packedRefs.GetValue(name);
+				if(r != null && !r.OriginalName.Equals(origName))
+					r = new Ref(Ref.Storage.LoosePacked, origName, name, r.ObjectId);
+                return r;
             }
+			
 
-            var line = ReadLine(loose);
+            string line = null;
+			try 
+			{
+				var cachedLastModified = looseRefsMTime.GetValue(name);
+				if(cachedLastModified != null && cachedLastModified == mtime)
+				{
+					line = looseSymRefs.GetValue(name);
+				}
+				if(line == null)
+				{
+					line = ReadLine(loose);
+					looseRefsMTime.AddOrReplace(name, mtime);
+					looseSymRefs.AddOrReplace(name, line);
+				}
+			}
+			catch (FileNotFoundException) 
+			{
+				return packedRefs.GetValue(name);	
+			}
 
             if (string.IsNullOrEmpty(line))
-                return new Ref(Ref.Storage.Loose, name, null);
-
+			{
+				looseRefs.Remove(origName);
+				looseRefsMTime.Remove(origName);
+                return new Ref(Ref.Storage.Loose,origName, name, null);
+			}
+			
             if (line.StartsWith("ref: "))
             {
                 if (depth >= 5)
                     throw new IOException("Exceeded maximum ref depth of " + depth + " at " + name + ".  Circular reference?");
 
                 String target = line.Substring("ref: ".Length);
-                Ref r = ReadRefBasic(target, depth + 1);
-                return r != null ? r : new Ref(Ref.Storage.Loose, target, null);
+                Ref rr = ReadRefBasic(target, depth + 1);
+				var cachedMtime = looseRefsMTime.GetValue(name);
+				if (cachedMtime != null && cachedMtime != mtime)
+					SetModified();
+				looseRefsMTime.AddOrReplace(name, mtime);
+				if (rr == null)
+					return new Ref(Ref.Storage.Loose, origName, target, null);
+				if (!origName.Equals(rr.Name))
+					rr = new Ref(Ref.Storage.LoosePacked, origName, rr.Name, rr.ObjectId, rr.PeeledObjectId, true);
+				return rr; 
             }
 
+			SetModified();
+			
             ObjectId id;
             try
             {
@@ -309,9 +385,12 @@ namespace Gitty.Core
                 throw new IOException("Not a ref: " + name + ": " + line);
             }
 
-            var reff = new CachedRef(Ref.Storage.Loose, name, id, mtime);
-            looseRefs.Add(name, reff);
-            return reff;
+            r = new Ref(Ref.Storage.Loose, origName, name, id);
+			looseRefs.AddOrReplace(origName, r);
+            r = new Ref(Ref.Storage.Loose, origName, id);
+			looseRefs.AddOrReplace(name, r);
+			looseRefsMTime.AddOrReplace(name, mtime);
+            return r;
         }
 
         private void RefreshPackedRefs()
@@ -425,17 +504,13 @@ namespace Gitty.Core
         {
             return new BufferedReader(file.FullName);
         }
-
-        private class CachedRef : Ref
-        {
-            public DateTime LastModified { get; private set; }
-
-            public CachedRef(Storage st, String refName, ObjectId id, DateTime mtime)
-                : base(st, refName, id)
-            {
-                this.LastModified = mtime;
-            }
-        }
-
+		
+		public event EventHandler<EventArgs> Changed;
+		protected void OnChanged()
+		{
+			var handler = this.Changed;
+			if(handler != null)
+				handler(this, EventArgs.Empty);
+		}
     }
 }

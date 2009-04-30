@@ -72,7 +72,7 @@ namespace Gitty.Core
             {
                 if (treeEntry == null)
                 {
-                    this.Added.Add(indexEntry.Name);
+                    this.Added.Add(indexEntry.GetName());
                     anyChanges = true;
                 }
                 else if (indexEntry == null)
@@ -85,7 +85,7 @@ namespace Gitty.Core
                 {
                     if (!treeEntry.Id.Equals(indexEntry.ObjectId))
                     {
-                        Changed.Add(indexEntry.Name);
+                        Changed.Add(indexEntry.GetName());
                         anyChanges = true;
                     }
                 }
@@ -94,14 +94,14 @@ namespace Gitty.Core
                 {
                     if (!file.Exists)
                     {
-                        Missing.Add(indexEntry.Name);
+                        Missing.Add(indexEntry.GetName());
                         anyChanges = true;
                     }
                     else
                     {
                         if (indexEntry.IsModified(root, true))
                         {
-                            Modified.Add(indexEntry.Name);
+                            Modified.Add(indexEntry.GetName());
                             anyChanges = true;
                         }
                     }

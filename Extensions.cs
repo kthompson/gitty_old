@@ -150,5 +150,30 @@ namespace Gitty.Core
             return false;
 
         }
+
+        public static bool IsDirectory(this FileSystemInfo fsi)
+        {
+            return (fsi.Attributes & FileAttributes.Directory) == FileAttributes.Directory;
+        }
+
+        public static bool IsFile(this FileSystemInfo fsi)
+        {
+            return !fsi.IsDirectory();
+        }
+
+        public static long CopyFrom(this Stream dest, Stream src)
+        {
+            var buffer = new byte[8192];
+            var bytesIn = 0;
+            long totalBytes = 0;
+            do
+            {
+                bytesIn = src.Read(buffer, 0, buffer.Length);
+                dest.Write(buffer, 0, bytesIn);
+                totalBytes += bytesIn;
+            } while(bytesIn > 0);
+
+            return totalBytes;
+        }
     }
 }

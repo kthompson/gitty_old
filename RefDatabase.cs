@@ -124,6 +124,7 @@ namespace Gitty.Core
 
         public void Link(string name, string target)
         {
+			throw new NotImplementedException();
             byte[] content = Constants.Encoding.GetBytes("ref: " + target + "\n");
             LockFile lck = new LockFile(FileForRef(name));
             if (!lck.Lock())

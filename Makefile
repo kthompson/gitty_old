@@ -74,6 +74,7 @@ SOURCES =  \
 	TreeIterator.cs \
 	TreeVisitor.cs \
 	TreeVisitorWithCurrentDirectory.cs \
+	TreeWalk/AbstractTreeIterator.cs \
 	UnpackedObjectLoader.cs \
 	Util/BufferedReader.cs \
 	Util/CheckedOutputStream.cs \

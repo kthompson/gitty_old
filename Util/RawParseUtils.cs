@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2008, Shawn O. Pearce <spearce@spearce.org>
+ * Copyright (C) 2009, Kevin Thompson <kevin.thompson@theautomaters.com>
  *
  * All rights reserved.
  *
@@ -78,6 +79,41 @@ namespace Gitty.Core
             }
 
             return sign * r;
+        }
+
+        internal static int Author(byte[] raw, int p)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal static PersonIdent ParsePersonIdent(byte[] raw, int nameB)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal static int Committer(byte[] raw, int p)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal static int CommitMessage(byte[] raw, int p)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal static System.Text.Encoding ParseEncoding(byte[] raw)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal static string Decode(System.Text.Encoding enc, byte[] raw, int msgB, int p)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal static int EndOfParagraph(byte[] raw, int msgB)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -97,6 +97,7 @@
     <Compile Include="RefDatabase.cs" />
     <Compile Include="RefLogWriter.cs" />
     <Compile Include="RefUpdate.cs" />
+    <Compile Include="RefWriter.cs" />
     <Compile Include="Repository.cs" />
     <Compile Include="RepositoryConfig.cs" />
     <Compile Include="RepositoryState.cs" />

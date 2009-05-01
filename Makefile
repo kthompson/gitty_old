@@ -58,6 +58,7 @@ SOURCES =  \
 	RefLogWriter.cs \
 	RefsChangedEventArgs.cs \
 	RefUpdate.cs \
+	RefWriter.cs \
 	Repository.cs \
 	RepositoryChangedEventArgs.cs \
 	RepositoryConfig.cs \

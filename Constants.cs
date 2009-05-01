@@ -116,6 +116,8 @@ namespace Gitty.Core
         public static readonly string RefsTags = Refs + "tags/";
         public static readonly string RefsHeads = Refs + "heads/";
         public static readonly string RefsRemotes = Refs + "remotes/";
+        public static readonly string InfoRefs = "info/refs";
+        public static readonly string PackedRefs = "packed-refs";
 
         public static readonly string[] RefSearchPaths = { "", Refs, RefsTags, RefsHeads, RefsRemotes };
     }

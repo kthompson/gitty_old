@@ -46,19 +46,19 @@ using System.IO;
 namespace Gitty.Core
 {
     [Complete]
-    public abstract class AnyObjectId
-        :
+    public abstract class AnyObjectId 
+	    :
 #if !__MonoCS__
- IComparable<ObjectId>,
+	    IComparable<ObjectId>,
 #endif
- IComparable
+	    IComparable
     {
         internal class Constants
         {
             public static readonly int ObjectIdLength = 20;
             public static readonly int StringLength = ObjectIdLength * 2;
         }
-
+        
         
         public static bool operator ==(AnyObjectId a, AnyObjectId b)
         {
@@ -91,7 +91,7 @@ namespace Gitty.Core
 
         public void CopyTo(Stream s)
         {
-            new BinaryWriter(s).Write(ToHexByteArray());
+			new BinaryWriter(s).Write(ToHexByteArray());
         }
 
         private byte[] ToHexByteArray()
@@ -121,7 +121,7 @@ namespace Gitty.Core
         public int GetFirstByte()
         {
             // W1 >>> 24 in java
-            return (byte)(W1 >> 24);
+            return  (byte)(W1 >> 24);
         }
 
         #region IComparable<ObjectId> Members
@@ -130,7 +130,7 @@ namespace Gitty.Core
         {
             if (this == other)
                 return 0;
-
+            
             int cmp;
 
             cmp = NB.CompareUInt32(W1, other.W1);
@@ -228,17 +228,74 @@ namespace Gitty.Core
 
         public override string ToString()
         {
+            return "AnyObjectId[" + Name() + "]";
+        }
+
+        /// <summary>
+        /// Names this instance.
+        /// </summary>
+        /// <returns>string form of the SHA-1, in lower case hexadecimal.</returns>
+        public string Name()
+        {
             return new string(ToHexCharArray());
         }
 
-        public ObjectId Copy() {
+        /**
+     * Return unique abbreviation (prefix) of this object SHA-1.
+     * <p>
+     * This method is a utility for <code>abbreviate(repo, 8)</code>.
+     *
+     * @param repo
+     *            repository for checking uniqueness within.
+     * @return SHA-1 abbreviation.
+     */
+        public AbbreviatedObjectId Abbreviate(Repository repo)
+        {
+            return Abbreviate(repo, 8);
+        }
+
+        /**
+         * Return unique abbreviation (prefix) of this object SHA-1.
+         * <p>
+         * Current implementation is not guaranteeing uniqueness, it just returns
+         * fixed-length prefix of SHA-1 string.
+         *
+         * @param repo
+         *            repository for checking uniqueness within.
+         * @param len
+         *            minimum length of the abbreviated string.
+         * @return SHA-1 abbreviation.
+         */
+        public AbbreviatedObjectId Abbreviate(Repository repo, int len)
+        {
+            // TODO implement checking for uniqueness
+            int a = AbbreviatedObjectId.Mask(len, 1, W1);
+            int b = AbbreviatedObjectId.Mask(len, 2, W2);
+            int c = AbbreviatedObjectId.Mask(len, 3, W3);
+            int d = AbbreviatedObjectId.Mask(len, 4, W4);
+            int e = AbbreviatedObjectId.Mask(len, 5, W5);
+            return new AbbreviatedObjectId(len, a, b, c, d, e);
+        }
+
+        public ObjectId Copy()
+        {
             if (this.GetType() == typeof(ObjectId))
                 return (ObjectId)this;
-            return new ObjectId(this);
+            return new ObjectId(this);            
         }
 
         public abstract ObjectId ToObjectId();
 
+        /// <summary>
+        /// Copy this ObjectId to an output writer in hex format.
+        /// </summary>
+        /// <param name="tmp">temporary char array to buffer construct into before writing Must be at least large enough to hold 2 digits for each byte of object id (40 characters or larger).</param>
+        /// <param name="w">the stream to copy to.</param>
+        public void CopyTo(char[] tmp, TextWriter w)
+        {
+            ToHexCharArray(tmp);
+            w.Write(tmp, 0, Constants.StringLength);
+        }
 
     }
 }

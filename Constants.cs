@@ -46,7 +46,14 @@ namespace Gitty.Core
 {
     public static class Constants
     {
+        static Constants()
+        {
+            Encoding = Encoding.GetEncoding(CharacterEncoding);
+        }
 
+        public static String CharacterEncoding = "UTF-8";
+        public static readonly Encoding Encoding;
+        
         /// <summary>
         ///   Special name for the "HEAD" symbolic ref
         /// </summary>
@@ -104,8 +111,6 @@ namespace Gitty.Core
             public static readonly byte[] EncodedTag = new byte[] { (byte)'t', (byte)'a', (byte)'g' };
 
         }
-
-        public static readonly Encoding Encoding = Encoding.UTF8;
 
         public static readonly string Refs = "refs/";
         public static readonly string RefsTags = Refs + "tags/";

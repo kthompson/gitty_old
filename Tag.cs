@@ -189,7 +189,7 @@ namespace Gitty.Core
 	      id = Id;
 	  }
 	  
-	  RefUpdate ru = Repository.UpdateRef(Constants.RefsTags + TagName);
+	  RefUpdate ru = Repository.UpdateRef(Constants.Refs.Tags + TagName);
 	  ru.NewObjectId = id;
 	  ru.SetRefLogMessage("tagged " + TagName, false);
 	  if (ru.ForceUpdate() == RefUpdate.RefUpdateResult.LockFailure)

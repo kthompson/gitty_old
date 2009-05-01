@@ -69,7 +69,7 @@ namespace Gitty.Core
 
         public static AbbreviatedObjectId FromString(byte[] buf, int offset, int end)
         {
-            if (end - offset < AnyObjectId.Constants.StringLength)
+            if (end - offset < Constants.ObjectId.StringLength)
             {
                 throw new ArgumentException("Invalid id");
             }
@@ -84,7 +84,7 @@ namespace Gitty.Core
 
         public static AbbreviatedObjectId FromString(String str)
         {
-            if (str.Length > AnyObjectId.Constants.StringLength)
+            if (str.Length > Constants.ObjectId.StringLength)
             {
                 throw new ArgumentException("Invalid id: " + str);
             }
@@ -198,7 +198,7 @@ namespace Gitty.Core
         {
             get
             {
-                return Length == AnyObjectId.Constants.ObjectIdLength * 2;
+                return Length == Constants.ObjectId.StringLength;
             }
         }
 
@@ -274,7 +274,7 @@ namespace Gitty.Core
 
         public String Name()
         {
-            char[] b = new char[AnyObjectId.Constants.StringLength];
+            char[] b = new char[Constants.ObjectId.StringLength];
 
             Hex.FillHexCharArray(b, 0, w1);
 

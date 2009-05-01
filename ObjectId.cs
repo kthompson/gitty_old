@@ -61,7 +61,7 @@ namespace Gitty.Core
 
         public static bool IsId(string id)
         {
-            if (id.Length != 2 * Constants.ObjectIdLength)
+            if (id.Length != 2 * Constants.ObjectId.Length)
                 return false;
 
             try
@@ -126,7 +126,7 @@ namespace Gitty.Core
 
         public static ObjectId FromString(string s)
         {
-            if (s.Length != Constants.StringLength)
+            if (s.Length != Constants.ObjectId.StringLength)
                 return null;
 
             return FromHexString(ASCIIEncoding.ASCII.GetBytes(s), 0);
@@ -145,7 +145,7 @@ namespace Gitty.Core
             }
             catch (IndexOutOfRangeException)
             {
-                string s = new string(Encoding.ASCII.GetChars(bs, offset, Constants.StringLength));
+                string s = new string(Encoding.ASCII.GetChars(bs, offset, Constants.ObjectId.StringLength));
                 throw new ArgumentException("Invalid id: " + s, "bs");
             }
         }

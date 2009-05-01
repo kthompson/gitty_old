@@ -51,11 +51,6 @@ namespace Gitty.Core
     [Complete]
 	public class PackFile : IEnumerable<PackIndex.MutableEntry>
 	{
-		public sealed class Constants
-		{
-			public static readonly string PackSignature = "PACK";
-		}
-
 		private FileStream _stream;
         private long _packLastModified;
 
@@ -243,10 +238,10 @@ namespace Gitty.Core
         {
             var reader = new BinaryReader(_stream);
 
-            var sig = reader.ReadBytes(Constants.PackSignature.Length);
+            var sig = reader.ReadBytes(Constants.PackFile.Signature.Length);
 
-            for (int k = 0; k < Constants.PackSignature.Length; k++)
-                if (sig[k] != Constants.PackSignature[k])
+            for (int k = 0; k < Constants.PackFile.Signature.Length; k++)
+                if (sig[k] != Constants.PackFile.Signature[k])
                     throw new IOException("Not a PACK file.");
             
             var vers = reader.ReadUInt32();
@@ -263,7 +258,7 @@ namespace Gitty.Core
             var reader = new BinaryReader(_stream);
             long pos = objOffset;
             int p = 0;
-            byte[] ib = reader.ReadBytes(ObjectId.Constants.ObjectIdLength);
+            byte[] ib = reader.ReadBytes(Constants.ObjectId.Length);
             int c = ib[p++] & 0xff;
             int typeCode = (c >> 4) & 7;
             long dataSize = c & 15;
@@ -284,7 +279,7 @@ namespace Gitty.Core
                 case ObjectType.Tag:
                     return new WholePackedObjectLoader(this, pos, objOffset, (ObjectType)typeCode, (int)dataSize);
                 case ObjectType.OffsetDelta:
-                    ib = reader.ReadBytes(ObjectId.Constants.ObjectIdLength);
+                    ib = reader.ReadBytes(Constants.ObjectId.Length);
                     p = 0;
                     c = ib[p++] & 0xff;
                     long ofs = c & 127;
@@ -297,7 +292,7 @@ namespace Gitty.Core
                     }
                     return new DeltaOfsPackedObjectLoader(this, pos + p, objOffset, (int)dataSize, objOffset - ofs);
                 case ObjectType.ReferenceDelta:
-                    ib = reader.ReadBytes(ObjectId.Constants.ObjectIdLength);
+                    ib = reader.ReadBytes(Constants.ObjectId.Length);
                     return new DeltaRefPackedObjectLoader(this, pos + ib.Length, objOffset, (int)dataSize, ObjectId.FromRaw(ib));
 
                 default:
@@ -307,7 +302,7 @@ namespace Gitty.Core
 
 		private long FindEndOffset(long startOffset)
 		{
-			long maxOffset = _stream.Length - AnyObjectId.Constants.ObjectIdLength;
+            long maxOffset = _stream.Length - Constants.ObjectId.Length;
 			return ReverseIndex.FindNextOffset(startOffset, maxOffset);
 		}
 

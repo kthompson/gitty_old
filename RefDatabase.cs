@@ -148,7 +148,7 @@ namespace Gitty.Core
         public Ref ReadRef(String partialName)
         {
             RefreshPackedRefs();
-            foreach (var searchPath in Constants.RefSearchPaths)
+            foreach (var searchPath in Constants.Refs.SearchPaths)
             {
                 Ref r = ReadRefBasic(searchPath + partialName, 0);
                 if (r != null && r.ObjectId != null)
@@ -167,8 +167,8 @@ namespace Gitty.Core
             Dictionary<String, Ref> tags = new Dictionary<String, Ref>();
             foreach (Ref r in ReadRefs().Values)
             {
-                if (r.Name.StartsWith(Constants.RefsTags))
-                    tags.Add(r.Name.Substring(Constants.RefsTags.Length), r);
+                if (r.Name.StartsWith(Constants.Refs.Tags))
+                    tags.Add(r.Name.Substring(Constants.Refs.Tags.Length), r);
             }
             return tags;
         }
@@ -178,8 +178,8 @@ namespace Gitty.Core
             var branches = new Dictionary<String, Ref>();
             foreach (Ref r in ReadRefs().Values)
             {
-                if (r.Name.StartsWith(Constants.RefsHeads))
-                    branches.Add(r.Name.Substring(Constants.RefsTags.Length), r);
+                if (r.Name.StartsWith(Constants.Refs.Heads))
+                    branches.Add(r.Name.Substring(Constants.Refs.Tags.Length), r);
             }
             return branches;
         }
@@ -189,8 +189,8 @@ namespace Gitty.Core
             var remotes = new Dictionary<String, Ref>();
             foreach (Ref r in ReadRefs().Values)
             {
-                if (r.Name.StartsWith(Constants.RefsRemotes))
-                    remotes.Add(r.Name.Substring(Constants.RefsRemotes.Length), r);
+                if (r.Name.StartsWith(Constants.Refs.Remotes))
+                    remotes.Add(r.Name.Substring(Constants.Refs.Remotes.Length), r);
             }
             return remotes;
         }
@@ -199,7 +199,7 @@ namespace Gitty.Core
         {
             var avail = new Dictionary<String, Ref>();
             ReadPackedRefs(avail);
-            ReadLooseRefs(avail, Constants.Refs, _refsDir);
+            ReadLooseRefs(avail, Constants.Refs.Root, _refsDir);
        		try 
 			{
 				Ref r = ReadRefBasic(Constants.Head, 0);
@@ -289,8 +289,8 @@ namespace Gitty.Core
 
         private FileInfo FileForRef(string name)
         {
-            if (name.StartsWith(Constants.Refs))
-                return PathUtil.CombineFilePath(_refsDir, name.Substring(Constants.Refs.Length));
+            if (name.StartsWith(Constants.Refs.Root))
+                return PathUtil.CombineFilePath(_refsDir, name.Substring(Constants.Refs.Root.Length));
             return PathUtil.CombineFilePath(_gitDir, name);
         }
 

@@ -46,20 +46,14 @@ using System.IO;
 namespace Gitty.Core
 {
     [Complete]
-    public abstract class AnyObjectId 
-	    :
+    public abstract class AnyObjectId
+        :
 #if !__MonoCS__
-	    IComparable<ObjectId>,
+ IComparable<ObjectId>,
 #endif
-	    IComparable
+ IComparable
     {
-        internal class Constants
-        {
-            public static readonly int ObjectIdLength = 20;
-            public static readonly int StringLength = ObjectIdLength * 2;
-        }
-        
-        
+
         public static bool operator ==(AnyObjectId a, AnyObjectId b)
         {
             if ((object)a == null)
@@ -91,12 +85,12 @@ namespace Gitty.Core
 
         public void CopyTo(Stream s)
         {
-			new BinaryWriter(s).Write(ToHexByteArray());
+            new BinaryWriter(s).Write(ToHexByteArray());
         }
 
         private byte[] ToHexByteArray()
         {
-            byte[] dst = new byte[Constants.StringLength];
+            byte[] dst = new byte[Constants.ObjectId.StringLength];
 
             Hex.FillHexByteArray(dst, 0, W1);
             Hex.FillHexByteArray(dst, 8, W2);
@@ -121,7 +115,7 @@ namespace Gitty.Core
         public int GetFirstByte()
         {
             // W1 >>> 24 in java
-            return  (byte)(W1 >> 24);
+            return (byte)(W1 >> 24);
         }
 
         #region IComparable<ObjectId> Members
@@ -130,7 +124,7 @@ namespace Gitty.Core
         {
             if (this == other)
                 return 0;
-            
+
             int cmp;
 
             cmp = NB.CompareUInt32(W1, other.W1);
@@ -212,7 +206,7 @@ namespace Gitty.Core
 
         private char[] ToHexCharArray()
         {
-            char[] dest = new char[Constants.StringLength];
+            char[] dest = new char[Constants.ObjectId.StringLength];
             ToHexCharArray(dest);
             return dest;
         }
@@ -281,7 +275,7 @@ namespace Gitty.Core
         {
             if (this.GetType() == typeof(ObjectId))
                 return (ObjectId)this;
-            return new ObjectId(this);            
+            return new ObjectId(this);
         }
 
         public abstract ObjectId ToObjectId();
@@ -294,7 +288,7 @@ namespace Gitty.Core
         public void CopyTo(char[] tmp, TextWriter w)
         {
             ToHexCharArray(tmp);
-            w.Write(tmp, 0, Constants.StringLength);
+            w.Write(tmp, 0, Constants.ObjectId.StringLength);
         }
 
     }

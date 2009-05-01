@@ -75,7 +75,7 @@ namespace Gitty.Core
         public void WriteInfoRefs()
         {
             StringWriter w = new StringWriter();
-            char[] tmp = new char[ObjectId.Constants.ObjectIdLength * 2];
+            char[] tmp = new char[Constants.ObjectId.Length * 2];
             foreach (Ref r in _refs)
             {
                 if (Constants.Head.Equals(r.Name))
@@ -100,7 +100,7 @@ namespace Gitty.Core
                     w.Write("^{}\n");
                 }
             }
-            WriteFile(Constants.InfoRefs, Encoding.ASCII.GetBytes(w.ToString()));
+            WriteFile(Constants.Refs.InfoRefs, Encoding.ASCII.GetBytes(w.ToString()));
         }
 
         /// <summary>
@@ -131,7 +131,7 @@ namespace Gitty.Core
                 w.Write('\n');
             }
 
-            char[] tmp = new char[ObjectId.Constants.ObjectIdLength * 2];
+            char[] tmp = new char[Constants.ObjectId.StringLength];
             foreach (Ref r in _refs)
             {
                 if (r.StorageFormat != Ref.Storage.Packed)
@@ -149,7 +149,7 @@ namespace Gitty.Core
                     w.Write('\n');
                 }
             }
-            WriteFile(Constants.PackedRefs, Encoding.ASCII.GetBytes(w.ToString()));
+            WriteFile(Constants.Refs.PackedRefs, Encoding.ASCII.GetBytes(w.ToString()));
         }
 
         /// <summary>

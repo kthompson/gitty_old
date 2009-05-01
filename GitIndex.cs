@@ -339,7 +339,7 @@ namespace Gitty.Core
                 uid = reader.ReadInt32();
                 gid = reader.ReadInt32();
                 this.Size = reader.ReadInt32();
-                byte[] sha1bytes = reader.ReadBytes(ObjectId.Constants.ObjectIdLength);
+                byte[] sha1bytes = reader.ReadBytes(Constants.ObjectId.Length);
                 this.ObjectId = ObjectId.FromRaw(sha1bytes);
                 flags = reader.ReadInt16();
                 name = reader.ReadBytes(flags & 0xFFF);

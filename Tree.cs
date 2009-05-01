@@ -353,7 +353,7 @@ namespace Gitty.Core
                 while (rawPtr < rawSize && raw[rawPtr] != 0)
                     rawPtr++;
                 rawPtr++;
-                rawPtr += ObjectId.Constants.ObjectIdLength;
+                rawPtr += Constants.ObjectId.Length;
                 nextIndex++;
             }
 
@@ -385,7 +385,7 @@ namespace Gitty.Core
                 rawPtr += nameLen + 1;
 
                 ObjectId id = ObjectId.FromRaw(raw, rawPtr);
-                rawPtr += ObjectId.Constants.ObjectIdLength;
+                rawPtr += Constants.ObjectId.Length;
 
                 TreeEntry ent;
                 if (FileMode.RegularFile.Equals(mode))

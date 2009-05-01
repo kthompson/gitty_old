@@ -133,7 +133,7 @@ namespace Gitty.Core
         protected readonly BinaryWriter _stream;
 
         /** A temporary buffer for use during IO to {link #out}. */
-        protected byte[] tmp = new byte[4 + ObjectId.Constants.ObjectIdLength];
+        protected byte[] tmp = new byte[4 + Constants.ObjectId.Length];
 
         /** The entries this writer must pack. */
         protected List<PackedObjectInfo> entries;

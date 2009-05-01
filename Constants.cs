@@ -112,13 +112,27 @@ namespace Gitty.Core
 
         }
 
-        public static readonly string Refs = "refs/";
-        public static readonly string RefsTags = Refs + "tags/";
-        public static readonly string RefsHeads = Refs + "heads/";
-        public static readonly string RefsRemotes = Refs + "remotes/";
+        public static class Refs
+        {
+            public static readonly string Root =       "refs/";
+            public static readonly string Tags =       "refs/tags/";
+            public static readonly string Heads =      "refs/heads/";
+            public static readonly string Remotes =    "refs/remotes/";
         public static readonly string InfoRefs = "info/refs";
         public static readonly string PackedRefs = "packed-refs";
 
-        public static readonly string[] RefSearchPaths = { "", Refs, RefsTags, RefsHeads, RefsRemotes };
+            public static readonly string[] SearchPaths = { "", Root, Tags, Heads, Remotes };
+
+        }
+        public static class ObjectId
+        {
+            public static readonly int Length = 20;
+            public static readonly int StringLength = Length * 2;
+        }
+
+        public class PackFile
+        {
+            public static readonly string Signature = "PACK";
+        }
     }
 }

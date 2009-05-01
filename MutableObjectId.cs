@@ -98,7 +98,7 @@ namespace Gitty.Core
 
         public void FromString(String str)
         {
-            if (str.Length != Constants.StringLength)
+            if (str.Length != Constants.ObjectId.StringLength)
                 throw new ArgumentException("Invalid id: " + str);
             FromHexString(Encoding.ASCII.GetBytes(str), 0);
         }
@@ -117,7 +117,7 @@ namespace Gitty.Core
             {
                 try
                 {
-                    String str = new string(Encoding.ASCII.GetChars(bs, p, Constants.StringLength));
+                    String str = new string(Encoding.ASCII.GetChars(bs, p, Constants.ObjectId.StringLength));
                     throw new ArgumentException("Invalid id: " + str);
                 }
                 catch (Exception)

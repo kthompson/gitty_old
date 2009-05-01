@@ -75,7 +75,7 @@ namespace Gitty.Core
 
                 if (n <= 0) continue;
 
-                idxdata[k] = new byte[n * (AnyObjectId.Constants.ObjectIdLength + 4)];
+                idxdata[k] = new byte[n * (Constants.ObjectId.Length + 4)];
                 NB.ReadFully(fd, idxdata[k], 0, idxdata[k].Length);
             }
             ObjectCount = idxHeader[255];
@@ -124,7 +124,7 @@ namespace Gitty.Core
 
             lbase = levelOne > 0 ? idxHeader[levelOne - 1] : 0;
             int p = (int)(nthPosition - lbase);
-            int dataIdx = ((4 + AnyObjectId.Constants.ObjectIdLength) * p) + 4;
+            int dataIdx = ((4 + Constants.ObjectId.Length) * p) + 4;
             return ObjectId.FromRaw(idxdata[levelOne], dataIdx);
         }
 
@@ -134,12 +134,12 @@ namespace Gitty.Core
             byte[] data = idxdata[levelOne];
             if (data == null)
                 return -1;
-            int high = data.Length / (4 + AnyObjectId.Constants.ObjectIdLength);
+            int high = data.Length / (4 + Constants.ObjectId.Length);
             int low = 0;
             do
             {
                 int mid = (low + high) / 2;
-                int pos = ((4 + AnyObjectId.Constants.ObjectIdLength) * mid) + 4;
+                int pos = ((4 + Constants.ObjectId.Length) * mid) + 4;
                 int cmp = objId.CompareTo(data, pos);
                 if (cmp < 0)
                     high = mid;
@@ -196,7 +196,7 @@ namespace Gitty.Core
                         long offset = NB.DecodeUInt32(_index.idxdata[levelOne], levelTwo);
                         Current.Offset = offset;
                         Current.FromRaw(_index.idxdata[levelOne], levelTwo + 4);
-                        levelTwo += AnyObjectId.Constants.ObjectIdLength + 4;
+                        levelTwo += Constants.ObjectId.Length + 4;
                         returnedNumber++;
                     }
                     else

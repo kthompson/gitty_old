@@ -106,7 +106,7 @@ namespace Gitty.Core
                     continue;
                 }
 
-                long nameLen = bucketCnt * AnyObjectId.Constants.ObjectIdLength;
+                long nameLen = bucketCnt * Constants.ObjectId.Length;
                 if (nameLen > int.MaxValue)
                     throw new IOException("Index file is too large for gitty");
 
@@ -268,7 +268,7 @@ namespace Gitty.Core
                     if (levelTwo < _index.names[levelOne].Length)
                     {
                         Current.FromRaw(_index.names[levelOne], levelTwo);
-                        int arrayIdx = levelTwo / (AnyObjectId.Constants.ObjectIdLength / 4) * 4;
+                        int arrayIdx = levelTwo / (Constants.ObjectId.Length / 4) * 4;
                         long offset = NB.DecodeUInt32(_index.offset32[levelOne], arrayIdx);
                         if ((offset & IS_O64) != 0)
                         {
@@ -277,7 +277,7 @@ namespace Gitty.Core
                         }
                         Current.Offset = offset;
 
-                        levelTwo += AnyObjectId.Constants.ObjectIdLength / 4;
+                        levelTwo += Constants.ObjectId.Length / 4;
                         returnedNumber++;
                         return true;
                     }
